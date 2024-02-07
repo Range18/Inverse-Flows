@@ -86,8 +86,8 @@ export class AuthService {
     }
 
     const comparedPasswords = await bcrypt.compare(
-      user.password,
       loginUserDto.password,
+      user.password,
     );
 
     if (!comparedPasswords) {
