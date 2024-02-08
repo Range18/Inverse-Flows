@@ -6,15 +6,20 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '#src/core/users/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
 
 @Entity('roles')
 export class RolesEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
+  @ApiProperty()
   @Column({ nullable: false, unique: true })
   name: string;
 
+  @ApiProperty()
   @Column()
   description: string;
 

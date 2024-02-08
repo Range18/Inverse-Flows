@@ -9,10 +9,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { SessionEntity } from '../session/session.entity';
-import { RolesEntity } from '#src/core/roles/roles.entity';
+import { RolesEntity } from '#src/core/roles/entity/roles.entity';
+import { BaseEntity } from '#src/common/base.entity';
+import { ProposalsEntity } from '#src/core/proposals/proposals.entity';
 
 @Entity('users')
-export class UserEntity {
+export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
@@ -34,24 +36,21 @@ export class UserEntity {
   @Column({ nullable: false })
   password: string;
 
+  @Column({ nullable: false })
+  birthday: Date;
+
   @Column({ nullable: true })
   vk?: string;
 
   @Column({ nullable: true })
   telegram?: string;
 
-  @Column({ nullable: false })
-  birthday: Date;
-
   @ManyToOne(() => RolesEntity, (role) => role.users, { nullable: false })
   @JoinColumn({ name: 'role' })
   role: RolesEntity;
 
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
-
-  @CreateDateColumn()
-  readonly createdAt: Date;
+  @OneToMany(() => ProposalsEntity, (proposal) => proposal.author)
+  proposals: ProposalsEntity[];
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];

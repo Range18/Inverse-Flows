@@ -6,6 +6,8 @@ import { typeOrmConfig } from '#src/common/configs/database.config';
 import { UserModule } from '#src/core/users/user.module';
 import { AuthModule } from '#src/core/auth/auth.module';
 import { RolesModule } from '#src/core/roles/roles.module';
+import { CategoriesModule } from '#src/core/categories/categories.module';
+import { ProposalsModule } from '#src/core/proposals/proposals.module';
 
 @Module({
   imports: [
@@ -13,6 +15,8 @@ import { RolesModule } from '#src/core/roles/roles.module';
     UserModule,
     AuthModule,
     RolesModule,
+    CategoriesModule,
+    ProposalsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

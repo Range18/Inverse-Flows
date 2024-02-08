@@ -1,4 +1,4 @@
-import { RolesEntity } from '#src/core/roles/roles.entity';
+import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 
 export const rolesArray: Pick<RolesEntity, 'name' | 'description'>[] = [
   { name: 'member', description: 'Yes, just a member' },

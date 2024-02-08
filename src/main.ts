@@ -1,6 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { backendServer, frontendServer } from './common/configs/config';
+import { backendServer } from './common/configs/config';
 import { HttpExceptionFilter } from '#src/common/exception-handler/exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ClassSerializerInterceptor } from '@nestjs/common';
@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({ origin: frontendServer.url(), credentials: true });
+  app.enableCors({ origin: '*', credentials: true });
 
   app.use(cookieParser());
 
@@ -20,7 +20,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Inverse Flows')
-    .setDescription('Inverse flows')
+    .setDescription('Inverse proposals')
     .setVersion('0.0.1')
     .build();
 

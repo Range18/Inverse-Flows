@@ -12,12 +12,7 @@ export const backendServer = {
 };
 
 export const frontendServer = {
-  host: get('FRONTEND_HOST').default('localhost').asString(),
-  port: get('FRONTEND_PORT').default(3000).asPortNumber(),
-  secure: get('SECURE').default('true').asBool(),
-  url: function () {
-    return `http${this.secure ? 's' : ''}://${this.host}:${this.port}`;
-  },
+  url: get('FRONTEND_URL').asString(),
 };
 
 export const jwtConfig = {

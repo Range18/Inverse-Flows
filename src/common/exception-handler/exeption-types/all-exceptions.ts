@@ -7,12 +7,25 @@ export namespace AllExceptions {
   }
 
   export enum SessionExceptions {
-    SessionNotFound = 'Session not found',
+    SessionNotFound = 'Session is not found',
     SessionExpired = 'Session expired',
   }
 
   export enum UserExceptions {
-    UserNotFound = 'User not found',
+    UserNotFound = 'User is not found',
     UserAlreadyExists = 'User already exists',
+  }
+
+  export enum CategoryExceptions {
+    CategoryNotFound = 'Category is not found',
+    UserAlreadyExists = 'Category already exists',
+  }
+
+  export enum DocumentExceptions {
+    DocumentNotFound = 'Document is not found',
+  }
+
+  export enum ProposalExceptions {
+    ProposalNotFound = 'Proposal is not found',
   }
 }
