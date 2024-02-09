@@ -1,5 +1,5 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ProposalsEntity } from '#src/core/proposals/proposals.entity';
+import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 
 @Entity('comments')
 export class CommentEntity {

@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { BaseEntityService } from '#src/common/base-entity.service';
-import { ProposalsEntity } from '#src/core/proposals/proposals.entity';
+import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -61,6 +61,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
 
     const document = await this.documentService.create(proposal);
 
-    return { ...proposal, document };
+    return { ...proposal, document } as ProposalsEntity;
   }
 }

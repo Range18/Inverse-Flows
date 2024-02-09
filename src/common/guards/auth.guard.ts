@@ -71,7 +71,7 @@ export class AuthGuardClass implements CanActivate {
       email: user.email,
     };
 
-    request['session'] = {
+    request['user_session'] = {
       sessionId: session.sessionId,
       expireAt: session.expireAt,
     };

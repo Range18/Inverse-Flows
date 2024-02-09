@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,8 +11,8 @@ import {
 } from 'typeorm';
 import { SessionEntity } from '../session/session.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
-import { BaseEntity } from '#src/common/base.entity';
-import { ProposalsEntity } from '#src/core/proposals/proposals.entity';
+import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
+import { JobEntity } from '#src/core/jobs/entities/job.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -49,9 +50,19 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'role' })
   role: RolesEntity;
 
+  @ManyToOne(() => JobEntity, (job) => job.users)
+  @JoinColumn({ name: 'job' })
+  job: JobEntity;
+
   @OneToMany(() => ProposalsEntity, (proposal) => proposal.author)
   proposals: ProposalsEntity[];
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
+
+  @CreateDateColumn()
+  readonly createdAt: Date;
+
+  @UpdateDateColumn()
+  readonly updatedAt: Date;
 }

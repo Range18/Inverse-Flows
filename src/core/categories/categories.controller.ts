@@ -9,16 +9,18 @@ import {
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 
 @ApiTags('Categories')
 @Controller('api/categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoryService) {}
 
+  @ApiCreatedResponse({ type: CategoryEntity })
   @Post()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
-    await this.categoriesService.save(createCategoryDto);
+    return await this.categoriesService.save(createCategoryDto);
   }
 
   @Get()

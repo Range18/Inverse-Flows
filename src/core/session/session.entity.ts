@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,9 +10,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
+import { MyBaseEntity } from '#src/common/myBaseEntity';
 
 @Entity('sessions')
-export class SessionEntity {
+export class SessionEntity extends MyBaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
@@ -25,10 +27,4 @@ export class SessionEntity {
 
   @Column({ nullable: false })
   expireAt: Date;
-
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
-
-  @CreateDateColumn()
-  readonly createdAt: Date;
 }

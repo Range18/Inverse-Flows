@@ -1,6 +1,6 @@
-import { Category } from '#src/core/categories/entities/category.entity';
+import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
-import { ProposalsEntity } from '#src/core/proposals/proposals.entity';
+import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
 
@@ -14,8 +14,8 @@ export class GetProposalRdo {
   @ApiProperty()
   readonly author: GetUserRdo;
 
-  @ApiProperty({ type: () => Category })
-  readonly category: Category;
+  @ApiProperty({ type: () => CategoryEntity })
+  readonly category: CategoryEntity;
 
   @ApiProperty()
   readonly content: { [key: string]: any };

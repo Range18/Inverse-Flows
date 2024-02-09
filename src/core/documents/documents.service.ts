@@ -7,7 +7,7 @@ import { createReadStream, createWriteStream } from 'fs';
 import { uid } from 'uid';
 import { storageConfig } from '#src/common/configs/storage.config';
 import { join } from 'path';
-import { ProposalsEntity } from '#src/core/proposals/proposals.entity';
+import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import DocumentExceptions = AllExceptions.DocumentExceptions;

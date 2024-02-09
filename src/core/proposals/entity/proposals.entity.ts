@@ -7,14 +7,14 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseEntity } from '#src/common/base.entity';
+import { MyBaseEntity } from '#src/common/myBaseEntity';
 import { UserEntity } from '#src/core/users/user.entity';
-import { Category } from '#src/core/categories/entities/category.entity';
+import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
 @Entity('proposals')
-export class ProposalsEntity extends BaseEntity {
+export class ProposalsEntity extends MyBaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
@@ -25,11 +25,11 @@ export class ProposalsEntity extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
-  @ManyToOne(() => Category, (category) => category.proposal, {
+  @ManyToOne(() => CategoryEntity, (category) => category.proposal, {
     nullable: false,
   })
   @JoinColumn({ name: 'category' })
-  category: Category;
+  category: CategoryEntity;
 
   @Column({ type: 'varchar', nullable: false })
   content: string;
