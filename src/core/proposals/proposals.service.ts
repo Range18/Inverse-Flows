@@ -59,7 +59,10 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       content: JSON.stringify(createProposalDto.content),
     });
 
-    const document = await this.documentService.create(proposal);
+    const document = await this.documentService.create(
+      proposal,
+      createProposalDto.document,
+    );
 
     return { ...proposal, document } as ProposalsEntity;
   }

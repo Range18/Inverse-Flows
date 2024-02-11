@@ -11,7 +11,7 @@ export class DocumentEntity extends BaseEntity {
   name: string;
 
   @OneToOne(() => ProposalsEntity, (proposal) => proposal.document, {
-    nullable: false,
+    nullable: true,
   })
-  proposal: ProposalsEntity;
+  proposal?: ProposalsEntity;
 }

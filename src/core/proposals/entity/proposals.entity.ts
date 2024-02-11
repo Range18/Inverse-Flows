@@ -43,5 +43,5 @@ export class ProposalsEntity extends BaseEntity {
     nullable: true,
   })
   @JoinColumn({ name: 'document' })
-  document: DocumentEntity;
+  document?: DocumentEntity;
 }

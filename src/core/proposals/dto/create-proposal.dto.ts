@@ -13,6 +13,10 @@ export class CreateProposalDto {
   @IsObject()
   @ApiProperty()
   content: { [key: string]: any };
+
+  @IsString()
+  @ApiProperty()
+  document: string;
 }
 
 export type CreateProposal = CreateProposalDto & { author: number };
