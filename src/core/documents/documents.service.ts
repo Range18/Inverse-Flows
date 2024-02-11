@@ -10,15 +10,76 @@ import { join } from 'path';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
+import axios from 'axios';
+import { textGenerationConfig } from '#src/common/configs/text-generation.config';
 import DocumentExceptions = AllExceptions.DocumentExceptions;
 
 @Injectable()
 export class DocumentsService extends BaseEntityService<DocumentEntity> {
+  private IAMToken: { value: string; expireAt: Date };
+
   constructor(
     @InjectRepository(DocumentEntity)
     private readonly documentRepository: Repository<DocumentEntity>,
   ) {
     super(documentRepository);
+  }
+
+  async generate(content: object) {
+    if (
+      !this.IAMToken ||
+      Date.now() - this.IAMToken.expireAt.getTime() > 3_600_000
+    ) {
+      const response = await axios.post(
+        'https://iam.api.cloud.yandex.net/iam/v1/tokens',
+        {
+          yandexPassportOauthToken: textGenerationConfig.OAuthToken,
+        },
+      );
+
+      this.IAMToken = {
+        value: response.data['iamToken'],
+        expireAt: new Date(Date.now()),
+      };
+    }
+
+    const prompt = {
+      modelUri: `gpt://${textGenerationConfig.folderId}/yandexgpt-lite`,
+      completionOptions: {
+        stream: false,
+        temperature: 0.6,
+        maxTokens: '1000',
+      },
+      messages: [
+        {
+          role: 'system',
+          text: 'Ты очень хорошо составляешь и дополняешь документы.',
+        },
+        {
+          role: 'user',
+          text: `Составь документ для реализации идеи в компании. Выдели тезисы в html тег <bold>. 
+                 Ниже представлен объект, который ты обязательно должен использовать: 
+                 ${JSON.stringify(content)}`,
+        },
+      ],
+    };
+
+    const response = await axios
+      .post(
+        'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
+        prompt,
+        {
+          headers: {
+            Authorization: `Bearer ${this.IAMToken.value}`,
+            'x-folder-id': textGenerationConfig.folderId,
+          },
+        },
+      )
+      .catch((error) => {
+        throw new Error(error.response.data.error);
+      });
+
+    return response.data['result']['alternatives'][0];
   }
 
   async create(proposal: ProposalsEntity) {

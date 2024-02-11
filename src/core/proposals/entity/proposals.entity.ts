@@ -7,14 +7,14 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MyBaseEntity } from '#src/common/myBaseEntity';
+import { BaseEntity } from '#src/common/base.entity';
 import { UserEntity } from '#src/core/users/user.entity';
 import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
 @Entity('proposals')
-export class ProposalsEntity extends MyBaseEntity {
+export class ProposalsEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 

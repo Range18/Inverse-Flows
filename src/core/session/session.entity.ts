@@ -1,19 +1,16 @@
 import {
-  BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
   Generated,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
-import { MyBaseEntity } from '#src/common/myBaseEntity';
+import { BaseEntity } from '#src/common/base.entity';
 
 @Entity('sessions')
-export class SessionEntity extends MyBaseEntity {
+export class SessionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 

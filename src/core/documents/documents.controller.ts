@@ -1,9 +1,9 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
-  Delete,
-  Query,
+  Post,
   StreamableFile,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
@@ -15,6 +15,11 @@ import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
+  @Post()
+  async generate(@Body() content: object) {
+    return await this.documentsService.generate(content);
+  }
+
   @ApiOkResponse({ type: [GetDocumentRdo] })
   @Get()
   async findAll(): Promise<GetDocumentRdo[]> {
@@ -22,6 +27,7 @@ export class DocumentsController {
 
     return documents.map((document) => new GetDocumentRdo(document));
   }
+
   @ApiOkResponse({ type: GetDocumentRdo })
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<GetDocumentRdo> {

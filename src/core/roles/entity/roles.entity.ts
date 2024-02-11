@@ -8,10 +8,10 @@ import {
 import { UserEntity } from '#src/core/users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
-import { MyBaseEntity } from '#src/common/myBaseEntity';
+import { BaseEntity } from '#src/common/base.entity';
 
 @Entity('roles')
-export class RolesEntity extends MyBaseEntity {
+export class RolesEntity extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('increment')
   readonly id: number;

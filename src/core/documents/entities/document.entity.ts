@@ -1,9 +1,9 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { MyBaseEntity } from '#src/common/myBaseEntity';
+import { BaseEntity } from '#src/common/base.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 
 @Entity('documents')
-export class DocumentEntity extends MyBaseEntity {
+export class DocumentEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 

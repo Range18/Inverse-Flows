@@ -3,10 +3,10 @@ import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '#src/core/users/user.entity';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
-import { MyBaseEntity } from '#src/common/myBaseEntity';
+import { BaseEntity } from '#src/common/base.entity';
 
 @Entity('categories')
-export class CategoryEntity extends MyBaseEntity {
+export class CategoryEntity extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
