@@ -5,15 +5,14 @@ import { UserService } from '../users/user.service';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { SessionService } from '../session/session.service';
 import { LoginUserDto } from '../users/dto/login-user.dto';
-import { passwordSaltRounds } from '#src/common/configs/config';
 import { TokenService } from '#src/core/token/token.service';
 import { TokenPayload } from '#src/core/session/types/user.payload';
-import bcrypt from 'bcrypt';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
+import { RolesService } from '#src/core/roles/roles.service';
+import { DepartmentsService } from '#src/core/departments/departments.service';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
-import { RolesService } from '#src/core/roles/roles.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +21,7 @@ export class AuthService {
     private readonly sessionService: SessionService,
     private readonly rolesService: RolesService,
     private readonly tokenService: TokenService,
+    private readonly departmentService: DepartmentsService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<LoggedUserRdo> {
@@ -42,14 +42,19 @@ export class AuthService {
     }
 
     const userEntity = await this.userService.save({
-      firstname: createUserDto.name,
+      firstname: createUserDto.firstname,
       surname: createUserDto.surname,
-      patronymic: createUserDto.patronymic,
+      lastname: createUserDto.lastname,
       email: createUserDto.email,
-      password: await bcrypt.hash(createUserDto.password, passwordSaltRounds),
+      //TODO Enable
+      // password: await bcrypt.hash(createUserDto.password, passwordSaltRounds),
+      password: createUserDto.password,
       birthday: createUserDto.birthday,
       vk: createUserDto.vk,
       telegram: createUserDto.telegram,
+      department: await this.departmentService.findOne({
+        where: { id: createUserDto.department },
+      }),
       phone: createUserDto.phone,
       role: await this.rolesService.findOne({
         where: { name: createUserDto.role },
@@ -85,10 +90,13 @@ export class AuthService {
       );
     }
 
-    const comparedPasswords = await bcrypt.compare(
-      loginUserDto.password,
-      user.password,
-    );
+    //TODO Enable
+    // const comparedPasswords = await bcrypt.compare(
+    //   loginUserDto.password,
+    //   user.password,
+    // );
+
+    const comparedPasswords = loginUserDto.password === user.password;
 
     if (!comparedPasswords) {
       throw new ApiException(

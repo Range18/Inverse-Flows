@@ -4,4 +4,5 @@ export class ExceptionResponse {
   statusCode: HttpStatus;
   type?: string;
   message: string;
+  output?: string;
 }

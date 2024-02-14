@@ -13,6 +13,9 @@ import { SessionEntity } from '../session/session.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
+import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
+import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
+import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -26,7 +29,7 @@ export class UserEntity extends BaseEntity {
   surname: string;
 
   @Column({ nullable: true })
-  patronymic?: string;
+  lastname?: string;
 
   @Column({ nullable: false, unique: true })
   email: string;
@@ -56,6 +59,25 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => ProposalsEntity, (proposal) => proposal.author)
   proposals: ProposalsEntity[];
+
+  @Column({ nullable: false, default: 0 })
+  proposalsCount: number;
+
+  @ManyToOne(() => DepartmentEntity, (department) => department.users, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'department' })
+  department: DepartmentEntity;
+
+  @OneToMany(() => ProposalEventEntity, (event) => event.user, {
+    nullable: true,
+  })
+  events?: UserEntity;
+
+  @OneToMany(() => PrivateCommentEntity, (comment) => comment.user, {
+    nullable: true,
+  })
+  privateComments?: PrivateCommentEntity[];
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];

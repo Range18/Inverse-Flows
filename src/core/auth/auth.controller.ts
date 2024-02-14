@@ -29,6 +29,7 @@ export class AuthController {
 
     return userRdo;
   }
+
   @ApiOkResponse({ type: LoggedUserRdo })
   @Post('login')
   async login(

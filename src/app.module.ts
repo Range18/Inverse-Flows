@@ -13,6 +13,7 @@ import { RolesModule } from '#src/core/roles/roles.module';
 import { CategoriesModule } from '#src/core/categories/categories.module';
 import { ProposalsModule } from '#src/core/proposals/proposals.module';
 import { adminOptions } from '#src/core/admin-panel/admin.options';
+import { JobsModule } from '#src/core/jobs/jobs.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { adminOptions } from '#src/core/admin-panel/admin.options';
     RolesModule,
     CategoriesModule,
     ProposalsModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

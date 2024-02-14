@@ -9,6 +9,7 @@ export const backendServer = {
   url: function () {
     return `http${this.secure ? 's' : ''}://${this.host}:${this.port}`;
   },
+  urlValue: 'https://api.postideas.ru',
 };
 
 export const frontendServer = {
@@ -28,7 +29,7 @@ export const jwtConfig = {
     },
     value: get('ACCESS_EXPIRE').asString(),
   },
-  secret: get('SECRET').asString(),
+  secret: get('SECRET').required().asString(),
 };
 
 export const passwordSaltRounds: number = get('PASS_SALT_ROUNDS')

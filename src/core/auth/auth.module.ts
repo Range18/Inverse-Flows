@@ -5,9 +5,16 @@ import { UserModule } from '../users/user.module';
 import { SessionModule } from '../session/session.module';
 import { TokenModule } from '#src/core/token/token.module';
 import { RolesModule } from '#src/core/roles/roles.module';
+import { DepartmentsModule } from '#src/core/departments/departments.module';
 
 @Module({
-  imports: [UserModule, SessionModule, TokenModule, RolesModule],
+  imports: [
+    UserModule,
+    SessionModule,
+    TokenModule,
+    RolesModule,
+    DepartmentsModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })

@@ -1,6 +1,5 @@
-import { join } from 'path';
-import * as process from 'process';
+import { get } from 'env-var';
 
 export const storageConfig = {
-  path: join(process.cwd(), 'storage'),
+  path: get('STORAGE_PATH').required().asString(),
 };

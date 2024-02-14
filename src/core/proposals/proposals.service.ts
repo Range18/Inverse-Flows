@@ -3,15 +3,16 @@ import { BaseEntityService } from '#src/common/base-entity.service';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  CreateProposal,
-  CreateProposalDto,
-} from '#src/core/proposals/dto/create-proposal.dto';
+import { CreateProposal } from '#src/core/proposals/dto/create-proposal.dto';
 import { UserService } from '#src/core/users/user.service';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { CategoryService } from '#src/core/categories/category.service';
 import { DocumentsService } from '#src/core/documents/documents.service';
+import { StatusType } from '#src/core/proposal-status/types/status.type';
+import { ProposalStatusService } from '#src/core/proposal-status/proposal-status.service';
+import { ProposalEventService } from '#src/core/history/proposal-event.service';
+import { backendServer } from '#src/common/configs/config';
 import UserExceptions = AllExceptions.UserExceptions;
 import CategoryExceptions = AllExceptions.CategoryExceptions;
 
@@ -23,6 +24,8 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     private readonly userService: UserService,
     private readonly categoryService: CategoryService,
     private readonly documentService: DocumentsService,
+    private readonly statusService: ProposalStatusService,
+    private readonly eventService: ProposalEventService,
   ) {
     super(proposalRepository);
   }
@@ -52,17 +55,43 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       );
     }
 
+    const inApproveStatus = await this.statusService.findOne({
+      where: { name: StatusType.proposalInApprove },
+    });
+
     const proposal = await this.save({
       author: user,
       category: category,
       name: createProposalDto.name,
       content: JSON.stringify(createProposalDto.content),
+      status: inApproveStatus,
     });
 
     const document = await this.documentService.create(
       proposal,
       createProposalDto.document,
     );
+
+    user.proposalsCount++;
+    await this.userService.save(user);
+
+    proposal.documentLink = `${backendServer.urlValue}/api/proposals/documents/file/${document.name}`;
+
+    await this.save(proposal);
+
+    await this.eventService.save({
+      proposal: proposal,
+      user: user,
+      status: await this.statusService.findOne({
+        where: { name: StatusType.proposalCreated },
+      }),
+    });
+
+    await this.eventService.save({
+      proposal: proposal,
+      user: user,
+      status: inApproveStatus,
+    });
 
     return { ...proposal, document } as ProposalsEntity;
   }

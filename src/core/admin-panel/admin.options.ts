@@ -6,6 +6,9 @@ import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { SessionEntity } from '#src/core/session/session.entity';
 import { authenticate } from '#src/core/admin-panel/admin-authenticate';
+import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
+import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
+import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 
 export const adminOptions = {
   adminJsOptions: {
@@ -18,6 +21,9 @@ export const adminOptions = {
       DocumentEntity,
       CategoryEntity,
       SessionEntity,
+      DepartmentEntity,
+      ProposalStatus,
+      PrivateCommentEntity,
     ],
   },
   auth: {

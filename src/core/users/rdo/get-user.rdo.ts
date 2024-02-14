@@ -1,6 +1,8 @@
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { UserEntity } from '#src/core/users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
+import { JobEntity } from '#src/core/jobs/entities/job.entity';
 
 export class GetUserRdo {
   @ApiProperty()
@@ -13,7 +15,7 @@ export class GetUserRdo {
   readonly surname: string;
 
   @ApiProperty()
-  readonly patronymic: string;
+  readonly lastname: string;
 
   @ApiProperty()
   readonly email: string;
@@ -26,6 +28,15 @@ export class GetUserRdo {
 
   @ApiProperty({ type: () => RolesEntity })
   readonly role: RolesEntity;
+
+  @ApiProperty({ type: () => DepartmentEntity })
+  readonly department: DepartmentEntity;
+
+  @ApiProperty({ type: () => JobEntity })
+  readonly job: JobEntity;
+
+  @ApiProperty()
+  readonly proposalCount: number;
 
   @ApiProperty()
   readonly telegram?: string;
@@ -43,13 +54,16 @@ export class GetUserRdo {
     this.id = user.id;
     this.firstname = user.firstname;
     this.surname = user.surname;
-    this.patronymic = user.patronymic;
+    this.lastname = user.lastname;
     this.email = user.email;
     this.phone = user.phone;
     this.birthday = user.birthday;
     this.role = user.role;
+    this.department = user.department;
+    this.job = user.job;
     this.telegram = user.telegram;
     this.vk = user.vk;
+    this.proposalCount = user.proposalsCount;
     this.updatedAt = user.updatedAt;
     this.createdAt = user.createdAt;
   }

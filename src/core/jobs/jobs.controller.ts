@@ -1,11 +1,11 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -14,7 +14,7 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 
 @ApiTags('Jobs')
-@Controller('jobs')
+@Controller('api/jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 

@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  StreamableFile,
+} from '@nestjs/common';
 import { BaseEntityService } from '#src/common/base-entity.service';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,11 +20,25 @@ import { textGenerationConfig } from '#src/common/configs/text-generation.config
 import { jsPDF as JsPDF } from 'jspdf';
 import { font } from '#src/common/Montserrat-Regular-normal';
 import {
-  AImessage,
+  ResponseMessage,
   YandexGptResponse,
 } from '#src/core/documents/types/yandex-gpt-response.type';
-import { ApiOkResponse } from '@nestjs/swagger';
+import {
+  Content,
+  customQuestion,
+} from '#src/core/proposals/types/content.type';
+import {
+  systemMessage,
+  userPromptTemplate,
+} from '#src/core/documents/document.constants';
+import { DepartmentsService } from '#src/core/departments/departments.service';
+import { GetDepartmentRdo } from '#src/core/departments/rdo/get-department.rdo';
+import {
+  ContentProperties,
+  ProcessedContent,
+} from '#src/core/proposals/types/processed-content.type';
 import DocumentExceptions = AllExceptions.DocumentExceptions;
+import DepartmentExceptions = AllExceptions.DepartmentExceptions;
 
 @Injectable()
 export class DocumentsService extends BaseEntityService<DocumentEntity> {
@@ -28,12 +47,12 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
   constructor(
     @InjectRepository(DocumentEntity)
     private readonly documentRepository: Repository<DocumentEntity>,
+    private readonly departmentService: DepartmentsService,
   ) {
     super(documentRepository);
   }
 
-  @ApiOkResponse({ type: AImessage })
-  async generate(content: object): Promise<AImessage> {
+  private async checkToken() {
     if (
       !this.IAMToken ||
       Date.now() - this.IAMToken.expireAt.getTime() > 3_600_000
@@ -50,25 +69,107 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
         expireAt: new Date(Date.now()),
       };
     }
+  }
+
+  async generate(content: Content): Promise<ResponseMessage> {
+    await this.checkToken();
+
+    const department = await this.departmentService.findOne({
+      where: { id: content.department },
+    });
+
+    if (!department) {
+      throw new ApiException(
+        HttpStatus.NOT_FOUND,
+        'DepartmentExceptions',
+        DepartmentExceptions.DepartmentNotFound,
+      );
+    }
+
+    const additionalDepartments: Omit<GetDepartmentRdo, 'id'>[] = [];
+
+    for (const id of content.additionalDepartments) {
+      const entity = await this.departmentService.findOne({
+        where: { id: id },
+      });
+
+      if (!entity) {
+        throw new ApiException(
+          HttpStatus.NOT_FOUND,
+          'DepartmentExceptions',
+          DepartmentExceptions.DepartmentNotFound,
+        );
+      }
+
+      additionalDepartments.push({
+        name: entity.name,
+        description: entity.description,
+      });
+    }
+
+    const processedContent: ProcessedContent = {
+      proposalAim: content.proposalAim,
+      proposalType: content.proposalType,
+      benefits: content.benefits,
+      limitFactors: content.limitFactors,
+      customDepartment: content.customDepartment,
+      customQuestions: content.customQuestions,
+      additionalDepartments: additionalDepartments,
+      department: {
+        name: department.name,
+        description: department.description,
+      },
+    };
+
+    let promptText = '';
+
+    for (const [key, value] of Object.entries(processedContent)) {
+      if (value) {
+        if (key === 'customQuestions') {
+          for (const pair of value as customQuestion[]) {
+            promptText += `${pair.question}: ${pair.answer}\n`;
+          }
+          continue;
+        }
+
+        if (typeof value === 'object') {
+          promptText += `${ContentProperties[key]}: ${JSON.stringify(value)}\n`;
+          continue;
+        }
+
+        if (Array.isArray(value)) {
+          promptText += `${ContentProperties[key]}: `;
+          for (const element of value) {
+            if (typeof value === 'object') {
+              promptText += `${JSON.stringify(value)} `;
+              continue;
+            }
+            promptText += `${element} `;
+          }
+          continue;
+        }
+
+        promptText += `${ContentProperties[key]}: ${value}\n`;
+      }
+    }
+
+    console.log(promptText);
 
     const prompt = {
       modelUri: `gpt://${textGenerationConfig.folderId}/yandexgpt-lite`,
       completionOptions: {
         stream: false,
         temperature: 0.6,
-        maxTokens: '1000',
+        maxTokens: '2000',
       },
       messages: [
         {
           role: 'system',
-          text: 'Ты очень хорошо составляешь и дополняешь документы.',
+          text: systemMessage,
         },
         {
           role: 'user',
-          text: `Составь документ для реализации идеи в компании. Выдели тезисы в html тег <bold>. 
-                 Не комментируй свои действия. Просто предоставь готовый документ в структурированной форме.
-                 Ниже представлен объект, который ты обязательно должен использовать: 
-                 ${JSON.stringify(content)}`,
+          text: `${userPromptTemplate}\n ${promptText}`,
         },
       ],
     };
@@ -84,9 +185,11 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
           },
         },
       )
-      //TODO
       .catch((error) => {
-        throw new Error(error.response.data.error);
+        throw new HttpException(
+          error.response.data.error,
+          HttpStatus.BAD_REQUEST,
+        );
       });
 
     return response.data.result.alternatives[0];

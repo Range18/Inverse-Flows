@@ -4,19 +4,30 @@ import {
   Get,
   Param,
   Post,
+  Res,
   StreamableFile,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
+import { ResponseMessage } from '#src/core/documents/types/yandex-gpt-response.type';
+import { Content } from '#src/core/proposals/types/content.type';
+import { type Response } from 'express';
 
 @ApiTags('Documents')
-@Controller('api/documents')
+@Controller('api/proposals/documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
+  @ApiOkResponse({ type: ResponseMessage })
+  @ApiBody({ type: Content })
   @Post()
-  async generate(@Body() content: object) {
+  async generate(
+    @Res({ passthrough: true }) response: Response,
+    @Body() content: Content,
+  ) {
+    response.status(200);
+
     return await this.documentsService.generate(content);
   }
 

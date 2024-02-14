@@ -38,6 +38,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: statusCode,
       type: type,
       message: message,
+      output:
+        statusCode === HttpStatus.INTERNAL_SERVER_ERROR ? exception : undefined,
     } as ExceptionResponse);
   }
 }

@@ -11,6 +11,7 @@ import { TokenService } from '#src/core/token/token.service';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { TokenPayload } from '#src/core/session/types/user.payload';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
+import { jwtConfig } from '#src/common/configs/config';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
@@ -22,6 +23,7 @@ export class AuthGuardClass implements CanActivate {
     private readonly sessionService: SessionService,
     private readonly tokenService: TokenService,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
@@ -37,8 +39,25 @@ export class AuthGuardClass implements CanActivate {
       );
     }
 
-    const payload: TokenPayload =
-      await this.tokenService.verifyAsync<TokenPayload>(accessToken);
+    const payload: TokenPayload = await this.tokenService
+      .verifyAsync<TokenPayload>(accessToken, {
+        secret: jwtConfig.secret,
+      })
+      .catch((error) => {
+        if (error.name === 'TokenExpiredError') {
+          throw new ApiException(
+            HttpStatus.UNAUTHORIZED,
+            'AuthExceptions',
+            AuthExceptions.ExpiredToken,
+          );
+        }
+
+        throw new ApiException(
+          HttpStatus.UNAUTHORIZED,
+          'AuthExceptions',
+          AuthExceptions.InvalidAccessToken,
+        );
+      });
 
     const user = await this.userService.findOne({
       where: { id: payload.userId },
@@ -81,6 +100,8 @@ export class AuthGuardClass implements CanActivate {
 
   private extractAccessToken(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' || type === 'Access-Token' ? token : undefined;
+    return type === 'Bearer' || type === 'AccessToken' || type === 'Token'
+      ? token
+      : undefined;
   }
 }

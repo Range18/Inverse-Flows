@@ -1,5 +1,6 @@
 import { IsNumber, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Content } from '#src/core/proposals/types/content.type';
 
 export class CreateProposalDto {
   @IsString()
@@ -12,7 +13,7 @@ export class CreateProposalDto {
 
   @IsObject()
   @ApiProperty()
-  content: { [key: string]: any };
+  content: Content;
 
   @IsString()
   @ApiProperty()

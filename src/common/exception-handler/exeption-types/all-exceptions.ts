@@ -28,4 +28,16 @@ export namespace AllExceptions {
   export enum ProposalExceptions {
     ProposalNotFound = 'Proposal is not found',
   }
+
+  export enum PermissionExceptions {
+    NotTheSameUser = 'Action is forbidden because user in entity is different.',
+  }
+
+  export enum DepartmentExceptions {
+    DepartmentNotFound = 'Department is not found',
+  }
+
+  export enum Queries {
+    InvalidLimitOffset = 'limit * offset - offset can`t be < 0',
+  }
 }
