@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '#src/core/users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 @Entity('jobs')
 export class JobEntity extends BaseEntity {
@@ -22,6 +23,11 @@ export class JobEntity extends BaseEntity {
   @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => UserEntity, (user) => user.job)
-  users: UserEntity[];
+  @Exclude()
+  @OneToMany(() => UserEntity, (user) => user.job, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'NO ACTION',
+  })
+  users?: UserEntity[];
 }

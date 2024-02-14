@@ -10,7 +10,12 @@ import {
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 
 @ApiTags('Jobs')
@@ -18,6 +23,7 @@ import { JobEntity } from '#src/core/jobs/entities/job.entity';
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
+  //TODO PERMS
   @ApiCreatedResponse({ type: JobEntity })
   @Post()
   async createJob(@Body() createJobDto: CreateJobDto) {
@@ -36,12 +42,15 @@ export class JobsController {
     return await this.jobsService.findOne({ where: { id } });
   }
 
+  //TODO PERMS
+  @ApiBody({ type: UpdateJobDto })
   @ApiOkResponse({ type: JobEntity })
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateJobDto: UpdateJobDto) {
     return await this.jobsService.updateOne({ where: { id } }, updateJobDto);
   }
 
+  //TODO PERMS
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return await this.jobsService.removeOne({ where: { id } });
