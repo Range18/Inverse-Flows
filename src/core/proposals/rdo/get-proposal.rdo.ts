@@ -5,6 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
 import { Content } from '#src/core/proposals/types/content.type';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
+import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 
 export class GetProposalRdo {
   @ApiProperty()
@@ -20,7 +21,6 @@ export class GetProposalRdo {
   readonly category: CategoryEntity;
 
   @ApiProperty()
-  // @Transform((content) => JSON.parse(content.value))
   readonly content: Content;
 
   @ApiProperty()
@@ -28,6 +28,9 @@ export class GetProposalRdo {
 
   @ApiProperty()
   readonly document: GetDocumentRdo;
+
+  @ApiProperty()
+  readonly history: GetHistoryRdo[];
 
   @ApiProperty()
   readonly documentLink: string;
@@ -39,7 +42,6 @@ export class GetProposalRdo {
   readonly updatedAt: Date;
 
   constructor(proposal: ProposalsEntity) {
-    console.log(proposal);
     this.id = proposal.id;
     this.name = proposal.name;
     this.author = new GetUserRdo(proposal.author);
@@ -48,6 +50,12 @@ export class GetProposalRdo {
     this.content = JSON.parse(proposal.content);
     this.document = new GetDocumentRdo(proposal.document);
     this.documentLink = proposal.documentLink;
+    if (proposal.history.length != 0) {
+      this.history = proposal.history.map(
+        (history) => new GetHistoryRdo(history),
+      );
+    }
+
     this.createdAt = proposal.createdAt;
     this.updatedAt = proposal.updatedAt;
   }

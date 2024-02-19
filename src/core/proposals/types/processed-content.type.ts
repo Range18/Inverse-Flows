@@ -1,25 +1,30 @@
-import { customQuestion } from '#src/core/proposals/types/content.type';
-import { GetDepartmentRdo } from '#src/core/departments/rdo/get-department.rdo';
+import { CustomQuestion } from '#src/core/proposals/types/content.type';
 
 export class ProcessedContent {
-  proposalAim: string;
+  name: string;
 
-  department: Omit<GetDepartmentRdo, 'id'>;
+  aboutCompanyAim: string;
+
+  description: string;
+
+  proposalAim?: string;
 
   proposalType: string;
 
   benefits: string;
 
-  additionalDepartments: Omit<GetDepartmentRdo, 'id'>[];
+  limitFactors?: string;
 
-  customDepartment?: string;
-
-  limitFactors: string;
-
-  customQuestions?: customQuestion[];
+  customQuestions?: CustomQuestion[];
 }
 
 export enum ContentProperties {
+  name = 'Название',
+
+  description = 'Описанние заявки',
+
+  aboutCompanyAim = 'Как ваш проект позволит достичь целей компании?',
+
   proposalAim = 'Цель проекта',
 
   department = 'Отдел',

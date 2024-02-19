@@ -1,23 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ProposalEventsController } from './proposal-events.controller';
+import { ProposalHistoryController } from './proposal-history.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
+import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { UserEntity } from '#src/core/users/user.entity';
-import { ProposalEventService } from '#src/core/history/proposal-event.service';
+import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      ProposalEventEntity,
+      ProposalHistoryEntity,
       ProposalStatus,
       ProposalsEntity,
       UserEntity,
     ]),
   ],
-  controllers: [ProposalEventsController],
-  providers: [ProposalEventService],
-  exports: [ProposalEventService],
+  controllers: [ProposalHistoryController],
+  providers: [ProposalHistoryService],
+  exports: [ProposalHistoryService],
 })
-export class ProposalEventModule {}
+export class ProposalHistoryModule {}

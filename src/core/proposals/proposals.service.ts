@@ -11,8 +11,9 @@ import { CategoryService } from '#src/core/categories/category.service';
 import { DocumentsService } from '#src/core/documents/documents.service';
 import { StatusType } from '#src/core/proposal-status/types/status.type';
 import { ProposalStatusService } from '#src/core/proposal-status/proposal-status.service';
-import { ProposalEventService } from '#src/core/history/proposal-event.service';
+import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 import { backendServer } from '#src/common/configs/config';
+import { DepartmentsService } from '#src/core/departments/departments.service';
 import UserExceptions = AllExceptions.UserExceptions;
 import CategoryExceptions = AllExceptions.CategoryExceptions;
 
@@ -25,7 +26,8 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     private readonly categoryService: CategoryService,
     private readonly documentService: DocumentsService,
     private readonly statusService: ProposalStatusService,
-    private readonly eventService: ProposalEventService,
+    private readonly eventService: ProposalHistoryService,
+    private readonly departmentService: DepartmentsService,
   ) {
     super(proposalRepository);
   }
@@ -62,6 +64,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     const proposal = await this.save({
       author: user,
       category: category,
+      description: createProposalDto.description,
       name: createProposalDto.name,
       content: JSON.stringify(createProposalDto.content),
       status: inApproveStatus,

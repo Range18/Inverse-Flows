@@ -14,6 +14,8 @@ import { CategoriesModule } from '#src/core/categories/categories.module';
 import { ProposalsModule } from '#src/core/proposals/proposals.module';
 import { adminOptions } from '#src/core/admin-panel/admin.options';
 import { JobsModule } from '#src/core/jobs/jobs.module';
+import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.module';
+import { AssetsModule } from '#src/core/assets/assets.module';
 
 @Module({
   imports: [
@@ -28,11 +30,13 @@ import { JobsModule } from '#src/core/jobs/jobs.module';
       },
     }),
     UserModule,
+    AssetsModule,
     AuthModule,
     RolesModule,
     CategoriesModule,
     ProposalsModule,
     JobsModule,
+    ProposalPostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

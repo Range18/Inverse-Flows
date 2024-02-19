@@ -4,10 +4,10 @@ import { ProposalStatusController } from './proposal-status.controller';
 import { StatusType } from '#src/core/proposal-status/types/status.type';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
-import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
+import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProposalStatus, ProposalEventEntity])],
+  imports: [TypeOrmModule.forFeature([ProposalStatus, ProposalHistoryEntity])],
   controllers: [ProposalStatusController],
   providers: [ProposalStatusService],
   exports: [ProposalStatusService],

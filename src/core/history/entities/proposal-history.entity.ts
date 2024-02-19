@@ -5,7 +5,7 @@ import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-stat
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 
 @Entity('proposal_events')
-export class ProposalEventEntity extends BaseEntity {
+export class ProposalHistoryEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
@@ -14,12 +14,12 @@ export class ProposalEventEntity extends BaseEntity {
   user: UserEntity;
 
   @ManyToOne(() => ProposalStatus, (status) => status.events, {
-    nullable: false,
+    nullable: true,
   })
   @JoinColumn({ name: 'status' })
   status: ProposalStatus;
 
-  @ManyToOne(() => ProposalsEntity, (proposal) => proposal.events, {
+  @ManyToOne(() => ProposalsEntity, (proposal) => proposal.history, {
     nullable: false,
   })
   @JoinColumn({ name: 'proposal' })

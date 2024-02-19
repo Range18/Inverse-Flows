@@ -11,8 +11,8 @@ import { DocumentsService } from './documents.service';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
 import { ResponseMessage } from '#src/core/documents/types/yandex-gpt-response.type';
-import { Content } from '#src/core/proposals/types/content.type';
 import { type Response } from 'express';
+import { CreateDocumentDto } from '#src/core/documents/dto/create-document.dto';
 
 @ApiTags('Documents')
 @Controller('api/proposals/documents')
@@ -20,15 +20,15 @@ export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @ApiOkResponse({ type: ResponseMessage })
-  @ApiBody({ type: Content })
+  @ApiBody({ type: CreateDocumentDto })
   @Post()
   async generate(
     @Res({ passthrough: true }) response: Response,
-    @Body() content: Content,
+    @Body() createDocumentDto: CreateDocumentDto,
   ) {
     response.status(200);
 
-    return await this.documentsService.generate(content);
+    return await this.documentsService.generate(createDocumentDto);
   }
 
   @ApiOkResponse({ type: [GetDocumentRdo] })

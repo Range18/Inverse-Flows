@@ -4,8 +4,10 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,8 +16,10 @@ import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
-import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
+import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
+import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
+import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -69,7 +73,7 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'department' })
   department: DepartmentEntity;
 
-  @OneToMany(() => ProposalEventEntity, (event) => event.user, {
+  @OneToMany(() => ProposalHistoryEntity, (event) => event.user, {
     nullable: true,
   })
   events?: UserEntity;
@@ -81,6 +85,15 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
+
+  @ManyToMany(() => ProposalPost, (post) => post.usersLiked, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  likedPosts: ProposalPost[];
+
+  @OneToOne(() => AssetEntity, (avatar) => avatar.user, { nullable: true })
+  avatar?: AssetEntity;
 
   @CreateDateColumn()
   readonly createdAt: Date;

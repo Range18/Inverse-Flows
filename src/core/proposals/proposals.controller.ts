@@ -28,7 +28,7 @@ import { FindOptionsWhere } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
-import { ProposalEventService } from '#src/core/history/proposal-event.service';
+import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 import Queries = AllExceptions.Queries;
 import PermissionExceptions = AllExceptions.PermissionExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
@@ -36,18 +36,25 @@ import ProposalExceptions = AllExceptions.ProposalExceptions;
 @ApiTags('Proposals')
 @Controller('api/proposals')
 export class ProposalsController {
-  private readonly loadRelations: string[] = [
-    'author',
-    'category',
-    'status',
-    'comments',
-    'document',
-    'events',
-  ];
+  private readonly loadRelations = {
+    author: {
+      job: true,
+      department: true,
+      role: true,
+    },
+    category: true,
+    status: true,
+    comments: true,
+    document: true,
+    history: {
+      user: true,
+      status: true,
+    },
+  };
 
   constructor(
     private readonly proposalService: ProposalsService,
-    private readonly proposalEventService: ProposalEventService,
+    private readonly proposalEventService: ProposalHistoryService,
   ) {}
 
   @ApiHeader({

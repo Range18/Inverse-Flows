@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
+import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 
 @Entity('proposal-status')
 export class ProposalStatus extends BaseEntity {
@@ -19,8 +19,8 @@ export class ProposalStatus extends BaseEntity {
   })
   proposals: ProposalsEntity[];
 
-  @OneToMany(() => ProposalEventEntity, (event) => event.status, {
+  @OneToMany(() => ProposalHistoryEntity, (event) => event.status, {
     nullable: true,
   })
-  events?: ProposalEventEntity[];
+  events?: ProposalHistoryEntity[];
 }

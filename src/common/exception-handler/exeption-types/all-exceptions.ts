@@ -29,12 +29,20 @@ export namespace AllExceptions {
     ProposalNotFound = 'Proposal is not found',
   }
 
+  export enum PostExceptions {
+    PostNotFound = 'Post is not found',
+  }
+
   export enum PermissionExceptions {
     NotTheSameUser = 'Action is forbidden because user in entity is different.',
   }
 
   export enum DepartmentExceptions {
     DepartmentNotFound = 'Department is not found',
+  }
+
+  export enum StorageExceptions {
+    ExtNotAllowed = 'File extension is not allowed',
   }
 
   export enum Queries {

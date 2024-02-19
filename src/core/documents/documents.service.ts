@@ -23,22 +23,18 @@ import {
   ResponseMessage,
   YandexGptResponse,
 } from '#src/core/documents/types/yandex-gpt-response.type';
-import {
-  Content,
-  customQuestion,
-} from '#src/core/proposals/types/content.type';
+import { CustomQuestion } from '#src/core/proposals/types/content.type';
 import {
   systemMessage,
   userPromptTemplate,
 } from '#src/core/documents/document.constants';
 import { DepartmentsService } from '#src/core/departments/departments.service';
-import { GetDepartmentRdo } from '#src/core/departments/rdo/get-department.rdo';
 import {
   ContentProperties,
   ProcessedContent,
 } from '#src/core/proposals/types/processed-content.type';
+import { CreateDocumentDto } from '#src/core/documents/dto/create-document.dto';
 import DocumentExceptions = AllExceptions.DocumentExceptions;
-import DepartmentExceptions = AllExceptions.DepartmentExceptions;
 
 @Injectable()
 export class DocumentsService extends BaseEntityService<DocumentEntity> {
@@ -71,54 +67,20 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
     }
   }
 
-  async generate(content: Content): Promise<ResponseMessage> {
+  async generate(
+    createDocumentDto: CreateDocumentDto,
+  ): Promise<ResponseMessage> {
     await this.checkToken();
 
-    const department = await this.departmentService.findOne({
-      where: { id: content.department },
-    });
-
-    if (!department) {
-      throw new ApiException(
-        HttpStatus.NOT_FOUND,
-        'DepartmentExceptions',
-        DepartmentExceptions.DepartmentNotFound,
-      );
-    }
-
-    const additionalDepartments: Omit<GetDepartmentRdo, 'id'>[] = [];
-
-    for (const id of content.additionalDepartments) {
-      const entity = await this.departmentService.findOne({
-        where: { id: id },
-      });
-
-      if (!entity) {
-        throw new ApiException(
-          HttpStatus.NOT_FOUND,
-          'DepartmentExceptions',
-          DepartmentExceptions.DepartmentNotFound,
-        );
-      }
-
-      additionalDepartments.push({
-        name: entity.name,
-        description: entity.description,
-      });
-    }
-
     const processedContent: ProcessedContent = {
-      proposalAim: content.proposalAim,
-      proposalType: content.proposalType,
-      benefits: content.benefits,
-      limitFactors: content.limitFactors,
-      customDepartment: content.customDepartment,
-      customQuestions: content.customQuestions,
-      additionalDepartments: additionalDepartments,
-      department: {
-        name: department.name,
-        description: department.description,
-      },
+      name: createDocumentDto.name,
+      aboutCompanyAim: createDocumentDto.aboutCompanyAim,
+      description: createDocumentDto.description,
+      proposalAim: createDocumentDto.proposalAim,
+      proposalType: createDocumentDto.proposalType,
+      benefits: createDocumentDto.benefits,
+      limitFactors: createDocumentDto.limitFactors,
+      customQuestions: createDocumentDto.customQuestions,
     };
 
     let promptText = '';
@@ -126,7 +88,7 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
     for (const [key, value] of Object.entries(processedContent)) {
       if (value) {
         if (key === 'customQuestions') {
-          for (const pair of value as customQuestion[]) {
+          for (const pair of value as CustomQuestion[]) {
             promptText += `${pair.question}: ${pair.answer}\n`;
           }
           continue;

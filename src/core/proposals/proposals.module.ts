@@ -10,17 +10,22 @@ import { DocumentsModule } from '#src/core/documents/documents.module';
 import { SessionModule } from '#src/core/session/session.module';
 import { TokenModule } from '#src/core/token/token.module';
 import { ProposalStatusModule } from '#src/core/proposal-status/proposal-status.module';
-import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
-import { ProposalEventModule } from '#src/core/history/proposal-event.module';
+import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
+import { ProposalHistoryModule } from '#src/core/history/proposal-history.module';
 import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
+import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
+import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
+import { DepartmentsModule } from '#src/core/departments/departments.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       ProposalsEntity,
-      ProposalEventEntity,
+      ProposalHistoryEntity,
       CategoryEntity,
       PrivateCommentEntity,
+      ProposalPost,
+      DepartmentEntity,
     ]),
     UserModule,
     CategoriesModule,
@@ -28,8 +33,8 @@ import { PrivateCommentEntity } from '#src/core/private-comments/entities/privat
     SessionModule,
     TokenModule,
     ProposalStatusModule,
-    ProposalStatusModule,
-    ProposalEventModule,
+    ProposalHistoryModule,
+    DepartmentsModule,
   ],
   providers: [ProposalsService],
   controllers: [ProposalsController],

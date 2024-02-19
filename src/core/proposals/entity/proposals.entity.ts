@@ -12,7 +12,7 @@ import { UserEntity } from '#src/core/users/user.entity';
 import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
-import { ProposalEventEntity } from '#src/core/history/entities/proposal-event.entity';
+import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 
@@ -27,6 +27,9 @@ export class ProposalsEntity extends BaseEntity {
 
   @Column({ nullable: false })
   name: string;
+
+  @Column({ nullable: false })
+  description: string;
 
   @ManyToOne(() => CategoryEntity, (category) => category.proposal, {
     nullable: false,
@@ -57,10 +60,10 @@ export class ProposalsEntity extends BaseEntity {
   @Column({ nullable: true })
   documentLink?: string;
 
-  @OneToMany(() => ProposalEventEntity, (event) => event.proposal, {
+  @OneToMany(() => ProposalHistoryEntity, (history) => history.proposal, {
     nullable: false,
   })
-  events: ProposalEventEntity[];
+  history: ProposalHistoryEntity[];
 
   @OneToOne(() => ProposalPost, (post) => post.proposal, {
     nullable: true,

@@ -11,6 +11,10 @@ export class CreateProposalDto {
   @ApiProperty()
   readonly category: number;
 
+  @IsString()
+  @ApiProperty()
+  readonly description: string;
+
   @IsObject()
   @ApiProperty()
   content: Content;

@@ -1,7 +1,17 @@
-import { Column, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
+import { BaseEntity } from '#src/common/base.entity';
+import { UserEntity } from '#src/core/users/user.entity';
 
-export class ProposalPost {
+@Entity('proposal_posts')
+export class ProposalPost extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
@@ -16,4 +26,10 @@ export class ProposalPost {
   })
   @JoinColumn({ name: 'proposal' })
   proposal: ProposalsEntity;
+
+  @ManyToMany(() => UserEntity, (user) => user.likedPosts, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  usersLiked: UserEntity[];
 }

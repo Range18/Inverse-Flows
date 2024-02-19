@@ -1,11 +1,11 @@
 import { Controller, Delete, Get, Param } from '@nestjs/common';
-import { ProposalEventService } from '#src/core/history/proposal-event.service';
+import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Proposal Events')
-@Controller('api/proposal/events')
-export class ProposalEventsController {
-  constructor(private readonly proposalEventService: ProposalEventService) {}
+@ApiTags('Proposal History')
+@Controller('api/proposals/history')
+export class ProposalHistoryController {
+  constructor(private readonly proposalEventService: ProposalHistoryService) {}
 
   // @Post()
   // async create(@Body() createHistoryDto: CreateEventDto) {
