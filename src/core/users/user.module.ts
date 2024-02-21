@@ -17,6 +17,7 @@ import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.en
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { RolesModule } from '#src/core/roles/roles.module';
 import { JobsModule } from '#src/core/jobs/jobs.module';
+import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JobsModule } from '#src/core/jobs/jobs.module';
       PrivateCommentEntity,
       ProposalPost,
       AssetEntity,
+      CommentEntity,
     ]),
     DepartmentsModule,
     RolesModule,

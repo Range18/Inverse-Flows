@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Res,
@@ -28,7 +30,11 @@ export class DocumentsController {
   ) {
     response.status(200);
 
-    return await this.documentsService.generate(createDocumentDto);
+    return await this.documentsService
+      .generate(createDocumentDto)
+      .catch((error) => {
+        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      });
   }
 
   @ApiOkResponse({ type: [GetDocumentRdo] })

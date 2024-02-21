@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateCommentDto {
-  @ApiProperty()
-  readonly ProposalId: number;
-
+export class UpdatePrivateCommentDto {
   @ApiProperty()
   readonly text: string;
 }

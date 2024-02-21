@@ -21,7 +21,9 @@ export class ProposalsEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.proposals, { nullable: false })
+  @ManyToOne(() => UserEntity, (user) => user.proposals, {
+    nullable: false,
+  })
   @JoinColumn({ name: 'author' })
   author: UserEntity;
 
@@ -68,6 +70,5 @@ export class ProposalsEntity extends BaseEntity {
   @OneToOne(() => ProposalPost, (post) => post.proposal, {
     nullable: true,
   })
-  @JoinColumn({ name: 'post' })
   post?: ProposalPost;
 }

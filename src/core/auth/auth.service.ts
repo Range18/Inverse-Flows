@@ -10,6 +10,7 @@ import { TokenPayload } from '#src/core/session/types/user.payload';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { RolesService } from '#src/core/roles/roles.service';
 import { DepartmentsService } from '#src/core/departments/departments.service';
+import { isEmail } from 'class-validator';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
@@ -74,13 +75,13 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto): Promise<LoggedUserRdo> {
-    const user =
-      (await this.userService.findOne({
-        where: { email: loginUserDto.login },
-      })) ??
-      (await this.userService.findOne({
-        where: { phone: loginUserDto.login },
-      }));
+    const user = isEmail(loginUserDto.login)
+      ? await this.userService.findOne({
+          where: { email: loginUserDto.login },
+        })
+      : await this.userService.findOne({
+          where: { phone: loginUserDto.login },
+        });
 
     if (!user) {
       throw new ApiException(

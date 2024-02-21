@@ -16,6 +16,7 @@ import { PrivateCommentEntity } from '#src/core/private-comments/entities/privat
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { DepartmentsModule } from '#src/core/departments/departments.module';
+import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { DepartmentsModule } from '#src/core/departments/departments.module';
     ProposalStatusModule,
     ProposalHistoryModule,
     DepartmentsModule,
+    ProposalPostsModule,
   ],
   providers: [ProposalsService],
   controllers: [ProposalsController],

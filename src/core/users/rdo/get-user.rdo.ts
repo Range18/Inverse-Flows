@@ -4,7 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { backendServer } from '#src/common/configs/config';
-import * as console from 'console';
 
 export class GetUserRdo {
   @ApiProperty()
@@ -69,7 +68,6 @@ export class GetUserRdo {
     this.telegram = user.telegram;
     this.vk = user.vk;
     this.proposalCount = user.proposalsCount;
-    console.log(user.avatar);
     this.avatar = user.avatar?.name
       ? `${backendServer.urlValue}/api/users/assets/avatars/${user.avatar.name}`
       : undefined;

@@ -20,6 +20,7 @@ import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-histo
 import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
+import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -61,8 +62,11 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'job' })
   job: JobEntity;
 
-  @OneToMany(() => ProposalsEntity, (proposal) => proposal.author)
-  proposals: ProposalsEntity[];
+  @OneToMany(() => ProposalsEntity, (proposal) => proposal.author, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  proposals?: ProposalsEntity[];
 
   @Column({ nullable: false, default: 0 })
   proposalsCount: number;
@@ -88,12 +92,14 @@ export class UserEntity extends BaseEntity {
 
   @ManyToMany(() => ProposalPost, (post) => post.usersLiked, {
     nullable: true,
-    onDelete: 'SET NULL',
   })
-  likedPosts: ProposalPost[];
+  likedPosts?: ProposalPost[];
 
   @OneToOne(() => AssetEntity, (avatar) => avatar.user, { nullable: true })
   avatar?: AssetEntity;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.user, { nullable: true })
+  comments?: CommentEntity[];
 
   @CreateDateColumn()
   readonly createdAt: Date;

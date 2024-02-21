@@ -10,6 +10,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   HttpStatus,
   Param,
   Patch,
@@ -28,7 +29,8 @@ import { FindOptionsWhere } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
-import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
+import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
+import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import Queries = AllExceptions.Queries;
 import PermissionExceptions = AllExceptions.PermissionExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
@@ -52,10 +54,7 @@ export class ProposalsController {
     },
   };
 
-  constructor(
-    private readonly proposalService: ProposalsService,
-    private readonly proposalEventService: ProposalHistoryService,
-  ) {}
+  constructor(private readonly proposalService: ProposalsService) {}
 
   @ApiHeader({
     name: 'authorization',
@@ -99,7 +98,7 @@ export class ProposalsController {
         ? await this.proposalService.find({
             where: {
               ...findOptions,
-              status: { id: status },
+              status: status ? { id: status } : undefined,
             } as FindOptionsWhere<ProposalsEntity>,
             order: findOptions.order,
             relations: this.loadRelations,
@@ -121,7 +120,7 @@ export class ProposalsController {
         ? await this.proposalService.find({
             where: {
               ...findOptions,
-              status: { id: status },
+              status: status ? { id: status } : undefined,
             } as FindOptionsWhere<ProposalsEntity>,
             order: findOptions.order,
             skip: limit * offset - offset,
@@ -167,7 +166,7 @@ export class ProposalsController {
   async findUserProposals(
     @User() user: UserRequest,
     @Query('status') statusId?: number,
-  ): Promise<GetProposalRdo[]> {
+  ) {
     const proposals = await this.proposalService.find({
       where: {
         author: { id: user.id },
@@ -176,7 +175,11 @@ export class ProposalsController {
       relations: this.loadRelations,
     });
 
-    return proposals.map((proposal) => new GetProposalRdo(proposal));
+    try {
+      return proposals.map((proposal) => new GetProposalRdo(proposal));
+    } catch (err) {
+      throw new HttpException(err, 500);
+    }
   }
 
   @ApiHeader({
@@ -185,6 +188,7 @@ export class ProposalsController {
     schema: { format: 'Bearer ${AccessToken}' },
   })
   @ApiQuery({ name: 'id', required: true })
+  @ApiBody({ type: UpdateProposalDto })
   @ApiOkResponse({ type: [GetProposalRdo] })
   @AuthGuard()
   @Patch()
@@ -206,27 +210,46 @@ export class ProposalsController {
       );
     }
 
-    if (
-      updateProposalDto.status &&
-      updateProposalDto.status != proposal.status.id
-    ) {
-      await this.proposalEventService.save({
-        proposal: proposal,
-        status: { id: updateProposalDto.status },
-        user: { id: user.id },
-      });
-    }
-
     return await this.proposalService.updateOne(proposal, {
       name: updateProposalDto.name,
       content: updateProposalDto.content,
-      status: { id: updateProposalDto.status },
       category: { id: updateProposalDto.category },
     });
   }
 
+  @ApiHeader({
+    name: 'Authorization',
+    required: true,
+    schema: { format: 'Bearer ${AccessToken}' },
+  })
+  @ApiQuery({ name: 'id', required: true })
+  @ApiBody({ type: UpdateProposalStatusDto })
+  @ApiOkResponse({ type: [GetProposalRdo] })
+  @RolesGuard('moderator', 'admin')
+  @AuthGuard()
+  @Patch(':id/process')
+  async updateProposalStatus(
+    @Param('id') id: number,
+    @Body('status') statusType: string,
+    @User() user: UserRequest,
+  ) {
+    return new GetProposalRdo(
+      await this.proposalService.updateProposalStatus(id, statusType, user.id),
+    );
+  }
+
+  @ApiHeader({
+    name: 'Authorization',
+    required: true,
+    schema: { format: 'Bearer ${AccessToken}' },
+  })
+  @RolesGuard('moderator', 'admin', 'owner')
+  @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.proposalService.removeOne({ where: { id } });
+    return await this.proposalService.removeOne({
+      where: { id },
+      relations: { author: true },
+    });
   }
 }

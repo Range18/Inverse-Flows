@@ -17,9 +17,8 @@
   "dependencies": {
     "@adminjs/express": "5.1.0",
     "@adminjs/nestjs": "5.1.1",
-    "@adminjs/passwords": "3.0.1",
-    "@adminjs/relations": "1.0.0",
     "@adminjs/typeorm": "4.0.0",
+    "@ezpaarse-project/jspdf-md": "^1.1.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.2.0",

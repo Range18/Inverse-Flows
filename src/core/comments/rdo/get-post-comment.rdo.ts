@@ -1,8 +1,8 @@
-import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
 import { ApiProperty } from '@nestjs/swagger';
-import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
+import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
+import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
-export class GetPrivateCommentRdo {
+export class GetPostCommentRdo {
   @ApiProperty()
   readonly id: number;
 
@@ -15,7 +15,7 @@ export class GetPrivateCommentRdo {
   @ApiProperty()
   readonly createdAt: Date;
 
-  constructor(comment: PrivateCommentEntity) {
+  constructor(comment: CommentEntity) {
     this.id = comment.id;
     this.text = comment.text;
     this.user = new GetUserRdo(comment.user);

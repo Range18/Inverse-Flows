@@ -29,7 +29,7 @@ export class GetProposalRdo {
   @ApiProperty()
   readonly document: GetDocumentRdo;
 
-  @ApiProperty()
+  @ApiProperty({ type: [GetHistoryRdo] })
   readonly history: GetHistoryRdo[];
 
   @ApiProperty()
@@ -50,8 +50,8 @@ export class GetProposalRdo {
     this.content = JSON.parse(proposal.content);
     this.document = new GetDocumentRdo(proposal.document);
     this.documentLink = proposal.documentLink;
-    if (proposal.history.length != 0) {
-      this.history = proposal.history.map(
+    if (proposal.history?.length != 0) {
+      this.history = proposal.history?.map(
         (history) => new GetHistoryRdo(history),
       );
     }

@@ -55,7 +55,7 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
       );
     }
 
-    if (post.usersLiked.length > 0) {
+    if (post.usersLiked?.length > 0) {
       const index = post.usersLiked.findIndex(
         (entity) => entity.id === user.id,
       );

@@ -12,6 +12,7 @@ export class DocumentEntity extends BaseEntity {
 
   @OneToOne(() => ProposalsEntity, (proposal) => proposal.document, {
     nullable: true,
+    onDelete: 'CASCADE',
   })
   proposal?: ProposalsEntity;
 }

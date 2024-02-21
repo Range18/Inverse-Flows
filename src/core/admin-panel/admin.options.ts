@@ -12,6 +12,7 @@ import { PrivateCommentEntity } from '#src/core/private-comments/entities/privat
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
+import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
 export const adminOptions = {
   adminJsOptions: {
@@ -30,6 +31,7 @@ export const adminOptions = {
       ProposalHistoryEntity,
       ProposalPost,
       AssetEntity,
+      CommentEntity,
     ],
   },
   auth: {

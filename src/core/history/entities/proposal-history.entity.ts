@@ -21,6 +21,7 @@ export class ProposalHistoryEntity extends BaseEntity {
 
   @ManyToOne(() => ProposalsEntity, (proposal) => proposal.history, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'proposal' })
   proposal: ProposalsEntity;

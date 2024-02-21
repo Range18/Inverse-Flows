@@ -6,13 +6,20 @@ import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.en
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { UserEntity } from '#src/core/users/user.entity';
 import { UserModule } from '#src/core/users/user.module';
+import { SessionModule } from '#src/core/session/session.module';
+import { TokenModule } from '#src/core/token/token.module';
+import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProposalPost, ProposalsEntity, UserEntity]),
     UserModule,
+    SessionModule,
+    TokenModule,
+    CommentEntity,
   ],
   controllers: [ProposalPostsController],
   providers: [ProposalPostsService],
+  exports: [ProposalPostsService],
 })
 export class ProposalPostsModule {}

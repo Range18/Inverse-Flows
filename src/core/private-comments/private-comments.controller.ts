@@ -6,40 +6,69 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { PrivateCommentsService } from './private-comments.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { CreatePrivateCommentDto } from './dto/create-private-comment.dto';
+import { UpdatePrivateCommentDto } from './dto/update-private-comment.dto';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
-import { ApiCreatedResponse, ApiHeader, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiHeader,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GetPrivateCommentRdo } from '#src/core/private-comments/rdo/get-private-comment.rdo';
+import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
 
-@ApiTags('Private Comments')
-@Controller('api/proposals/comments')
+@ApiTags('Proposals private comments')
+@Controller('api/proposals/comments/private')
 export class PrivateCommentsController {
   constructor(private readonly commentsService: PrivateCommentsService) {}
 
   @ApiHeader({
-    name: 'authorization',
+    name: 'Authorization',
     required: true,
     schema: { format: 'Bearer ${AccessToken}' },
   })
   @ApiCreatedResponse({ type: GetPrivateCommentRdo })
+  @RolesGuard('moderator', 'admin', 'owner')
   @AuthGuard()
   @Post()
   async create(
-    @Body() createCommentDto: CreateCommentDto,
+    @Body() createCommentDto: CreatePrivateCommentDto,
     @User() user: UserRequest,
   ) {
     return new GetPrivateCommentRdo(
-      await this.commentsService.addComment(createCommentDto, user.id),
+      await this.commentsService.addComment(createCommentDto, user),
     );
   }
 
   @ApiHeader({
-    name: 'authorization',
+    name: 'Authorization',
+    required: true,
+    schema: { format: 'Bearer ${AccessToken}' },
+  })
+  @ApiCreatedResponse({ type: [GetPrivateCommentRdo] })
+  @ApiQuery({ name: 'proposalId', type: Number })
+  @AuthGuard()
+  @Get()
+  async findAllForProposal(
+    @Query('proposalId') id: number,
+    @User() user: UserRequest,
+  ) {
+    const comments = await this.commentsService.find({
+      where: { proposal: { id } },
+      relations: { user: { avatar: true } },
+    });
+
+    return comments.map((comment) => new GetPrivateCommentRdo(comment));
+  }
+
+  @ApiHeader({
+    name: 'Authorization',
     required: true,
     schema: { format: 'Bearer ${AccessToken}' },
   })
@@ -50,13 +79,13 @@ export class PrivateCommentsController {
     return new GetPrivateCommentRdo(
       await this.commentsService.findOne({
         where: { id },
-        relations: ['user'],
+        relations: { user: { avatar: true } },
       }),
     );
   }
 
   @ApiHeader({
-    name: 'authorization',
+    name: 'Authorization',
     required: true,
     schema: { format: 'Bearer ${AccessToken}' },
   })
@@ -65,7 +94,7 @@ export class PrivateCommentsController {
   @Patch(':id')
   async update(
     @Param('id') id: number,
-    @Body() updateCommentDto: UpdateCommentDto,
+    @Body() updateCommentDto: UpdatePrivateCommentDto,
   ) {
     return await this.commentsService.updateOne(
       { where: { id } },
@@ -74,7 +103,7 @@ export class PrivateCommentsController {
   }
 
   @ApiHeader({
-    name: 'authorization',
+    name: 'Authorization',
     required: true,
     schema: { format: 'Bearer ${AccessToken}' },
   })

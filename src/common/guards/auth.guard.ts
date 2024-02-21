@@ -12,6 +12,7 @@ import { ApiException } from '#src/common/exception-handler/api-exception';
 import { TokenPayload } from '#src/core/session/types/user.payload';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { jwtConfig } from '#src/common/configs/config';
+import { UserRequest } from '#src/common/types/user-request.type';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
@@ -27,7 +28,7 @@ export class AuthGuardClass implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { user: object; session: object }>();
+      .getRequest<Request & { user: UserRequest; session: object }>();
 
     const accessToken = this.extractAccessToken(request);
 
@@ -61,6 +62,7 @@ export class AuthGuardClass implements CanActivate {
 
     const user = await this.userService.findOne({
       where: { id: payload.userId },
+      relations: { role: true },
     });
 
     if (!user) {
@@ -84,10 +86,11 @@ export class AuthGuardClass implements CanActivate {
     }
 
     request['user'] = {
-      uuid: user.id,
-      name: user.firstname,
+      id: user.id,
+      firstname: user.firstname,
       surname: user.surname,
       email: user.email,
+      role: user.role,
     };
 
     request['user_session'] = {

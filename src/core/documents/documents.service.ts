@@ -28,7 +28,6 @@ import {
   systemMessage,
   userPromptTemplate,
 } from '#src/core/documents/document.constants';
-import { DepartmentsService } from '#src/core/departments/departments.service';
 import {
   ContentProperties,
   ProcessedContent,
@@ -43,7 +42,6 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
   constructor(
     @InjectRepository(DocumentEntity)
     private readonly documentRepository: Repository<DocumentEntity>,
-    private readonly departmentService: DepartmentsService,
   ) {
     super(documentRepository);
   }
@@ -160,7 +158,13 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
   async create(proposal: ProposalsEntity, documentContent: string) {
     const documentName = uid(12);
 
-    const pdf = new JsPDF();
+    const pageWidth = 595;
+    const pageHeight = 842;
+
+    const pdf = new JsPDF({
+      unit: 'px',
+      hotfixes: ['px_scaling'],
+    });
 
     pdf.addFileToVFS('Montserrat-Regular-normal.ttf', font);
     pdf.addFont(
@@ -168,19 +172,29 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
       'Montserrat-Regular',
       'normal',
     );
+    pdf.addFont('Montserrat-Regular-normal.ttf', 'Montserrat-Regular', 'bold');
     pdf.setFont('Montserrat-Regular');
 
     // pdf.text(`${content['name']}\n`, 10, 10);
+    // pdf.text(proposal.name, pageWidth / 2, pageHeight - 10, {
+    //   align: 'center',
+    // });
+
     pdf.text(documentContent, 10, 10, { maxWidth: 180 });
+
+    // await mdToPDF(
+    //   { content: documentContent },
+    //   { dest: join(storageConfig.path, `${documentName}.pdf`) },
+    // );
 
     pdf.save(join(storageConfig.path, `${documentName}.pdf`));
 
     return await this.save({ name: `${documentName}.pdf`, proposal });
   }
 
-  async getFile(id: number);
-  async getFile(name: string);
-  async getFile(idOrName: string | number) {
+  async getFile(id: number): Promise<StreamableFile>;
+  async getFile(name: string): Promise<StreamableFile>;
+  async getFile(idOrName: string | number): Promise<StreamableFile> {
     const document =
       typeof idOrName === 'number'
         ? await this.findOne({ where: { id: idOrName } })
