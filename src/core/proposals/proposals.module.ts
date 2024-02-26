@@ -12,7 +12,6 @@ import { TokenModule } from '#src/core/token/token.module';
 import { ProposalStatusModule } from '#src/core/proposal-status/proposal-status.module';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { ProposalHistoryModule } from '#src/core/history/proposal-history.module';
-import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { DepartmentsModule } from '#src/core/departments/departments.module';
@@ -24,7 +23,6 @@ import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.mod
       ProposalsEntity,
       ProposalHistoryEntity,
       CategoryEntity,
-      PrivateCommentEntity,
       ProposalPost,
       DepartmentEntity,
     ]),

@@ -13,7 +13,6 @@ import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
-import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 
 @Entity('proposals')
@@ -47,11 +46,6 @@ export class ProposalsEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'status' })
   status: ProposalStatus;
-
-  @OneToMany(() => PrivateCommentEntity, (comment) => comment.proposal, {
-    nullable: true,
-  })
-  comments: PrivateCommentEntity[];
 
   @OneToOne(() => DocumentEntity, (document) => document.proposal, {
     nullable: true,

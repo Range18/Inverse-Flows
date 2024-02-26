@@ -17,7 +17,6 @@ import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
-import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
@@ -82,11 +81,6 @@ export class UserEntity extends BaseEntity {
     nullable: true,
   })
   events?: UserEntity;
-
-  @OneToMany(() => PrivateCommentEntity, (comment) => comment.user, {
-    nullable: true,
-  })
-  privateComments?: PrivateCommentEntity[];
 
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];

@@ -1,4 +1,10 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
 import { UserEntity } from '#src/core/users/user.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
@@ -18,6 +24,9 @@ export class ProposalHistoryEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'status' })
   status: ProposalStatus;
+
+  @Column({ type: 'longtext', nullable: true })
+  comment?: string;
 
   @ManyToOne(() => ProposalsEntity, (proposal) => proposal.history, {
     nullable: false,

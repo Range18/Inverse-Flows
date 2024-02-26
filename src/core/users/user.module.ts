@@ -12,7 +12,6 @@ import { JwtService } from '@nestjs/jwt';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { DepartmentsModule } from '#src/core/departments/departments.module';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
-import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { RolesModule } from '#src/core/roles/roles.module';
@@ -28,7 +27,6 @@ import { CommentEntity } from '#src/core/comments/entities/comment.entity';
       SessionEntity,
       JobEntity,
       DepartmentEntity,
-      PrivateCommentEntity,
       ProposalPost,
       AssetEntity,
       CommentEntity,

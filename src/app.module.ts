@@ -16,7 +16,6 @@ import { adminOptions } from '#src/core/admin-panel/admin.options';
 import { JobsModule } from '#src/core/jobs/jobs.module';
 import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.module';
 import { AssetsModule } from '#src/core/assets/assets.module';
-import { PrivateCommentsModule } from '#src/core/private-comments/private-comments.module';
 import { AchievementsModule } from '#src/core/achievements/achievements.module';
 import { CommentsModule } from '#src/core/comments/comments.module';
 
@@ -40,7 +39,6 @@ import { CommentsModule } from '#src/core/comments/comments.module';
     ProposalsModule,
     JobsModule,
     ProposalPostsModule,
-    PrivateCommentsModule,
     AchievementsModule,
     CommentsModule,
   ],

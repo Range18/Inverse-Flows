@@ -16,10 +16,6 @@ import { backendServer } from '#src/common/configs/config';
 import { createPostStatuses } from '#src/core/proposals/proposal.constants';
 import { ProposalPostsService } from '#src/core/proposal-posts/proposal-posts.service';
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
-import { CreatePrivateCommentDto } from '#src/core/private-comments/dto/create-private-comment.dto';
-import { UserRequest } from '#src/common/types/user-request.type';
-import { PrivateCommentsService } from '#src/core/private-comments/private-comments.service';
-import { PrivateCommentEntity } from '#src/core/private-comments/entities/private-comment.entity';
 import UserExceptions = AllExceptions.UserExceptions;
 import CategoryExceptions = AllExceptions.CategoryExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
@@ -51,7 +47,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     private readonly statusService: ProposalStatusService,
     private readonly postService: ProposalPostsService,
     private readonly proposalHistoryService: ProposalHistoryService,
-    private readonly privateCommentsService: PrivateCommentsService,
   ) {
     super(proposalRepository);
   }
@@ -155,6 +150,26 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       );
     }
 
+    //If proposalNeedRevision or proposalRejected only (leaves th func)
+    if (
+      updateProposalStatusDto.status === 'proposalNeedRevision' ||
+      updateProposalStatusDto.status === 'proposalRejected'
+    ) {
+      proposal.status = await this.statusService.findOne({
+        where: { statusType: updateProposalStatusDto.status },
+      });
+
+      await this.addComment(
+        proposal,
+        updateProposalStatusDto.comment,
+        updateProposalStatusDto.status,
+        userId,
+      );
+
+      return await this.save(proposal);
+    }
+
+    //Other ONCE in history statuses
     const history = await this.proposalHistoryService.find({
       where: { proposal: { id: proposal.id } },
       relations: { status: true },
@@ -166,10 +181,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
         (event) => event.status.statusType === updateProposalStatusDto.status,
       );
 
-    if (
-      proposal.status?.statusType != updateProposalStatusDto.status &&
-      !isInStatuses
-    ) {
+    if (!isInStatuses) {
       const status = await this.statusService.findOne({
         where: { statusType: updateProposalStatusDto.status },
       });
@@ -183,33 +195,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       });
     } else {
       return proposal;
-    }
-
-    if (updateProposalStatusDto.status === 'proposalRejected') {
-      const post = await this.postService.findOne({
-        where: { proposal: { id: proposal.id } },
-      });
-
-      if (post) {
-        throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          'ProposalExceptions',
-          ProposalExceptions.ProposalRejectImpossible,
-        );
-      }
-
-      if (updateProposalStatusDto.comment) {
-        await this.privateCommentsService.save({
-          user: await this.userService.findOne({
-            where: { id: userId },
-            relations: { avatar: true },
-          }),
-          proposal: proposal,
-          text: updateProposalStatusDto.comment,
-        });
-      }
-
-      return await this.save(proposal);
     }
 
     const isCreatePostStatus = createPostStatuses.some(
@@ -255,37 +240,33 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
   }
 
   async addComment(
-    createCommentDto: CreatePrivateCommentDto,
-    user: UserRequest,
-  ): Promise<PrivateCommentEntity> {
-    const proposal = await this.findOne({
-      where: { id: createCommentDto.proposalId },
-      relations: { author: true },
+    proposal: ProposalsEntity,
+    text: string,
+    status: string,
+    userId: number,
+  ) {
+    const user = await this.userService.findOne({
+      where: { id: userId },
+      relations: { avatar: true },
     });
 
-    if (!proposal) {
+    const post = await this.postService.findOne({
+      where: { proposal: { id: proposal.id } },
+    });
+
+    if (post) {
       throw new ApiException(
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
         'ProposalExceptions',
-        ProposalExceptions.ProposalNotFound,
+        ProposalExceptions.ProposalInWork,
       );
     }
 
-    if (proposal.author.id != user.id && user.role.name != 'member') {
-      await this.proposalHistoryService.save({
-        user: user,
-        proposal: proposal,
-        status: { statusType: 'proposalNeedRevision' },
-      });
-    }
-
-    return await this.privateCommentsService.save({
-      user: await this.userService.findOne({
-        where: { id: user.id },
-        relations: { avatar: true },
-      }),
+    return await this.proposalHistoryService.save({
+      user: user,
       proposal: proposal,
-      text: createCommentDto.text,
+      comment: text,
+      status: { statusType: status },
     });
   }
 }
