@@ -230,11 +230,15 @@ export class ProposalsController {
   @Patch(':id/process')
   async updateProposalStatus(
     @Param('id') id: number,
-    @Body('status') statusType: string,
+    @Body() updateProposalStatusDto: UpdateProposalStatusDto,
     @User() user: UserRequest,
   ) {
     return new GetProposalRdo(
-      await this.proposalService.updateProposalStatus(id, statusType, user.id),
+      await this.proposalService.updateProposalStatus(
+        id,
+        updateProposalStatusDto,
+        user.id,
+      ),
     );
   }
 

@@ -45,6 +45,7 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
 
     const user = await this.userService.findOne({
       where: { id: userId },
+      relations: { likedPosts: true },
     });
 
     if (!post) {

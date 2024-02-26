@@ -4,6 +4,7 @@ export const storageConfig = {
   path: get('STORAGE_PATH').required().asString(),
   innerDocuments: 'documents',
   innerAvatars: 'avatars',
+  innerStatic: 'static',
   nameLength: 12,
   defaultAvatar: get('DEFAULT_AVATAR').required().asString(),
   defaultMimetype: 'image/png',

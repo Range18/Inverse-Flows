@@ -9,6 +9,7 @@ import { UserModule } from '#src/core/users/user.module';
 import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.module';
 import { TokenModule } from '#src/core/token/token.module';
 import { SessionModule } from '#src/core/session/session.module';
+import { ProposalsModule } from '#src/core/proposals/proposals.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SessionModule } from '#src/core/session/session.module';
     ProposalPostsModule,
     TokenModule,
     SessionModule,
+    ProposalsModule,
   ],
   controllers: [CommentsController],
   providers: [CommentsService],

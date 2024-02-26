@@ -21,6 +21,7 @@ import { PrivateCommentEntity } from '#src/core/private-comments/entities/privat
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
+import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -100,6 +101,11 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => CommentEntity, (comment) => comment.user, { nullable: true })
   comments?: CommentEntity[];
+
+  @ManyToMany(() => AchievementEntity, (achievement) => achievement.usersDone, {
+    nullable: true,
+  })
+  achievements?: AchievementEntity[];
 
   @CreateDateColumn()
   readonly createdAt: Date;

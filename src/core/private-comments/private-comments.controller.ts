@@ -22,11 +22,15 @@ import {
 } from '@nestjs/swagger';
 import { GetPrivateCommentRdo } from '#src/core/private-comments/rdo/get-private-comment.rdo';
 import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
+import { ProposalsService } from '#src/core/proposals/proposals.service';
 
 @ApiTags('Proposals private comments')
 @Controller('api/proposals/comments/private')
 export class PrivateCommentsController {
-  constructor(private readonly commentsService: PrivateCommentsService) {}
+  constructor(
+    private readonly commentsService: PrivateCommentsService,
+    private readonly proposalsService: ProposalsService,
+  ) {}
 
   @ApiHeader({
     name: 'Authorization',
@@ -42,7 +46,7 @@ export class PrivateCommentsController {
     @User() user: UserRequest,
   ) {
     return new GetPrivateCommentRdo(
-      await this.commentsService.addComment(createCommentDto, user),
+      await this.proposalsService.addComment(createCommentDto, user),
     );
   }
 

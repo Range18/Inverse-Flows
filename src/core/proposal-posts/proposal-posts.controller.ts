@@ -6,13 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ProposalPostsService } from './proposal-posts.service';
 import { UpdateProposalPostDto } from './dto/update-proposal-post.dto';
 import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
-import { ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 
 @ApiTags('Proposal Posts')
@@ -60,10 +61,25 @@ export class ProposalPostsController {
     schema: { format: 'Bearer ${AccessToken}' },
   })
   @ApiOkResponse({ type: [GetProposalPostRdo] })
+  @ApiQuery({
+    name: 'by',
+    type: String,
+    description: 'Ключ, по которому будем сортировать',
+  })
+  @ApiQuery({
+    name: 'order',
+    type: String,
+    description: 'Как сортировать: ASC - по возврастанию, DESC - по убыванию',
+  })
   @AuthGuard()
   @Get()
-  async findAll(@User() user: UserRequest) {
+  async findAll(
+    @User() user: UserRequest,
+    @Query('order') order?: string,
+    @Query('by') property?: string,
+  ) {
     const posts = await this.proposalPostsService.find({
+      order: property && order ? { [property]: order } : undefined,
       relations: this.loadRelations,
     });
 

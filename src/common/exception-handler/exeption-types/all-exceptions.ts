@@ -27,6 +27,8 @@ export namespace AllExceptions {
 
   export enum ProposalExceptions {
     ProposalNotFound = 'Proposal is not found',
+    ProposalRejectImpossible = 'Proposal rejection is impossible because it`s already in work or done',
+    ProposalIsRejected = 'Proposal is rejected',
   }
 
   export enum PostExceptions {
