@@ -36,7 +36,7 @@ export class AchievementsService extends BaseEntityService<AchievementEntity> {
       relations: { history: { status: true } },
     });
 
-    if (proposals?.length === 0) {
+    if (proposals?.length === 0 || proposals[0]?.author?.id !== userId) {
       return 0;
     }
     let total = 0;
@@ -54,7 +54,7 @@ export class AchievementsService extends BaseEntityService<AchievementEntity> {
   private async getCountOfLikes(userId: number) {
     const user = await this.userService.findOne({
       where: { id: userId },
-      relations: ['likedPosts'],
+      relations: { likedPosts: true },
     });
 
     const likes = user.likedPosts;

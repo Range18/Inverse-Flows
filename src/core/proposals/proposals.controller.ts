@@ -32,7 +32,6 @@ import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
 import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import Queries = AllExceptions.Queries;
-import PermissionExceptions = AllExceptions.PermissionExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @ApiTags('Proposals')
@@ -40,16 +39,18 @@ import ProposalExceptions = AllExceptions.ProposalExceptions;
 export class ProposalsController {
   private readonly loadRelations = {
     author: {
+      avatar: true,
       job: true,
       department: true,
       role: true,
     },
     category: true,
     status: true,
-    comments: true,
     document: true,
     history: {
-      user: true,
+      user: {
+        avatar: true,
+      },
       status: true,
     },
   };
@@ -77,10 +78,11 @@ export class ProposalsController {
   }
 
   @ApiOkResponse({ type: [GetProposalRdo] })
-  @ApiBody({
-    type: FindProposalDto,
-    required: false,
-  })
+  //TODO
+  // @ApiBody({
+  //   type: FindProposalDto,
+  //   required: false,
+  // })
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'offset', required: false })
   @ApiQuery({ name: 'status', required: false })
@@ -89,7 +91,9 @@ export class ProposalsController {
     @Query('limit') limit?: number,
     @Query('offset') offset?: number,
     @Query('status') status?: number,
+    //TODO
     @Body() findOptions?: FindProposalDto,
+    //
   ): Promise<GetProposalRdo[]> {
     let proposals: ProposalsEntity[];
 
@@ -132,6 +136,8 @@ export class ProposalsController {
             relations: this.loadRelations,
           });
     }
+
+    console.log(proposals);
     return proposals.map((proposal) => new GetProposalRdo(proposal));
   }
 
@@ -189,7 +195,8 @@ export class ProposalsController {
   })
   @ApiQuery({ name: 'id', required: true })
   @ApiBody({ type: UpdateProposalDto })
-  @ApiOkResponse({ type: [GetProposalRdo] })
+  @ApiOkResponse({ type: GetProposalRdo })
+  @RolesGuard('owner')
   @AuthGuard()
   @Patch()
   async patchProposal(
@@ -199,21 +206,15 @@ export class ProposalsController {
   ) {
     const proposal = await this.proposalService.findOne({
       where: { id },
-      relations: ['author', 'category', 'status'],
+      relations: this.loadRelations,
     });
-
-    if (proposal.author.id != user.id) {
-      throw new ApiException(
-        HttpStatus.FORBIDDEN,
-        'PermissionExceptions',
-        PermissionExceptions.NotTheSameUser,
-      );
-    }
 
     return await this.proposalService.updateOne(proposal, {
       name: updateProposalDto.name,
       content: updateProposalDto.content,
       category: { id: updateProposalDto.category },
+      description: updateProposalDto.description,
+      documentLink: updateProposalDto.documentLink,
     });
   }
 

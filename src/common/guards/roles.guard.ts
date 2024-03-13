@@ -49,7 +49,15 @@ export class RolesGuardClass implements CanActivate {
           );
         }
 
-        return user.id === proposal.author.id;
+        if (user.id !== proposal.author.id) {
+          throw new ApiException(
+            HttpStatus.FORBIDDEN,
+            'PermissionExceptions',
+            PermissionExceptions.NotTheSameUser,
+          );
+        }
+
+        return true;
       }
 
       throw new ApiException(

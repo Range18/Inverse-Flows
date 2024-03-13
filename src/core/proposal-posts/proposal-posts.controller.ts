@@ -29,7 +29,6 @@ export class ProposalPostsController {
       },
       category: true,
       status: true,
-      comments: true,
       document: true,
       history: {
         user: true,
@@ -93,7 +92,7 @@ export class ProposalPostsController {
   })
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
-  @Get(':id')
+  @Get('/byId/:id')
   async findOne(@Param('id') id: number, @User() user: UserRequest) {
     const post = await this.proposalPostsService.findOne({
       where: { id },
@@ -103,6 +102,38 @@ export class ProposalPostsController {
     await this.proposalPostsService.view(post);
 
     return new GetProposalPostRdo(post, user.id);
+  }
+
+  @ApiHeader({
+    name: 'authorization',
+    required: true,
+    schema: { format: 'Bearer ${AccessToken}' },
+  })
+  @ApiOkResponse({ type: [GetProposalPostRdo] })
+  @ApiQuery({
+    name: 'by',
+    type: String,
+    description: 'Ключ, по которому будем сортировать',
+  })
+  @ApiQuery({
+    name: 'order',
+    type: String,
+    description: 'Как сортировать: ASC - по возврастанию, DESC - по убыванию',
+  })
+  @AuthGuard()
+  @Get('/my')
+  async findAllForUser(
+    @User() user: UserRequest,
+    @Query('order') order?: string,
+    @Query('by') property?: string,
+  ) {
+    const posts = await this.proposalPostsService.find({
+      where: { proposal: { author: { id: user.id } } },
+      order: property && order ? { [property]: order } : undefined,
+      relations: this.loadRelations,
+    });
+
+    return posts.map((post) => new GetProposalPostRdo(post, user.id));
   }
 
   @ApiHeader({

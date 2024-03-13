@@ -8,6 +8,7 @@ import { BaseEntityService } from '#src/common/base-entity.service';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as fs from 'fs';
 import { createReadStream } from 'fs';
 import { uid } from 'uid';
 import { storageConfig } from '#src/common/configs/storage.config';
@@ -17,8 +18,6 @@ import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import axios from 'axios';
 import { textGenerationConfig } from '#src/common/configs/text-generation.config';
-import { jsPDF as JsPDF } from 'jspdf';
-import { font } from '#src/common/Montserrat-Regular-normal';
 import {
   ResponseMessage,
   YandexGptResponse,
@@ -33,6 +32,7 @@ import {
   ProcessedContent,
 } from '#src/core/proposals/types/processed-content.type';
 import { CreateDocumentDto } from '#src/core/documents/dto/create-document.dto';
+import * as console from 'console';
 import DocumentExceptions = AllExceptions.DocumentExceptions;
 
 @Injectable()
@@ -156,40 +156,43 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
   }
 
   async create(proposal: ProposalsEntity, documentContent: string) {
-    const documentName = uid(12);
+    const documentName = uid(12); // Генерация имени файла
 
-    const pageWidth = 595;
-    const pageHeight = 842;
+    const documentPath = join(
+      storageConfig.path,
+      storageConfig.innerDocuments,
+      `${documentName}.md`,
+    ); // Путь до файла
 
-    const pdf = new JsPDF({
-      unit: 'px',
-      hotfixes: ['px_scaling'],
+    // //TODO Error
+    // const pdf = await mdToPdf({ content: documentContent }).catch((err) => {
+    //   // Тут и происходит ошибка
+    //   // err = Error: listen EPERM: operation not permitted ::to
+    //   // Библиотека не может создать локальный сервер для конвертации текста в PDF файл
+    //   throw new HttpException(
+    //     err + 'to pdf process error',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }); // Конвертация из текста в файл PDF
+
+    const writeStream = fs.createWriteStream(documentPath); //Создание потока записи по пути
+
+    writeStream.on('error', (err) => {
+      throw new HttpException(
+        err + 'WRITE in file error',
+        HttpStatus.BAD_REQUEST,
+      );
     });
 
-    pdf.addFileToVFS('Montserrat-Regular-normal.ttf', font);
-    pdf.addFont(
-      'Montserrat-Regular-normal.ttf',
-      'Montserrat-Regular',
-      'normal',
-    );
-    pdf.addFont('Montserrat-Regular-normal.ttf', 'Montserrat-Regular', 'bold');
-    pdf.setFont('Montserrat-Regular');
+    writeStream.write(documentContent);
 
-    // pdf.text(`${content['name']}\n`, 10, 10);
-    // pdf.text(proposal.name, pageWidth / 2, pageHeight - 10, {
-    //   align: 'center',
-    // });
+    // if (pdf) {
+    //   writeStream.write(pdf.content); // Запись в файл
+    // }
 
-    pdf.text(documentContent, 10, 10, { maxWidth: 180 });
+    writeStream.close(); // Закрытие потока
 
-    // await mdToPDF(
-    //   { content: documentContent },
-    //   { dest: join(storageConfig.path, `${documentName}.pdf`) },
-    // );
-
-    pdf.save(join(storageConfig.path, `${documentName}.pdf`));
-
-    return await this.save({ name: `${documentName}.pdf`, proposal });
+    return await this.save({ name: `${documentName}.md`, proposal }); // Сохранение документа в базе данных и возврат объекта
   }
 
   async getFile(id: number): Promise<StreamableFile>;
@@ -209,7 +212,7 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
     }
 
     const readStream = createReadStream(
-      join(storageConfig.path, document.name),
+      join(storageConfig.path, storageConfig.innerDocuments, document.name),
     );
 
     return new StreamableFile(readStream);

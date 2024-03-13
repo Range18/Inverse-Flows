@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
+import { UserEntity } from '#src/core/users/user.entity';
 
 @Entity('companies')
 export class Company extends BaseEntity {
@@ -23,4 +24,7 @@ export class Company extends BaseEntity {
 
   @Column({ nullable: true })
   address?: string;
+
+  @ManyToMany(() => UserEntity, (user) => user.companies, { nullable: true })
+  users?: UserEntity[];
 }

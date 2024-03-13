@@ -36,7 +36,7 @@ export namespace AllExceptions {
   }
 
   export enum PermissionExceptions {
-    NotTheSameUser = 'Action is forbidden because user in entity is different.',
+    NotTheSameUser = 'Action is forbidden because user is not owner',
     NoRequiredRole = 'You are not allowed to do that action, because of your role',
   }
 

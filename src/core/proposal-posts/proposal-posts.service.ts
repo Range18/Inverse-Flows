@@ -20,7 +20,6 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
       },
       category: true,
       status: true,
-      comments: true,
       document: true,
       history: {
         user: true,

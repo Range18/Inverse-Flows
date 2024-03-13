@@ -30,8 +30,10 @@ export class GetUserRdo {
   @ApiProperty({ type: () => RolesEntity })
   readonly role: RolesEntity;
 
-  @ApiProperty({ type: () => DepartmentEntity })
-  readonly department: DepartmentEntity;
+  //TODO EDIT
+  //JUST FOR TESTING
+  @ApiProperty({ type: () => DepartmentEntity || String })
+  readonly department: DepartmentEntity | string;
 
   @ApiProperty({ type: () => JobEntity })
   readonly job: JobEntity;

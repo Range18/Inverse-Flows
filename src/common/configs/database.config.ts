@@ -10,6 +10,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: get('DB_NAME').required().asString(),
   synchronize: get('DB_SYNC').default('false').asBool(),
   dropSchema: get('DB_DROP').default('false').asBool(),
-  type: 'mysql',
+  //@ts-ignore
+  type: get('DB_TYPE').required().asString(),
   autoLoadEntities: true,
 };

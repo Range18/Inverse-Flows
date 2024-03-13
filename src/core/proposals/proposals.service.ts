@@ -13,9 +13,11 @@ import { StatusType } from '#src/core/proposal-status/types/status.type';
 import { ProposalStatusService } from '#src/core/proposal-status/proposal-status.service';
 import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 import { backendServer } from '#src/common/configs/config';
-import { createPostStatuses } from '#src/core/proposals/proposal.constants';
+import { createPostStatuses } from '#src/core/proposals/types/proposal.constants';
 import { ProposalPostsService } from '#src/core/proposal-posts/proposal-posts.service';
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
+import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
+import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import UserExceptions = AllExceptions.UserExceptions;
 import CategoryExceptions = AllExceptions.CategoryExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
@@ -30,7 +32,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     },
     category: true,
     status: true,
-    comments: true,
     document: true,
     history: {
       user: true,
@@ -87,17 +88,28 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       name: createProposalDto.name,
       content: JSON.stringify(createProposalDto.content),
       status: inApproveStatus,
+      firstname: createProposalDto.firstname,
+      surname: createProposalDto.surname,
+      lastname: createProposalDto.lastname,
+      telegram: createProposalDto.telegram,
+      department: createProposalDto.department,
     });
-
-    const document = await this.documentService.create(
-      proposal,
-      createProposalDto.document,
-    );
 
     user.proposalsCount++;
     await this.userService.save(user);
 
-    proposal.documentLink = `${backendServer.urlValue}/api/proposals/documents/file/${document.name}`;
+    const document: DocumentEntity | undefined =
+      createProposalDto.isDocumentGenerated ?? true
+        ? await this.documentService.create(
+            proposal,
+            createProposalDto.document,
+          )
+        : undefined;
+
+    // createProposalDto.document as generated one or link
+    proposal.documentLink = document
+      ? `${backendServer.urlValue}/api/proposals/documents/file/${document.name}`
+      : createProposalDto.document;
 
     const createdEvent = await this.proposalHistoryService.save({
       proposal: proposal,
@@ -127,11 +139,12 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     id: number,
     updateProposalStatusDto: UpdateProposalStatusDto,
     userId: number,
-  ) {
+  ): Promise<ProposalsEntity> {
     const proposal = await this.findOne({
       where: { id: id },
       relations: {
         author: {
+          avatar: true,
           job: true,
           department: true,
           role: true,
@@ -150,31 +163,48 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       );
     }
 
+    const history = await this.proposalHistoryService.find({
+      where: { proposal: { id: proposal.id } },
+      relations: { status: true, user: { avatar: true } },
+    });
+
     //If proposalNeedRevision or proposalRejected only (leaves th func)
     if (
       updateProposalStatusDto.status === 'proposalNeedRevision' ||
       updateProposalStatusDto.status === 'proposalRejected'
     ) {
-      proposal.status = await this.statusService.findOne({
+      const status = await this.statusService.findOne({
         where: { statusType: updateProposalStatusDto.status },
       });
 
-      await this.addComment(
+      if (proposal.status.statusType === 'proposalRejected') {
+        throw new ApiException(
+          HttpStatus.BAD_REQUEST,
+          'ProposalExceptions',
+          ProposalExceptions.ProposalIsRejected,
+        );
+      }
+
+      const commentEvent = await this.addComment(
         proposal,
         updateProposalStatusDto.comment,
-        updateProposalStatusDto.status,
+        status,
         userId,
       );
 
-      return await this.save(proposal);
+      proposal.status = status;
+
+      await this.save(proposal);
+
+      history.push(commentEvent);
+
+      return {
+        ...proposal,
+        history: history,
+      } as ProposalsEntity;
     }
 
     //Other ONCE in history statuses
-    const history = await this.proposalHistoryService.find({
-      where: { proposal: { id: proposal.id } },
-      relations: { status: true },
-    });
-
     const isInStatuses =
       history?.length > 0 &&
       history?.some(
@@ -187,14 +217,15 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       });
 
       proposal.status = status;
-
-      await this.proposalHistoryService.save({
-        proposal: { id: proposal.id },
-        status: status,
-        user: { id: userId },
-      });
+      history.push(
+        await this.proposalHistoryService.save({
+          proposal: { id: proposal.id },
+          status: status,
+          user: { id: userId },
+        }),
+      );
     } else {
-      return proposal;
+      return { ...proposal, history } as ProposalsEntity;
     }
 
     const isCreatePostStatus = createPostStatuses.some(
@@ -217,7 +248,12 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       if (!post) await this.postService.save({ proposal: proposal });
     }
 
-    return await this.save(proposal);
+    await this.save(proposal);
+
+    return {
+      ...proposal,
+      history: history,
+    } as ProposalsEntity;
   }
 
   override async removeOne(
@@ -242,7 +278,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
   async addComment(
     proposal: ProposalsEntity,
     text: string,
-    status: string,
+    status: ProposalStatus,
     userId: number,
   ) {
     const user = await this.userService.findOne({
@@ -266,7 +302,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       user: user,
       proposal: proposal,
       comment: text,
-      status: { statusType: status },
+      status: status,
     });
   }
 }

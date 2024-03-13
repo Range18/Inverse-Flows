@@ -4,8 +4,9 @@ import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
 import { Content } from '#src/core/proposals/types/content.type';
-import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
+import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
+import { UserEntity } from '#src/core/users/user.entity';
 
 export class GetProposalRdo {
   @ApiProperty()
@@ -15,19 +16,22 @@ export class GetProposalRdo {
   readonly name: string;
 
   @ApiProperty()
+  readonly description: string;
+
+  @ApiProperty()
   readonly author: GetUserRdo;
 
   @ApiProperty({ type: () => CategoryEntity })
   readonly category: CategoryEntity;
 
-  @ApiProperty()
+  @ApiProperty({ type: Content })
   readonly content: Content;
 
-  @ApiProperty()
-  readonly status: ProposalStatus;
+  @ApiProperty({ type: GetStatusRdo })
+  readonly status: GetStatusRdo;
 
-  @ApiProperty()
-  readonly document: GetDocumentRdo;
+  @ApiProperty({ type: GetDocumentRdo, nullable: true })
+  readonly document?: GetDocumentRdo;
 
   @ApiProperty({ type: [GetHistoryRdo] })
   readonly history: GetHistoryRdo[];
@@ -44,12 +48,17 @@ export class GetProposalRdo {
   constructor(proposal: ProposalsEntity) {
     this.id = proposal.id;
     this.name = proposal.name;
-    this.author = new GetUserRdo(proposal.author);
-    this.status = proposal.status;
+    this.author = new GetUserRdo(this.changeUserForTesting(proposal));
+    this.status = new GetStatusRdo(proposal.status);
     this.category = proposal.category;
     this.content = JSON.parse(proposal.content);
-    this.document = new GetDocumentRdo(proposal.document);
+    this.description = proposal.description;
+
+    this.document = proposal.document
+      ? new GetDocumentRdo(proposal.document)
+      : undefined;
     this.documentLink = proposal.documentLink;
+
     if (proposal.history?.length != 0) {
       this.history = proposal.history?.map(
         (history) => new GetHistoryRdo(history),
@@ -58,5 +67,21 @@ export class GetProposalRdo {
 
     this.createdAt = proposal.createdAt;
     this.updatedAt = proposal.updatedAt;
+  }
+
+  //TODO DELETE
+  // Just for testing
+  changeUserForTesting(proposal: ProposalsEntity): UserEntity {
+    if (proposal.firstname) {
+      return {
+        ...proposal.author,
+        firstname: proposal.firstname,
+        surname: proposal.surname,
+        lastname: proposal.lastname,
+        telegram: proposal.telegram,
+        department: proposal.department,
+      } as unknown as UserEntity;
+    }
+    return proposal.author;
   }
 }

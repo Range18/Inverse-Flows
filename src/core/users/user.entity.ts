@@ -1,15 +1,13 @@
 import {
-  BaseEntity,
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { SessionEntity } from '../session/session.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
@@ -21,6 +19,8 @@ import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.en
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
+import { BaseEntity } from '#src/common/base.entity';
+import { Company } from '#src/core/companies/entities/company.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -101,9 +101,10 @@ export class UserEntity extends BaseEntity {
   })
   achievements?: AchievementEntity[];
 
-  @CreateDateColumn()
-  readonly createdAt: Date;
-
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
+  @ManyToMany(() => Company, (company) => company.users, { nullable: false })
+  @JoinTable({
+    name: 'user_company',
+    joinColumn: { referencedColumnName: 'id', foreignKeyConstraintName: 'id' },
+  })
+  companies: Company[];
 }
