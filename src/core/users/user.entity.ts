@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -101,10 +100,7 @@ export class UserEntity extends BaseEntity {
   })
   achievements?: AchievementEntity[];
 
-  @ManyToMany(() => Company, (company) => company.users, { nullable: false })
-  @JoinTable({
-    name: 'user_company',
-    joinColumn: { referencedColumnName: 'id', foreignKeyConstraintName: 'id' },
-  })
-  companies: Company[];
+  @ManyToOne(() => Company, (company) => company.users, { nullable: false })
+  @JoinColumn({ name: 'company' })
+  company: Company;
 }

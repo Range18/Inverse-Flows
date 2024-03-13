@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
 import { UserEntity } from '#src/core/users/user.entity';
 
@@ -25,6 +25,6 @@ export class Company extends BaseEntity {
   @Column({ nullable: true })
   address?: string;
 
-  @ManyToMany(() => UserEntity, (user) => user.companies, { nullable: true })
+  @OneToMany(() => UserEntity, (user) => user.company, { nullable: true })
   users?: UserEntity[];
 }
