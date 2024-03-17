@@ -20,7 +20,10 @@ export class AssetEntity extends BaseEntity {
   @Column({ nullable: false, default: storageConfig.defaultMimetype })
   mimetype: string;
 
-  @OneToOne(() => UserEntity, (user) => user.avatar, { nullable: false })
+  @OneToOne(() => UserEntity, (user) => user.avatar, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user' })
   user: UserEntity;
 }

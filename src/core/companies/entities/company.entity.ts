@@ -25,6 +25,9 @@ export class Company extends BaseEntity {
   @Column({ nullable: true })
   address?: string;
 
-  @OneToMany(() => UserEntity, (user) => user.company, { nullable: true })
+  @OneToMany(() => UserEntity, (user) => user.company, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   users?: UserEntity[];
 }

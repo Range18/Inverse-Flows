@@ -62,4 +62,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly role: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly company: number;
 }

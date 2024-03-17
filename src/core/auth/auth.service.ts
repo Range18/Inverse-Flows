@@ -11,6 +11,7 @@ import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-
 import { RolesService } from '#src/core/roles/roles.service';
 import { DepartmentsService } from '#src/core/departments/departments.service';
 import { isEmail } from 'class-validator';
+import { CompaniesService } from '#src/core/companies/companies.service';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
@@ -23,6 +24,7 @@ export class AuthService {
     private readonly rolesService: RolesService,
     private readonly tokenService: TokenService,
     private readonly departmentService: DepartmentsService,
+    private readonly companyService: CompaniesService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<LoggedUserRdo> {
@@ -59,6 +61,9 @@ export class AuthService {
       phone: createUserDto.phone,
       role: await this.rolesService.findOne({
         where: { name: createUserDto.role },
+      }),
+      company: await this.companyService.findOne({
+        where: { id: createUserDto.company },
       }),
     });
 

@@ -89,7 +89,10 @@ export class UserEntity extends BaseEntity {
   })
   likedPosts?: ProposalPost[];
 
-  @OneToOne(() => AssetEntity, (avatar) => avatar.user, { nullable: true })
+  @OneToOne(() => AssetEntity, (avatar) => avatar.user, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   avatar?: AssetEntity;
 
   @OneToMany(() => CommentEntity, (comment) => comment.user, { nullable: true })
@@ -100,7 +103,10 @@ export class UserEntity extends BaseEntity {
   })
   achievements?: AchievementEntity[];
 
-  @ManyToOne(() => Company, (company) => company.users, { nullable: false })
+  @ManyToOne(() => Company, (company) => company.users, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'company' })
-  company: Company;
+  company?: Company;
 }
