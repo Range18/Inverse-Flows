@@ -57,7 +57,9 @@ export class GetProposalRdo {
     this.document = proposal.document
       ? new GetDocumentRdo(proposal.document)
       : undefined;
-    this.documentLink = proposal.documentLink;
+    this.documentLink = proposal.documentLink
+      ? proposal.documentLink
+      : 'Документа нет';
 
     if (proposal.history?.length != 0) {
       this.history = proposal.history?.map(

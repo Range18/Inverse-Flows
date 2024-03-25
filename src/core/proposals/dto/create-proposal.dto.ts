@@ -1,4 +1,10 @@
-import { IsBoolean, IsNumber, IsObject, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Content } from '#src/core/proposals/types/content.type';
 
@@ -20,8 +26,9 @@ export class CreateProposalDto {
   content: Content;
 
   @IsString()
-  @ApiProperty()
-  document: string;
+  @IsOptional()
+  @ApiProperty({ required: false, nullable: true })
+  document?: string;
 
   @IsBoolean()
   @ApiProperty()

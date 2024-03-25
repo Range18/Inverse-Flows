@@ -12,6 +12,7 @@ import { RolesService } from '#src/core/roles/roles.service';
 import { DepartmentsService } from '#src/core/departments/departments.service';
 import { isEmail } from 'class-validator';
 import { CompaniesService } from '#src/core/companies/companies.service';
+import { JobsService } from '#src/core/jobs/jobs.service';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
@@ -25,6 +26,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly departmentService: DepartmentsService,
     private readonly companyService: CompaniesService,
+    private readonly jobService: JobsService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<LoggedUserRdo> {
@@ -65,6 +67,7 @@ export class AuthService {
       company: await this.companyService.findOne({
         where: { id: createUserDto.company },
       }),
+      job: await this.jobService.findOne({ where: { id: createUserDto.job } }),
     });
 
     const session = await this.sessionService.createSession({

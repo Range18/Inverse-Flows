@@ -44,6 +44,11 @@ export class CreateUserDto {
   @ApiProperty()
   readonly department: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly job: number;
+
   @IsDate()
   @ApiProperty()
   readonly birthday: Date;

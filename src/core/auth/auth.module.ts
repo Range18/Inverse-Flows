@@ -7,6 +7,7 @@ import { TokenModule } from '#src/core/token/token.module';
 import { RolesModule } from '#src/core/roles/roles.module';
 import { DepartmentsModule } from '#src/core/departments/departments.module';
 import { CompaniesModule } from '#src/core/companies/companies.module';
+import { JobsModule } from '#src/core/jobs/jobs.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CompaniesModule } from '#src/core/companies/companies.module';
     RolesModule,
     DepartmentsModule,
     CompaniesModule,
+    JobsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

@@ -226,7 +226,7 @@ export class ProposalsController {
   @ApiQuery({ name: 'id', required: true })
   @ApiBody({ type: UpdateProposalStatusDto })
   @ApiOkResponse({ type: [GetProposalRdo] })
-  @RolesGuard('moderator', 'admin')
+  @RolesGuard('member', 'moderator', 'admin')
   @AuthGuard()
   @Patch(':id/process')
   async updateProposalStatus(
