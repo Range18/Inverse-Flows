@@ -3,7 +3,7 @@ import { BaseEntity } from '#src/common/base.entity';
 import { UserEntity } from '#src/core/users/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity()
+@Entity('department_entity' )
 export class DepartmentEntity extends BaseEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn('increment')

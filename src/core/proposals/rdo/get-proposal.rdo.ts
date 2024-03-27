@@ -48,7 +48,7 @@ export class GetProposalRdo {
   constructor(proposal: ProposalsEntity) {
     this.id = proposal.id;
     this.name = proposal.name;
-    this.author = new GetUserRdo(this.changeUserForTesting(proposal));
+    this.author = new GetUserRdo(proposal.author);
     this.status = new GetStatusRdo(proposal.status);
     this.category = proposal.category;
     this.content = JSON.parse(proposal.content);
@@ -57,9 +57,7 @@ export class GetProposalRdo {
     this.document = proposal.document
       ? new GetDocumentRdo(proposal.document)
       : undefined;
-    this.documentLink = proposal.documentLink
-      ? proposal.documentLink
-      : 'Документа нет';
+    this.documentLink = proposal.documentLink ?? 'Материалов нет';
 
     if (proposal.history?.length != 0) {
       this.history = proposal.history?.map(
@@ -71,19 +69,4 @@ export class GetProposalRdo {
     this.updatedAt = proposal.updatedAt;
   }
 
-  //TODO DELETE
-  // Just for testing
-  changeUserForTesting(proposal: ProposalsEntity): UserEntity {
-    if (proposal.firstname) {
-      return {
-        ...proposal.author,
-        firstname: proposal.firstname,
-        surname: proposal.surname,
-        lastname: proposal.lastname,
-        telegram: proposal.telegram,
-        department: proposal.department,
-      } as unknown as UserEntity;
-    }
-    return proposal.author;
-  }
 }

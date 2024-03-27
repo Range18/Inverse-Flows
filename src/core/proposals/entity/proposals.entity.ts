@@ -65,21 +65,4 @@ export class ProposalsEntity extends BaseEntity {
     nullable: true,
   })
   post?: ProposalPost;
-
-  //TODO DELETE
-  //Just for testing (all this data must be in author)
-  @Column({ nullable: true })
-  firstname?: string;
-
-  @Column({ nullable: true })
-  surname?: string;
-
-  @Column({ nullable: true })
-  lastname?: string;
-
-  @Column({ nullable: true })
-  department?: string;
-
-  @Column({ nullable: true })
-  telegram?: string;
 }
