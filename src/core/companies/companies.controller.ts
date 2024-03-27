@@ -19,7 +19,7 @@ import {
 import { GetCompanyRdo } from '#src/core/companies/rdo/get-company.rdo';
 
 @ApiTags('Companies')
-@Controller('companies')
+@Controller('api/companies')
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 

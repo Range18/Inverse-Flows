@@ -10,7 +10,7 @@ export class CreateDocumentDto {
 
   @ApiProperty({
     nullable: false,
-    description: 'Как поможет достичь целей компании?',
+    description: 'Какая цель предложенного проекта?',
   })
   aboutCompanyAim: string;
 
@@ -19,9 +19,6 @@ export class CreateDocumentDto {
 
   @ApiProperty({ nullable: false, description: 'Тип' })
   proposalType: string;
-
-  @ApiProperty({ nullable: false, description: 'Ответ на вопрос о плюсах' })
-  benefits: string;
 
   @ApiProperty({
     nullable: true,

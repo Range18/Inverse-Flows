@@ -87,7 +87,8 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       description: createProposalDto.description,
       name: createProposalDto.name,
       content: JSON.stringify(createProposalDto.content),
-      status: inApproveStatus
+      status: inApproveStatus,
+      isCommercial: createProposalDto.isCommercial
     });
 
     user.proposalsCount++;

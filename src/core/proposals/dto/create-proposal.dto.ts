@@ -33,6 +33,10 @@ export class CreateProposalDto {
   @IsBoolean()
   @ApiProperty()
   isDocumentGenerated: boolean;
+
+  @IsBoolean()
+  @ApiProperty()
+  isCommercial: boolean;
 }
 
 export type CreateProposal = CreateProposalDto & { author: number };

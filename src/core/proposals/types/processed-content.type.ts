@@ -11,8 +11,6 @@ export class ProcessedContent {
 
   proposalType: string;
 
-  benefits: string;
-
   limitFactors?: string;
 
   customQuestions?: CustomQuestion[];
@@ -23,15 +21,13 @@ export enum ContentProperties {
 
   description = 'Описанние заявки',
 
-  aboutCompanyAim = 'Как ваш проект позволит достичь целей компании?',
+  aboutCompanyAim = 'Какая цель предложенного проекта?',
 
   proposalAim = 'Цель проекта',
 
   department = 'Отдел',
 
   proposalType = 'Тип запроса',
-
-  benefits = 'Какую выгоду несет реализация проекта в деньгах?',
 
   additionalDepartments = 'Какие смежные отделы затрагивает ваш проект/запрос?',
 

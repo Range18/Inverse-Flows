@@ -76,7 +76,6 @@ export class DocumentsService extends BaseEntityService<DocumentEntity> {
       description: createDocumentDto.description,
       proposalAim: createDocumentDto.proposalAim,
       proposalType: createDocumentDto.proposalType,
-      benefits: createDocumentDto.benefits,
       limitFactors: createDocumentDto.limitFactors,
       customQuestions: createDocumentDto.customQuestions,
     };

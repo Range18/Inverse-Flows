@@ -7,6 +7,7 @@ import { Content } from '#src/core/proposals/types/content.type';
 import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
 import { UserEntity } from '#src/core/users/user.entity';
+import {IsBoolean} from "class-validator";
 
 export class GetProposalRdo {
   @ApiProperty()
@@ -39,6 +40,10 @@ export class GetProposalRdo {
   @ApiProperty()
   readonly documentLink: string;
 
+  @IsBoolean()
+  @ApiProperty()
+  readonly isCommercial: boolean;
+
   @ApiProperty()
   readonly createdAt: Date;
 
@@ -65,6 +70,7 @@ export class GetProposalRdo {
       );
     }
 
+    this.isCommercial = proposal.isCommercial;
     this.createdAt = proposal.createdAt;
     this.updatedAt = proposal.updatedAt;
   }
