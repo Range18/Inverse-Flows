@@ -33,12 +33,13 @@ export class AchievementsService extends BaseEntityService<AchievementEntity> {
   private async getCountApprovedProposal(userId: number): Promise<number> {
     const proposals = await this.proposalsService.find({
       where: { author: { id: userId } },
-      relations: { history: { status: true } },
+      relations: { history: { status: true }, author: true },
     });
 
     if (proposals?.length === 0 || proposals[0]?.author?.id !== userId) {
       return 0;
     }
+
     let total = 0;
     for (const proposal of proposals) {
       for (const history of proposal.history) {
