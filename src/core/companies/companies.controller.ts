@@ -27,19 +27,25 @@ export class CompaniesController {
   @ApiCreatedResponse({ type: GetCompanyRdo })
   @Post()
   async create(@Body() createCompanyDto: CreateCompanyDto) {
-    return await this.companiesService.save(createCompanyDto);
+    return new GetCompanyRdo(
+      await this.companiesService.save(createCompanyDto),
+    );
   }
 
   @ApiOkResponse({ type: [GetCompanyRdo] })
   @Get()
   async findAll() {
-    return await this.companiesService.find({});
+    const companies = await this.companiesService.find({});
+
+    return companies.map((company) => new GetCompanyRdo(company));
   }
 
   @ApiOkResponse({ type: GetCompanyRdo })
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.companiesService.findOne({ where: { id } });
+    return new GetCompanyRdo(
+      await this.companiesService.findOne({ where: { id } }),
+    );
   }
 
   @ApiBody({ type: UpdateCompanyDto })
@@ -48,14 +54,23 @@ export class CompaniesController {
     @Param('id') id: number,
     @Body() updateCompanyDto: UpdateCompanyDto,
   ) {
-    return await this.companiesService.updateOne(
-      { where: { id } },
-      updateCompanyDto,
+    return new GetCompanyRdo(
+      await this.companiesService.updateOne(
+        { where: { id } },
+        updateCompanyDto,
+      ),
     );
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return await this.companiesService.removeOne({ where: { id } });
+  }
+
+  @Get('/forms/:id')
+  async getCompanyByFormId(@Param('id') id: string) {
+    return new GetCompanyRdo(
+      await this.companiesService.findOne({ where: { formId: id } }),
+    );
   }
 }
