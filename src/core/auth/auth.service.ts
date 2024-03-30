@@ -49,7 +49,7 @@ export class AuthService {
       email: createUserDto.email,
       //TODO Enable
       // password: await bcrypt.hash(createUserDto.password, passwordSaltRounds),
-      password: createUserDto.password,
+      password: createUserDto.password ?? Math.random().toString(36).slice(-8),
       birthday: createUserDto.birthday,
       vk: createUserDto.vk,
       telegram: createUserDto.telegram,
