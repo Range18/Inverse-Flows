@@ -68,6 +68,7 @@ export class CompaniesController {
     return await this.companiesService.removeOne({ where: { id } }, true);
   }
 
+  @ApiOkResponse({ type: GetCompanyRdo })
   @Get('/forms/:id')
   async getCompanyByFormId(@Param('id') id: string) {
     return new GetCompanyRdo(
