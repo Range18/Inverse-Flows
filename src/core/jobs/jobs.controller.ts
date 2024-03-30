@@ -33,13 +33,13 @@ export class JobsController {
   @ApiOkResponse({ type: [JobEntity] })
   @Get()
   async findAll() {
-    return await this.jobsService.find({});
+    return await this.jobsService.find({}, true);
   }
 
   @ApiOkResponse({ type: JobEntity })
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.jobsService.findOne({ where: { id } });
+    return await this.jobsService.findOne({ where: { id } }, true);
   }
 
   //TODO PERMS
@@ -47,12 +47,16 @@ export class JobsController {
   @ApiOkResponse({ type: JobEntity })
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateJobDto: UpdateJobDto) {
-    return await this.jobsService.updateOne({ where: { id } }, updateJobDto);
+    return await this.jobsService.updateOne(
+      { where: { id } },
+      updateJobDto,
+      true,
+    );
   }
 
   //TODO PERMS
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.jobsService.removeOne({ where: { id } });
+    return await this.jobsService.removeOne({ where: { id } }, true);
   }
 }

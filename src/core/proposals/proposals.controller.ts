@@ -99,18 +99,24 @@ export class ProposalsController {
 
     if (!limit && !offset) {
       proposals = findOptions
-        ? await this.proposalService.find({
-            where: {
-              ...findOptions,
-              status: status ? { id: status } : undefined,
-            } as FindOptionsWhere<ProposalsEntity>,
-            order: findOptions.order,
-            relations: this.loadRelations,
-          })
-        : await this.proposalService.find({
-            order: findOptions.order,
-            relations: this.loadRelations,
-          });
+        ? await this.proposalService.find(
+            {
+              where: {
+                ...findOptions,
+                status: status ? { id: status } : undefined,
+              } as FindOptionsWhere<ProposalsEntity>,
+              order: findOptions.order,
+              relations: this.loadRelations,
+            },
+            true,
+          )
+        : await this.proposalService.find(
+            {
+              order: findOptions.order,
+              relations: this.loadRelations,
+            },
+            true,
+          );
     } else {
       if (limit * offset - offset < 0) {
         throw new ApiException(
@@ -121,20 +127,26 @@ export class ProposalsController {
       }
 
       proposals = findOptions
-        ? await this.proposalService.find({
-            where: {
-              ...findOptions,
-              status: status ? { id: status } : undefined,
-            } as FindOptionsWhere<ProposalsEntity>,
-            order: findOptions.order,
-            skip: limit * offset - offset,
-            relations: this.loadRelations,
-          })
-        : await this.proposalService.find({
-            order: findOptions.order,
-            skip: limit * offset - offset,
-            relations: this.loadRelations,
-          });
+        ? await this.proposalService.find(
+            {
+              where: {
+                ...findOptions,
+                status: status ? { id: status } : undefined,
+              } as FindOptionsWhere<ProposalsEntity>,
+              order: findOptions.order,
+              skip: limit * offset - offset,
+              relations: this.loadRelations,
+            },
+            true,
+          )
+        : await this.proposalService.find(
+            {
+              order: findOptions.order,
+              skip: limit * offset - offset,
+              relations: this.loadRelations,
+            },
+            true,
+          );
     }
 
     console.log(proposals);
@@ -144,10 +156,13 @@ export class ProposalsController {
   @ApiOkResponse({ type: GetProposalRdo })
   @Get('/byId/:id')
   async findOneById(@Param('id') id: number): Promise<GetProposalRdo> {
-    const proposal = await this.proposalService.findOne({
-      where: { id },
-      relations: this.loadRelations,
-    });
+    const proposal = await this.proposalService.findOne(
+      {
+        where: { id },
+        relations: this.loadRelations,
+      },
+      true,
+    );
 
     if (!proposal) {
       throw new ApiException(
@@ -173,13 +188,16 @@ export class ProposalsController {
     @User() user: UserRequest,
     @Query('status') statusId?: number,
   ) {
-    const proposals = await this.proposalService.find({
-      where: {
-        author: { id: user.id },
-        status: statusId ? { id: statusId } : undefined,
+    const proposals = await this.proposalService.find(
+      {
+        where: {
+          author: { id: user.id },
+          status: statusId ? { id: statusId } : undefined,
+        },
+        relations: this.loadRelations,
       },
-      relations: this.loadRelations,
-    });
+      true,
+    );
 
     try {
       return proposals.map((proposal) => new GetProposalRdo(proposal));
@@ -204,10 +222,13 @@ export class ProposalsController {
     @User() user: UserRequest,
     @Query('id') id: number,
   ) {
-    const proposal = await this.proposalService.findOne({
-      where: { id },
-      relations: this.loadRelations,
-    });
+    const proposal = await this.proposalService.findOne(
+      {
+        where: { id },
+        relations: this.loadRelations,
+      },
+      true,
+    );
 
     return await this.proposalService.updateOne(proposal, {
       name: updateProposalDto.name,
@@ -252,9 +273,12 @@ export class ProposalsController {
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.proposalService.removeOne({
-      where: { id },
-      relations: { author: true },
-    });
+    return await this.proposalService.removeOne(
+      {
+        where: { id },
+        relations: { author: true },
+      },
+      true,
+    );
   }
 }

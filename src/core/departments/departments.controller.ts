@@ -24,12 +24,12 @@ export class DepartmentsController {
 
   @Get()
   async findAll() {
-    return await this.departmentsService.find({});
+    return await this.departmentsService.find({}, true);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.departmentsService.findOne({ where: { id } });
+    return await this.departmentsService.findOne({ where: { id } }, true);
   }
 
   //TODO
@@ -41,11 +41,12 @@ export class DepartmentsController {
     return await this.departmentsService.updateOne(
       { where: { id } },
       updateDepartmentDto,
+      true,
     );
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.departmentsService.remove({ where: { id } });
+    return await this.departmentsService.remove({ where: { id } }, true);
   }
 }

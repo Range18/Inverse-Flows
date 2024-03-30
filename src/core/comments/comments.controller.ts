@@ -54,9 +54,12 @@ export class CommentsController {
   @AuthGuard()
   @Get()
   async findAll() {
-    return await this.commentsService.find({
-      relations: { user: { avatar: true } },
-    });
+    return await this.commentsService.find(
+      {
+        relations: { user: { avatar: true } },
+      },
+      true,
+    );
   }
 
   @ApiHeader({
@@ -69,10 +72,13 @@ export class CommentsController {
   @AuthGuard()
   @Get()
   async findAllForPost(@Query('postId') postId: number) {
-    const comments = await this.commentsService.find({
-      where: { post: { id: postId } },
-      relations: { user: { avatar: true } },
-    });
+    const comments = await this.commentsService.find(
+      {
+        where: { post: { id: postId } },
+        relations: { user: { avatar: true } },
+      },
+      true,
+    );
 
     return comments.map((comment) => new GetPostCommentRdo(comment));
   }
@@ -86,10 +92,13 @@ export class CommentsController {
   @AuthGuard()
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.commentsService.findOne({
-      where: { id },
-      relations: { user: { avatar: true } },
-    });
+    return await this.commentsService.findOne(
+      {
+        where: { id },
+        relations: { user: { avatar: true } },
+      },
+      true,
+    );
   }
 
   @ApiHeader({
@@ -111,6 +120,7 @@ export class CommentsController {
         relations: { user: { avatar: true } },
       },
       updateCommentDto,
+      true,
     );
   }
 
@@ -122,8 +132,11 @@ export class CommentsController {
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number, @User() user: UserRequest) {
-    return await this.commentsService.removeOne({
-      where: { id, user: { id: user.id } },
-    });
+    return await this.commentsService.removeOne(
+      {
+        where: { id, user: { id: user.id } },
+      },
+      true,
+    );
   }
 }

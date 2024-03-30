@@ -7,19 +7,14 @@ import { ApiTags } from '@nestjs/swagger';
 export class ProposalHistoryController {
   constructor(private readonly proposalEventService: ProposalHistoryService) {}
 
-  // @Post()
-  // async create(@Body() createHistoryDto: CreateEventDto) {
-  //   return await this.proposalEventService.save(createHistoryDto);
-  // }
-
   @Get()
   async findAll() {
-    return await this.proposalEventService.find({});
+    return await this.proposalEventService.find({}, true);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.proposalEventService.findOne({ where: { id } });
+    return await this.proposalEventService.findOne({ where: { id } }, true);
   }
 
   // @Patch(':id')
@@ -29,6 +24,6 @@ export class ProposalHistoryController {
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.proposalEventService.removeOne({ where: { id } });
+    return await this.proposalEventService.removeOne({ where: { id } }, true);
   }
 }

@@ -40,7 +40,7 @@ export class DocumentsController {
   @ApiOkResponse({ type: [GetDocumentRdo] })
   @Get()
   async findAll(): Promise<GetDocumentRdo[]> {
-    const documents = await this.documentsService.find({});
+    const documents = await this.documentsService.find({}, true);
 
     return documents.map((document) => new GetDocumentRdo(document));
   }
@@ -49,7 +49,7 @@ export class DocumentsController {
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<GetDocumentRdo> {
     return new GetDocumentRdo(
-      await this.documentsService.findOne({ where: { id } }),
+      await this.documentsService.findOne({ where: { id } }, true),
     );
   }
 
@@ -57,7 +57,7 @@ export class DocumentsController {
   @Get(':name')
   async findOneByName(@Param('name') name: string): Promise<GetDocumentRdo> {
     return new GetDocumentRdo(
-      await this.documentsService.findOne({ where: { name } }),
+      await this.documentsService.findOne({ where: { name } }, true),
     );
   }
 

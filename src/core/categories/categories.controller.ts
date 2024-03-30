@@ -17,16 +17,16 @@ export class CategoriesController {
 
   @Get()
   async findAll() {
-    return await this.categoriesService.find({});
+    return await this.categoriesService.find({}, true);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.categoriesService.findOne({ where: { id } });
+    return await this.categoriesService.findOne({ where: { id } }, true);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.categoriesService.removeOne({ where: { id } });
+    return await this.categoriesService.removeOne({ where: { id } }, true);
   }
 }

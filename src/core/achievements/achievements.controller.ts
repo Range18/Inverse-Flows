@@ -27,7 +27,7 @@ export class AchievementsController {
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.achievementsService.findOne({ where: { id } });
+    return await this.achievementsService.findOne({ where: { id } }, true);
   }
 
   @Get('/file/:id')
@@ -48,11 +48,12 @@ export class AchievementsController {
     return await this.achievementsService.updateOne(
       { where: { id } },
       updateAchievementDto,
+      true,
     );
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.achievementsService.remove({ where: { id } });
+    return await this.achievementsService.remove({ where: { id } }, true);
   }
 }

@@ -23,9 +23,18 @@ export class UserController {
   @ApiOkResponse({ type: [GetUserRdo] })
   @Get()
   async getAllUsers() {
-    const users = await this.userService.find({
-      relations: { department: true, job: true, role: true, avatar: true },
-    });
+    const users = await this.userService.find(
+      {
+        relations: {
+          department: true,
+          job: true,
+          role: true,
+          avatar: true,
+          company: true,
+        },
+      },
+      true,
+    );
 
     return users.map((user) => new GetUserRdo(user));
   }
@@ -37,7 +46,13 @@ export class UserController {
       await this.userService.findOne(
         {
           where: { id },
-          relations: { department: true, job: true, role: true, avatar: true },
+          relations: {
+            department: true,
+            job: true,
+            role: true,
+            avatar: true,
+            company: true,
+          },
         },
         true,
       ),
@@ -54,10 +69,19 @@ export class UserController {
   @Get('me')
   async getUserMe(@User() user: UserRequest) {
     return new GetUserRdo(
-      await this.userService.findOne({
-        where: { id: user.id },
-        relations: { department: true, job: true, role: true, avatar: true },
-      }),
+      await this.userService.findOne(
+        {
+          where: { id: user.id },
+          relations: {
+            department: true,
+            job: true,
+            role: true,
+            avatar: true,
+            company: true,
+          },
+        },
+        true,
+      ),
     );
   }
 
@@ -77,7 +101,13 @@ export class UserController {
       await this.userService.updateOne(
         {
           where: { id: user.id },
-          relations: { department: true, job: true, role: true, avatar: true },
+          relations: {
+            department: true,
+            job: true,
+            role: true,
+            avatar: true,
+            company: true,
+          },
         },
         {
           email: updateUserDto.email,
@@ -93,6 +123,7 @@ export class UserController {
           role: { id: updateUserDto.role },
           password: updateUserDto.password,
         },
+        true,
       ),
     );
   }

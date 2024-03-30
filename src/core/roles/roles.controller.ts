@@ -12,13 +12,13 @@ export class RolesController {
   @ApiOkResponse({ type: [RolesEntity] })
   @Get()
   async getAllRoles() {
-    return await this.rolesService.find({});
+    return await this.rolesService.find({}, true);
   }
 
   @ApiOkResponse({ type: RolesEntity })
   @Get(':id')
   async getRole(@Param('id') id: number) {
-    return await this.rolesService.findOne({ where: { id } });
+    return await this.rolesService.findOne({ where: { id } }, true);
   }
 
   // TODO PERMS
@@ -29,6 +29,10 @@ export class RolesController {
     @Param('id') id: number,
     @Body() updateRoleDto: UpdateRoleDto,
   ) {
-    return await this.rolesService.updateOne({ where: { id } }, updateRoleDto);
+    return await this.rolesService.updateOne(
+      { where: { id } },
+      updateRoleDto,
+      true,
+    );
   }
 }

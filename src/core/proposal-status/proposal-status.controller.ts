@@ -9,11 +9,11 @@ export class ProposalStatusController {
 
   @Get()
   async findAll() {
-    return await this.proposalStatusService.find({});
+    return await this.proposalStatusService.find({}, true);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.proposalStatusService.findOne({ where: { id } });
+    return await this.proposalStatusService.findOne({ where: { id } }, true);
   }
 }

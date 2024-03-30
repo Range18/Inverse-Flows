@@ -77,10 +77,13 @@ export class ProposalPostsController {
     @Query('order') order?: string,
     @Query('by') property?: string,
   ) {
-    const posts = await this.proposalPostsService.find({
-      order: property && order ? { [property]: order } : undefined,
-      relations: this.loadRelations,
-    });
+    const posts = await this.proposalPostsService.find(
+      {
+        order: property && order ? { [property]: order } : undefined,
+        relations: this.loadRelations,
+      },
+      true,
+    );
 
     return posts.map((post) => new GetProposalPostRdo(post, user.id));
   }
@@ -94,10 +97,13 @@ export class ProposalPostsController {
   @AuthGuard()
   @Get('/byId/:id')
   async findOne(@Param('id') id: number, @User() user: UserRequest) {
-    const post = await this.proposalPostsService.findOne({
-      where: { id },
-      relations: this.loadRelations,
-    });
+    const post = await this.proposalPostsService.findOne(
+      {
+        where: { id },
+        relations: this.loadRelations,
+      },
+      true,
+    );
 
     await this.proposalPostsService.view(post);
 
@@ -127,11 +133,14 @@ export class ProposalPostsController {
     @Query('order') order?: string,
     @Query('by') property?: string,
   ) {
-    const posts = await this.proposalPostsService.find({
-      where: { proposal: { author: { id: user.id } } },
-      order: property && order ? { [property]: order } : undefined,
-      relations: this.loadRelations,
-    });
+    const posts = await this.proposalPostsService.find(
+      {
+        where: { proposal: { author: { id: user.id } } },
+        order: property && order ? { [property]: order } : undefined,
+        relations: this.loadRelations,
+      },
+      true,
+    );
 
     return posts.map((post) => new GetProposalPostRdo(post, user.id));
   }
@@ -153,6 +162,7 @@ export class ProposalPostsController {
       await this.proposalPostsService.updateOne(
         { where: { id }, relations: this.loadRelations },
         updateProposalPostDto,
+        true,
       ),
       user.id,
     );
@@ -166,6 +176,6 @@ export class ProposalPostsController {
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.proposalPostsService.removeOne({ where: { id } });
+    return await this.proposalPostsService.removeOne({ where: { id } }, true);
   }
 }

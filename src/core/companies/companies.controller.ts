@@ -35,7 +35,7 @@ export class CompaniesController {
   @ApiOkResponse({ type: [GetCompanyRdo] })
   @Get()
   async findAll() {
-    const companies = await this.companiesService.find({});
+    const companies = await this.companiesService.find({}, true);
 
     return companies.map((company) => new GetCompanyRdo(company));
   }
@@ -44,7 +44,7 @@ export class CompaniesController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return new GetCompanyRdo(
-      await this.companiesService.findOne({ where: { id } }),
+      await this.companiesService.findOne({ where: { id } }, true),
     );
   }
 
@@ -58,19 +58,20 @@ export class CompaniesController {
       await this.companiesService.updateOne(
         { where: { id } },
         updateCompanyDto,
+        true,
       ),
     );
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.companiesService.removeOne({ where: { id } });
+    return await this.companiesService.removeOne({ where: { id } }, true);
   }
 
   @Get('/forms/:id')
   async getCompanyByFormId(@Param('id') id: string) {
     return new GetCompanyRdo(
-      await this.companiesService.findOne({ where: { formId: id } }),
+      await this.companiesService.findOne({ where: { formId: id } }, true),
     );
   }
 }
