@@ -9,8 +9,10 @@ import { TokenService } from '#src/core/token/token.service';
 import { TokenPayload } from '#src/core/session/types/user.payload';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { RolesService } from '#src/core/roles/roles.service';
+import { DepartmentsService } from '#src/core/departments/departments.service';
 import { isEmail } from 'class-validator';
-import { MailService } from '#src/core/mail/mail.service';
+import { CompaniesService } from '#src/core/companies/companies.service';
+import { JobsService } from '#src/core/jobs/jobs.service';
 import SessionExceptions = AllExceptions.SessionExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
@@ -22,7 +24,9 @@ export class AuthService {
     private readonly sessionService: SessionService,
     private readonly rolesService: RolesService,
     private readonly tokenService: TokenService,
-    private readonly mailService: MailService,
+    private readonly departmentService: DepartmentsService,
+    private readonly companyService: CompaniesService,
+    private readonly jobService: JobsService,
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<LoggedUserRdo> {
@@ -49,28 +53,26 @@ export class AuthService {
       email: createUserDto.email,
       //TODO Enable
       // password: await bcrypt.hash(createUserDto.password, passwordSaltRounds),
-      password: createUserDto.password ?? Math.random().toString(36).slice(-8),
+      password: createUserDto.password,
       birthday: createUserDto.birthday,
       vk: createUserDto.vk,
       telegram: createUserDto.telegram,
-      department: { id: createUserDto.department },
+      department: await this.departmentService.findOne({
+        where: { id: createUserDto.department },
+      }),
       phone: createUserDto.phone,
       role: await this.rolesService.findOne({
         where: { name: createUserDto.role },
       }),
-      company: { id: createUserDto.company },
-      job: { id: createUserDto.job },
+      company: await this.companyService.findOne({
+        where: { id: createUserDto.company },
+      }),
+      job: await this.jobService.findOne({ where: { id: createUserDto.job } }),
     });
 
-    const [session] = await Promise.all([
-      await this.sessionService.createSession({
-        userId: userEntity.id,
-      }),
-      await this.mailService.sendCredentials(
-        userEntity.email,
-        userEntity.password,
-      ),
-    ]);
+    const session = await this.sessionService.createSession({
+      userId: userEntity.id,
+    });
 
     return new LoggedUserRdo(
       session.refreshToken,
