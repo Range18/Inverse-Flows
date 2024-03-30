@@ -66,6 +66,6 @@ export class ProposalsEntity extends BaseEntity {
   })
   post?: ProposalPost;
 
-  @Column({nullable: false, default: true})
+  @Column({ nullable: false, default: true })
   isCommercial: boolean;
 }
