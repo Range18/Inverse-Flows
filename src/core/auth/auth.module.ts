@@ -8,6 +8,7 @@ import { RolesModule } from '#src/core/roles/roles.module';
 import { DepartmentsModule } from '#src/core/departments/departments.module';
 import { CompaniesModule } from '#src/core/companies/companies.module';
 import { JobsModule } from '#src/core/jobs/jobs.module';
+import { MailModule } from '#src/core/mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JobsModule } from '#src/core/jobs/jobs.module';
     DepartmentsModule,
     CompaniesModule,
     JobsModule,
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],
