@@ -26,6 +26,7 @@ export class ProposalPostsController {
         job: true,
         department: true,
         role: true,
+        avatar: true,
       },
       category: true,
       status: true,

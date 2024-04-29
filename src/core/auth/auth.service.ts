@@ -11,9 +11,9 @@ import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-
 import { RolesService } from '#src/core/roles/roles.service';
 import { isEmail } from 'class-validator';
 import { MailService } from '#src/core/mail/mail.service';
-import SessionExceptions = AllExceptions.SessionExceptions;
 import AuthExceptions = AllExceptions.AuthExceptions;
 import UserExceptions = AllExceptions.UserExceptions;
+import SessionExceptions = AllExceptions.SessionExceptions;
 
 @Injectable()
 export class AuthService {
@@ -127,7 +127,7 @@ export class AuthService {
   async logout(refreshToken: string): Promise<void> {
     if (!refreshToken) {
       throw new ApiException(
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.NOT_FOUND,
         'SessionExceptions',
         SessionExceptions.SessionNotFound,
       );
@@ -136,6 +136,7 @@ export class AuthService {
     const tokenPayload = await this.tokenService.verifyAsync<TokenPayload>(
       refreshToken,
     );
+
     await this.sessionService.removeOne({
       where: { sessionId: tokenPayload.sessionId },
     });

@@ -12,4 +12,6 @@ export enum StatusType {
   proposalInWork = 'В работе',
 
   proposalInApprove = 'На согласовании',
+
+  proposalInBacklog = 'proposalInBacklog',
 }

@@ -59,5 +59,3 @@ export class AuthController {
     response.clearCookie('refreshToken');
   }
 }
-
-7;
