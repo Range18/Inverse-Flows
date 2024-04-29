@@ -125,6 +125,8 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
 
     await this.save(proposal);
 
+    await this.postService.save({ proposal: proposal });
+
     return {
       ...proposal,
       document,
