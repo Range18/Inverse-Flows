@@ -13,14 +13,20 @@ import { UpdateProposalPostDto } from './dto/update-proposal-post.dto';
 import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
-import { ApiHeader, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiHeader,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 
 @ApiTags('Proposal Posts')
 @Controller('api/proposals/posts')
 export class ProposalPostsController {
   private readonly loadRelations = {
-    usersLiked: true,
+    likeEntities: { user: true },
     proposal: {
       author: {
         job: true,
@@ -45,12 +51,17 @@ export class ProposalPostsController {
     required: true,
     schema: { format: 'Bearer ${AccessToken}' },
   })
+  @ApiBody({ schema: { format: 'type: number' } })
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
   @Post('like/:id')
-  async likePost(@Param('id') id: number, @User() user: UserRequest) {
+  async likePost(
+    @Body('type') type: number,
+    @Param('id') id: number,
+    @User() user: UserRequest,
+  ) {
     return new GetProposalPostRdo(
-      await this.proposalPostsService.like(id, user.id),
+      await this.proposalPostsService.like(id, type, user.id),
       user.id,
     );
   }

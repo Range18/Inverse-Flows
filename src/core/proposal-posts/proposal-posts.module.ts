@@ -9,10 +9,16 @@ import { UserModule } from '#src/core/users/user.module';
 import { SessionModule } from '#src/core/session/session.module';
 import { TokenModule } from '#src/core/token/token.module';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
+import { LikeEntity } from '#src/core/proposal-posts/entities/like.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProposalPost, ProposalsEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      ProposalPost,
+      ProposalsEntity,
+      UserEntity,
+      LikeEntity,
+    ]),
     UserModule,
     SessionModule,
     TokenModule,

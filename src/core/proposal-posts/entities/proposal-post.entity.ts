@@ -2,16 +2,14 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { BaseEntity } from '#src/common/base.entity';
-import { UserEntity } from '#src/core/users/user.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
+import { LikeEntity } from '#src/core/proposal-posts/entities/like.entity';
 
 @Entity('proposal_posts')
 export class ProposalPost extends BaseEntity {
@@ -31,15 +29,18 @@ export class ProposalPost extends BaseEntity {
   @JoinColumn({ name: 'proposal' })
   proposal: ProposalsEntity;
 
-  @ManyToMany(() => UserEntity, (user) => user.likedPosts, {
-    nullable: true,
-  })
-  @JoinTable({
-    name: 'users_liked_posts',
-    joinColumn: { name: 'post', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'user', referencedColumnName: 'id' },
-  })
-  usersLiked: UserEntity[];
+  // @ManyToMany(() => UserEntity, (user) => user.likedPosts, {
+  //   nullable: true,
+  // })
+  // @JoinTable({
+  //   name: 'users_liked_posts',
+  //   joinColumn: { name: 'post', referencedColumnName: 'id' },
+  //   inverseJoinColumn: { name: 'user', referencedColumnName: 'id' },
+  // })
+  // usersLiked: UserEntity[];
+
+  @OneToMany(() => LikeEntity, (like) => like.post, { nullable: true })
+  likeEntities?: LikeEntity[];
 
   @OneToMany(() => CommentEntity, (comment) => comment.post, {
     nullable: true,

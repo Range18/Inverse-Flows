@@ -23,9 +23,9 @@ export class GetProposalPostRdo {
     this.likes = proposalPost.likes;
     this.views = proposalPost.views;
     this.proposal = new GetProposalRdo(proposalPost.proposal);
-    if (proposalPost.usersLiked?.length > 0 && userId) {
-      this.isLiked = proposalPost.usersLiked?.some(
-        (user) => user.id === userId,
+    if (proposalPost?.likeEntities?.length > 0 && userId) {
+      this.isLiked = proposalPost?.likeEntities?.some(
+        (entity) => entity?.user?.id === userId,
       );
     } else {
       this.isLiked = false;

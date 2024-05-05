@@ -14,12 +14,12 @@ import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
-import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
 import { BaseEntity } from '#src/common/base.entity';
 import { Company } from '#src/core/companies/entities/company.entity';
+import { LikeEntity } from '#src/core/proposal-posts/entities/like.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -84,10 +84,10 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
 
-  @ManyToMany(() => ProposalPost, (post) => post.usersLiked, {
+  @ManyToMany(() => LikeEntity, (like) => like.user, {
     nullable: true,
   })
-  likedPosts?: ProposalPost[];
+  likes?: LikeEntity[];
 
   @OneToOne(() => AssetEntity, (avatar) => avatar.user, {
     nullable: true,

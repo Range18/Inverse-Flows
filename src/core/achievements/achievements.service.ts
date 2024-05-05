@@ -55,10 +55,10 @@ export class AchievementsService extends BaseEntityService<AchievementEntity> {
   private async getCountOfLikes(userId: number) {
     const user = await this.userService.findOne({
       where: { id: userId },
-      relations: { likedPosts: true },
+      relations: { likes: true },
     });
 
-    const likes = user.likedPosts;
+    const likes = user.likes;
 
     return likes.length;
   }
@@ -66,7 +66,7 @@ export class AchievementsService extends BaseEntityService<AchievementEntity> {
   async getUserAchievements(userId: number) {
     const user = await this.userService.findOne({
       where: { id: userId },
-      relations: { likedPosts: true, achievements: true },
+      relations: { likes: true, achievements: true },
     });
 
     if (!user) {
