@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@adminjs/express": "5.1.0",
-    "@adminjs/nestjs": "5.1.1",
+    "@adminjs/nestjs": "^5.1.1",
     "@adminjs/typeorm": "4.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
@@ -26,7 +26,7 @@
     "@nestjs/typeorm": "^10.0.1",
     "@tiptap/core": "^2.2.2",
     "@tiptap/pm": "^2.2.2",
-    "adminjs": "6.8.7",
+    "adminjs": "^6.8.7",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
