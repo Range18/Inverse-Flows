@@ -11,7 +11,7 @@ import PostExceptions = AllExceptions.PostExceptions;
 @Injectable()
 export class ProposalPostsService extends BaseEntityService<ProposalPost> {
   private readonly loadRelations = {
-    likeEntities: { user: true },
+    reactions: { user: true },
     proposal: {
       author: {
         job: true,
@@ -56,14 +56,13 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
     }
 
     if (reaction) {
-      if (type != 0) {
+      if (reaction.type != type) {
         // change reaction
         reaction.type = type;
         await this.reactionsService.save(reaction);
       } else {
         // delete reaction
         await this.reactionsService.removeOne(reaction);
-        post.likes--;
       }
     } else {
       // give reaction
@@ -72,10 +71,12 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
         user: { id: userId },
         type: type,
       });
-      post.likes++;
     }
 
-    return post;
+    return await this.findOne({
+      where: { id: post.id },
+      relations: this.loadRelations,
+    });
   }
 
   async view(entity: ProposalPost);

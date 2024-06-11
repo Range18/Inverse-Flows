@@ -24,19 +24,20 @@ import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { FindOptionsWhere } from 'typeorm';
+import { type FindOptionsOrderValue, FindOptionsWhere, In } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
 import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import Queries = AllExceptions.Queries;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @ApiTags('Proposals')
 @Controller('api/proposals')
 export class ProposalsController {
-  private readonly loadRelations = {
+  private readonly loadRelations: FindOptionsRelations<ProposalsEntity> = {
     author: {
       avatar: true,
       job: true,
@@ -80,22 +81,30 @@ export class ProposalsController {
   @ApiQuery({ name: 'limit', required: false })
   @ApiQuery({ name: 'offset', required: false })
   @ApiQuery({ name: 'status', required: false })
+  @AuthGuard()
   @Get()
   async findAll(
+    @User() user: UserRequest,
     @Query('limit') limit?: number,
     @Query('offset') offset?: number,
-    @Query('status') status?: number,
+    @Query('status') status?: string,
+    @Query('order') order?: FindOptionsOrderValue,
   ): Promise<GetProposalRdo[]> {
     let proposals: ProposalsEntity[];
+
+    const statusTypes = status ? status.split(',') : [];
 
     if (!limit && !offset) {
       proposals = await this.proposalService.find(
         {
           where: {
-            status: status ? { id: status } : undefined,
+            status: status ? { statusType: In(statusTypes) } : undefined,
           } as FindOptionsWhere<ProposalsEntity>,
-          order: {},
-          relations: this.loadRelations,
+          order: { createdAt: order },
+          relations: {
+            ...this.loadRelations,
+            post: { reactions: user.role.name == 'moderator' },
+          },
         },
         true,
       );
@@ -111,11 +120,14 @@ export class ProposalsController {
       proposals = await this.proposalService.find(
         {
           where: {
-            status: status ? { id: status } : undefined,
+            status: status ? { statusType: In(statusTypes) } : undefined,
           } as FindOptionsWhere<ProposalsEntity>,
           order: {},
           skip: limit * offset - offset,
-          relations: this.loadRelations,
+          relations: {
+            ...this.loadRelations,
+            post: { reactions: user.role.name == 'moderator' },
+          },
         },
         true,
       );
@@ -125,12 +137,19 @@ export class ProposalsController {
   }
 
   @ApiOkResponse({ type: GetProposalRdo })
+  @AuthGuard()
   @Get('/byId/:id')
-  async findOneById(@Param('id') id: number): Promise<GetProposalRdo> {
+  async findOneById(
+    @Param('id') id: number,
+    @User() user: UserRequest,
+  ): Promise<GetProposalRdo> {
     const proposal = await this.proposalService.findOne(
       {
         where: { id },
-        relations: this.loadRelations,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: user.role.name == 'moderator' },
+        },
       },
       true,
     );
@@ -165,7 +184,10 @@ export class ProposalsController {
           author: { id: user.id },
           status: statusId ? { id: statusId } : undefined,
         },
-        relations: this.loadRelations,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: user.role.name == 'moderator' },
+        },
       },
       true,
     );

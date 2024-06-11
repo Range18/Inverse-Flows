@@ -14,7 +14,7 @@ export class PostReactionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
-  @ManyToOne(() => ProposalPost, (post) => post.likeEntities, {
+  @ManyToOne(() => ProposalPost, (post) => post.reactions, {
     nullable: false,
     onDelete: 'CASCADE',
   })
@@ -28,6 +28,6 @@ export class PostReactionEntity extends BaseEntity {
   @JoinColumn({ name: 'user' })
   user: UserEntity;
 
-  @Column({ nullable: false, default: 5 })
+  @Column({ nullable: false, default: 1 })
   type: number;
 }

@@ -21,12 +21,15 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
+import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
+import { PostReactionsService } from '#src/core/post-reactions/post-reactions.service';
 
 @ApiTags('Proposal Posts')
 @Controller('api/proposals/posts')
 export class ProposalPostsController {
-  private readonly loadRelations = {
-    likeEntities: { user: true },
+  private readonly loadRelations: FindOptionsRelations<ProposalPost> = {
+    reactions: { user: true },
     proposal: {
       author: {
         job: true,
@@ -44,7 +47,10 @@ export class ProposalPostsController {
     },
   };
 
-  constructor(private readonly proposalPostsService: ProposalPostsService) {}
+  constructor(
+    private readonly proposalPostsService: ProposalPostsService,
+    private readonly postReactionsService: PostReactionsService,
+  ) {}
 
   @ApiHeader({
     name: 'authorization',

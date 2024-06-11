@@ -6,8 +6,8 @@ import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
 import { Content } from '#src/core/proposals/types/content.type';
 import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
-import { UserEntity } from '#src/core/users/user.entity';
 import { IsBoolean } from 'class-validator';
+import { PostReactionRdo } from '#src/core/post-reactions/rdo/post-reaction.rdo';
 
 export class GetProposalRdo {
   @ApiProperty()
@@ -44,6 +44,8 @@ export class GetProposalRdo {
   @ApiProperty()
   readonly isCommercial: boolean;
 
+  readonly reactions: PostReactionRdo[];
+
   @ApiProperty()
   readonly createdAt: Date;
 
@@ -69,6 +71,10 @@ export class GetProposalRdo {
         (history) => new GetHistoryRdo(history),
       );
     }
+
+    this.reactions = proposal.post?.reactions
+      ? proposal.post.reactions.map((reaction) => new PostReactionRdo(reaction))
+      : [];
 
     this.isCommercial = proposal.isCommercial;
     this.createdAt = proposal.createdAt;
