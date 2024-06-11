@@ -3,11 +3,9 @@ import { BaseEntityService } from '#src/common/base-entity.service';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserService } from '#src/core/users/user.service';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
-import { LikeEntity } from '#src/core/proposal-posts/entities/like.entity';
-import * as console from 'console';
+import { PostReactionsService } from '#src/core/post-reactions/post-reactions.service';
 import PostExceptions = AllExceptions.PostExceptions;
 
 @Injectable()
@@ -33,15 +31,13 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
   constructor(
     @InjectRepository(ProposalPost)
     private readonly proposalPostRepository: Repository<ProposalPost>,
-    @InjectRepository(LikeEntity)
-    private readonly likesRepository: Repository<LikeEntity>,
-    private readonly userService: UserService,
+    private readonly reactionsService: PostReactionsService,
   ) {
     super(proposalPostRepository);
   }
 
-  async like(id: number, type: number, userId: number) {
-    const likeEntity = await this.likesRepository.findOne({
+  async like(id: number, type: number, userId: number): Promise<ProposalPost> {
+    const reaction = await this.reactionsService.findOne({
       where: { user: { id: userId }, post: { id: id } },
       relations: { user: true },
     });
@@ -59,23 +55,23 @@ export class ProposalPostsService extends BaseEntityService<ProposalPost> {
       );
     }
 
-    if (likeEntity) {
+    if (reaction) {
       if (type != 0) {
-        likeEntity.type = type;
-        await this.likesRepository.save(likeEntity);
+        // change reaction
+        reaction.type = type;
+        await this.reactionsService.save(reaction);
       } else {
-        await this.likesRepository.remove(likeEntity);
+        // delete reaction
+        await this.reactionsService.removeOne(reaction);
         post.likes--;
       }
     } else {
-      //TODO ЕБАННАЯ МАГИЯ БЛЯТЬ ЭТО TYPEORM хули id == null когда он не null блять
-      console.log(id);
-      await this.likesRepository.save({
+      // give reaction
+      await this.reactionsService.save({
         post: post,
         user: { id: userId },
         type: type,
       });
-      console.log('dsad');
       post.likes++;
     }
 

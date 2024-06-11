@@ -55,7 +55,7 @@ export class ProposalPostsController {
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
   @Post('like/:id')
-  async likePost(
+  async like(
     @Body('type') type: number,
     @Param('id') id: number,
     @User() user: UserRequest,

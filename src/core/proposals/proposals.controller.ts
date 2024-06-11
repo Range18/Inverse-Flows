@@ -23,7 +23,6 @@ import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
-import { FindProposalDto } from '#src/core/proposals/dto/find-proposal.dto';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { FindOptionsWhere } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
@@ -86,32 +85,20 @@ export class ProposalsController {
     @Query('limit') limit?: number,
     @Query('offset') offset?: number,
     @Query('status') status?: number,
-    //TODO
-    @Body() findOptions?: FindProposalDto,
-    //
   ): Promise<GetProposalRdo[]> {
     let proposals: ProposalsEntity[];
 
     if (!limit && !offset) {
-      proposals = findOptions
-        ? await this.proposalService.find(
-            {
-              where: {
-                ...findOptions,
-                status: status ? { id: status } : undefined,
-              } as FindOptionsWhere<ProposalsEntity>,
-              order: findOptions.order,
-              relations: this.loadRelations,
-            },
-            true,
-          )
-        : await this.proposalService.find(
-            {
-              order: findOptions.order,
-              relations: this.loadRelations,
-            },
-            true,
-          );
+      proposals = await this.proposalService.find(
+        {
+          where: {
+            status: status ? { id: status } : undefined,
+          } as FindOptionsWhere<ProposalsEntity>,
+          order: {},
+          relations: this.loadRelations,
+        },
+        true,
+      );
     } else {
       if (limit * offset - offset < 0) {
         throw new ApiException(
@@ -121,30 +108,19 @@ export class ProposalsController {
         );
       }
 
-      proposals = findOptions
-        ? await this.proposalService.find(
-            {
-              where: {
-                ...findOptions,
-                status: status ? { id: status } : undefined,
-              } as FindOptionsWhere<ProposalsEntity>,
-              order: findOptions.order,
-              skip: limit * offset - offset,
-              relations: this.loadRelations,
-            },
-            true,
-          )
-        : await this.proposalService.find(
-            {
-              order: findOptions.order,
-              skip: limit * offset - offset,
-              relations: this.loadRelations,
-            },
-            true,
-          );
+      proposals = await this.proposalService.find(
+        {
+          where: {
+            status: status ? { id: status } : undefined,
+          } as FindOptionsWhere<ProposalsEntity>,
+          order: {},
+          skip: limit * offset - offset,
+          relations: this.loadRelations,
+        },
+        true,
+      );
     }
 
-    console.log(proposals);
     return proposals.map((proposal) => new GetProposalRdo(proposal));
   }
 

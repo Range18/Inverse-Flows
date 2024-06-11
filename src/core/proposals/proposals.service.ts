@@ -18,13 +18,14 @@ import { ProposalPostsService } from '#src/core/proposal-posts/proposal-posts.se
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import UserExceptions = AllExceptions.UserExceptions;
 import CategoryExceptions = AllExceptions.CategoryExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @Injectable()
 export class ProposalsService extends BaseEntityService<ProposalsEntity> {
-  private readonly loadRelations = {
+  private readonly loadRelations: FindOptionsRelations<ProposalsEntity> = {
     author: {
       job: true,
       department: true,
@@ -283,18 +284,18 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       where: { id: userId },
       relations: { avatar: true },
     });
-
-    const post = await this.postService.findOne({
-      where: { proposal: { id: proposal.id } },
-    });
-
-    if (post) {
-      throw new ApiException(
-        HttpStatus.BAD_REQUEST,
-        'ProposalExceptions',
-        ProposalExceptions.ProposalInWork,
-      );
-    }
+    //TODO logic
+    // const post = await this.postService.findOne({
+    //   where: { proposal: { id: proposal.id } },
+    // });
+    //
+    // if (post) {
+    //   throw new ApiException(
+    //     HttpStatus.BAD_REQUEST,
+    //     'ProposalExceptions',
+    //     ProposalExceptions.ProposalInWork,
+    //   );
+    // }
 
     return await this.proposalHistoryService.save({
       user: user,

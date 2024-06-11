@@ -9,7 +9,7 @@ import {
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { BaseEntity } from '#src/common/base.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
-import { LikeEntity } from '#src/core/proposal-posts/entities/like.entity';
+import { PostReactionEntity } from '#src/core/post-reactions/entities/post-reaction.entity';
 
 @Entity('proposal_posts')
 export class ProposalPost extends BaseEntity {
@@ -39,8 +39,8 @@ export class ProposalPost extends BaseEntity {
   // })
   // usersLiked: UserEntity[];
 
-  @OneToMany(() => LikeEntity, (like) => like.post, { nullable: true })
-  likeEntities?: LikeEntity[];
+  @OneToMany(() => PostReactionEntity, (like) => like.post, { nullable: true })
+  likeEntities?: PostReactionEntity[];
 
   @OneToMany(() => CommentEntity, (comment) => comment.post, {
     nullable: true,
