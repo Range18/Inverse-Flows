@@ -284,17 +284,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       relations: { avatar: true },
     });
 
-    const post = await this.postService.findOne({
-      where: { proposal: { id: proposal.id } },
-    });
-
-    if (post) {
-      throw new ApiException(
-        HttpStatus.BAD_REQUEST,
-        'ProposalExceptions',
-        ProposalExceptions.ProposalInWork,
-      );
-    }
+    //TODO check status of proposal
 
     return await this.proposalHistoryService.save({
       user: user,
