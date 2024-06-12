@@ -46,6 +46,10 @@ export class GetProposalRdo {
 
   readonly reactions: PostReactionRdo[];
 
+  readonly likes: number = 0;
+
+  readonly dislikes: number = 0;
+
   @ApiProperty()
   readonly createdAt: Date;
 
@@ -75,6 +79,14 @@ export class GetProposalRdo {
     this.reactions = proposal.post?.reactions
       ? proposal.post.reactions.map((reaction) => new PostReactionRdo(reaction))
       : [];
+
+    for (const reaction of this.reactions) {
+      if (reaction.type == 1) {
+        this.likes++;
+      } else {
+        this.dislikes++;
+      }
+    }
 
     this.isCommercial = proposal.isCommercial;
     this.createdAt = proposal.createdAt;

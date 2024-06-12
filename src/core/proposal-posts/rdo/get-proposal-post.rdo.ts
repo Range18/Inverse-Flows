@@ -11,7 +11,9 @@ export class GetProposalPostRdo {
   readonly views: number;
 
   @ApiProperty()
-  readonly likes: number;
+  readonly likes: number = 0;
+
+  readonly dislikes: number = 0;
 
   @ApiProperty()
   readonly isLiked: boolean;
@@ -35,5 +37,13 @@ export class GetProposalPostRdo {
     this.reactions = proposalPost.reactions
       ? proposalPost.reactions.map((reaction) => new PostReactionRdo(reaction))
       : [];
+
+    for (const reaction of this.reactions) {
+      if (reaction.type == 1) {
+        this.likes++;
+      } else {
+        this.dislikes++;
+      }
+    }
   }
 }
