@@ -103,7 +103,7 @@ export class ProposalsController {
           order: { createdAt: order },
           relations: {
             ...this.loadRelations,
-            post: { reactions: user.role.name == 'moderator' },
+            post: { reactions: true },
           },
         },
         true,
@@ -126,7 +126,7 @@ export class ProposalsController {
           skip: limit * offset - offset,
           relations: {
             ...this.loadRelations,
-            post: { reactions: user.role.name == 'moderator' },
+            post: { reactions: true },
           },
         },
         true,
@@ -148,7 +148,7 @@ export class ProposalsController {
         where: { id },
         relations: {
           ...this.loadRelations,
-          post: { reactions: user.role.name == 'moderator' },
+          post: { reactions: true },
         },
       },
       true,
