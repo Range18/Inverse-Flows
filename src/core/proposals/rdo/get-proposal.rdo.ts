@@ -7,7 +7,7 @@ import { Content } from '#src/core/proposals/types/content.type';
 import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
 import { IsBoolean } from 'class-validator';
-import { PostReactionRdo } from '#src/core/post-reactions/rdo/post-reaction.rdo';
+import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
 
 export class GetProposalRdo {
   @ApiProperty()
@@ -44,11 +44,7 @@ export class GetProposalRdo {
   @ApiProperty()
   readonly isCommercial: boolean;
 
-  readonly reactions: PostReactionRdo[];
-
-  readonly likes: number = 0;
-
-  readonly dislikes: number = 0;
+  readonly post: GetProposalPostRdo;
 
   @ApiProperty()
   readonly createdAt: Date;
@@ -56,7 +52,7 @@ export class GetProposalRdo {
   @ApiProperty()
   readonly updatedAt: Date;
 
-  constructor(proposal: ProposalsEntity) {
+  constructor(proposal: ProposalsEntity, userId?: number) {
     this.id = proposal.id;
     this.name = proposal.name;
     this.author = new GetUserRdo(proposal.author);
@@ -76,17 +72,9 @@ export class GetProposalRdo {
       );
     }
 
-    this.reactions = proposal.post?.reactions
-      ? proposal.post.reactions.map((reaction) => new PostReactionRdo(reaction))
-      : [];
-
-    for (const reaction of this.reactions) {
-      if (reaction.type == 1) {
-        this.likes++;
-      } else {
-        this.dislikes++;
-      }
-    }
+    this.post = proposal.post
+      ? new GetProposalPostRdo(proposal.post, userId)
+      : undefined;
 
     this.isCommercial = proposal.isCommercial;
     this.createdAt = proposal.createdAt;

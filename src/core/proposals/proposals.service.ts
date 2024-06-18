@@ -151,6 +151,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
         category: true,
         status: true,
         document: true,
+        post: { reactions: true },
       },
     });
 

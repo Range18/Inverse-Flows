@@ -103,7 +103,7 @@ export class ProposalsController {
           order: { createdAt: order },
           relations: {
             ...this.loadRelations,
-            post: { reactions: true },
+            post: { reactions: { user: true } },
           },
         },
         true,
@@ -122,18 +122,18 @@ export class ProposalsController {
           where: {
             status: status ? { statusType: In(statusTypes) } : undefined,
           } as FindOptionsWhere<ProposalsEntity>,
-          order: {},
+          order: { createdAt: order },
           skip: limit * offset - offset,
           relations: {
             ...this.loadRelations,
-            post: { reactions: true },
+            post: { reactions: { user: true } },
           },
         },
         true,
       );
     }
 
-    return proposals.map((proposal) => new GetProposalRdo(proposal));
+    return proposals.map((proposal) => new GetProposalRdo(proposal, user.id));
   }
 
   @ApiOkResponse({ type: GetProposalRdo })
@@ -148,7 +148,7 @@ export class ProposalsController {
         where: { id },
         relations: {
           ...this.loadRelations,
-          post: { reactions: true },
+          post: { reactions: { user: true } },
         },
       },
       true,
@@ -162,7 +162,7 @@ export class ProposalsController {
       );
     }
 
-    return new GetProposalRdo(proposal);
+    return new GetProposalRdo(proposal, user.id);
   }
 
   @ApiHeader({
@@ -186,14 +186,14 @@ export class ProposalsController {
         },
         relations: {
           ...this.loadRelations,
-          post: { reactions: user.role.name == 'moderator' },
+          post: { reactions: { user: true } },
         },
       },
       true,
     );
 
     try {
-      return proposals.map((proposal) => new GetProposalRdo(proposal));
+      return proposals.map((proposal) => new GetProposalRdo(proposal, user.id));
     } catch (err) {
       throw new HttpException(err, 500);
     }
@@ -218,7 +218,10 @@ export class ProposalsController {
     const proposal = await this.proposalService.findOne(
       {
         where: { id },
-        relations: this.loadRelations,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: { user: true } },
+        },
       },
       true,
     );
@@ -254,6 +257,7 @@ export class ProposalsController {
         updateProposalStatusDto,
         user.id,
       ),
+      user.id,
     );
   }
 

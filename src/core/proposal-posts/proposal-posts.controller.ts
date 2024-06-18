@@ -13,17 +13,12 @@ import { UpdateProposalPostDto } from './dto/update-proposal-post.dto';
 import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
-import {
-  ApiBody,
-  ApiHeader,
-  ApiOkResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiHeader, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { PostReactionsService } from '#src/core/post-reactions/post-reactions.service';
+import { GiveReactionDto } from '#src/core/proposal-posts/dto/give-reaction.dto';
 
 @ApiTags('Proposal Posts')
 @Controller('api/proposals/posts')
@@ -57,12 +52,11 @@ export class ProposalPostsController {
     required: true,
     schema: { format: 'Bearer ${AccessToken}' },
   })
-  @ApiBody({ schema: { format: 'type: number' } })
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
   @Post('like/:id')
   async like(
-    @Body('type') type: number,
+    @Body() { type }: GiveReactionDto,
     @Param('id') id: number,
     @User() user: UserRequest,
   ) {

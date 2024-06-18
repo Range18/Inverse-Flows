@@ -16,7 +16,9 @@ export class GetProposalPostRdo {
   readonly dislikes: number = 0;
 
   @ApiProperty()
-  readonly isLiked: boolean;
+  readonly isLiked: boolean = false;
+
+  readonly isDisliked: boolean = false;
 
   @ApiProperty({ type: GetProposalRdo })
   readonly proposal: GetProposalRdo;
@@ -26,19 +28,22 @@ export class GetProposalPostRdo {
   constructor(proposalPost: ProposalPost, userId?: number) {
     this.id = proposalPost.id;
     this.views = proposalPost.views;
-    this.proposal = new GetProposalRdo(proposalPost.proposal);
+    this.proposal = proposalPost.proposal
+      ? new GetProposalRdo(proposalPost.proposal)
+      : undefined;
     if (proposalPost?.reactions?.length > 0 && userId) {
-      this.isLiked = proposalPost?.reactions?.some(
-        (entity) => entity?.user?.id === userId,
-      );
-    } else {
-      this.isLiked = false;
+      for (const reaction of proposalPost.reactions) {
+        if (reaction?.user?.id == userId) {
+          this.isLiked = reaction.type == 1;
+          this.isDisliked = reaction.type == 2;
+        }
+      }
     }
     this.reactions = proposalPost.reactions
       ? proposalPost.reactions.map((reaction) => new PostReactionRdo(reaction))
       : [];
 
-    for (const reaction of this.reactions) {
+    for (const reaction of proposalPost.reactions) {
       if (reaction.type == 1) {
         this.likes++;
       } else {
