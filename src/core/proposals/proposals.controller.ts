@@ -31,6 +31,7 @@ import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
 import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
+import { SetDepartmentDto } from '#src/core/proposals/dto/set-department.dto';
 import Queries = AllExceptions.Queries;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
@@ -258,6 +259,23 @@ export class ProposalsController {
         user.id,
       ),
       user.id,
+    );
+  }
+
+  @ApiBody({ type: SetDepartmentDto })
+  @ApiOkResponse({ type: [GetProposalRdo] })
+  @RolesGuard('moderator', 'admin')
+  @AuthGuard()
+  @Post(':id/set-department')
+  async setResponsibleDepartment(
+    @Param('id') id: number,
+    @Body() setDepartmentDto: SetDepartmentDto,
+  ) {
+    return new GetProposalRdo(
+      await this.proposalService.updateOne(
+        { where: { id } },
+        { responsibleDepartment: { id: setDepartmentDto.departmentId } },
+      ),
     );
   }
 

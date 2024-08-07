@@ -14,6 +14,7 @@ import { DocumentEntity } from '#src/core/documents/entities/document.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
+import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 
 @Entity('proposals')
 export class ProposalsEntity extends BaseEntity {
@@ -25,6 +26,13 @@ export class ProposalsEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'author' })
   author: UserEntity;
+
+  @ManyToOne(() => DepartmentEntity, {
+    nullable: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'responsibleDepartment' })
+  responsibleDepartment?: DepartmentEntity;
 
   @Column({ nullable: false })
   name: string;

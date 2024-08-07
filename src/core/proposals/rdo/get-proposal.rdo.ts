@@ -8,6 +8,7 @@ import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
 import { IsBoolean } from 'class-validator';
 import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
+import { GetDepartmentRdo } from '#src/core/departments/rdo/get-department.rdo';
 
 export class GetProposalRdo {
   @ApiProperty()
@@ -46,6 +47,8 @@ export class GetProposalRdo {
 
   readonly post: GetProposalPostRdo;
 
+  responsibleDepartment?: GetDepartmentRdo;
+
   @ApiProperty()
   readonly createdAt: Date;
 
@@ -60,6 +63,10 @@ export class GetProposalRdo {
     this.category = proposal.category;
     this.content = JSON.parse(proposal.content);
     this.description = proposal.description;
+
+    this.responsibleDepartment = proposal.responsibleDepartment
+      ? new GetDepartmentRdo(proposal.responsibleDepartment)
+      : undefined;
 
     this.document = proposal.document
       ? new GetDocumentRdo(proposal.document)

@@ -5,11 +5,7 @@ import ms from 'ms';
 export const backendServer = {
   host: get('BACKEND_HOST').default('localhost').asString(),
   port: get('BACKEND_PORT').default(3000).asPortNumber(),
-  secure: get('SECURE').default('true').asBool(),
-  url: function () {
-    return `http${this.secure ? 's' : ''}://${this.host}:${this.port}`;
-  },
-  urlValue: 'https://api.postideas.ru',
+  urlValue: get('BACKEND_URL').required().asString(),
 };
 
 export const frontendServer = {
