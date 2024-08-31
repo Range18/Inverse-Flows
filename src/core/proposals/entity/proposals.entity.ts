@@ -37,8 +37,8 @@ export class ProposalsEntity extends BaseEntity {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false })
-  description: string;
+  @Column({ nullable: true })
+  description?: string;
 
   @ManyToOne(() => CategoryEntity, (category) => category.proposal, {
     nullable: false,
@@ -46,7 +46,7 @@ export class ProposalsEntity extends BaseEntity {
   @JoinColumn({ name: 'category' })
   category: CategoryEntity;
 
-  @Column({ type: 'longtext', nullable: false })
+  @Column({ type: 'longtext', nullable: true })
   content: string;
 
   @ManyToOne(() => ProposalStatus, (status) => status.proposals, {

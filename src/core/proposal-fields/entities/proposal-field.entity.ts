@@ -35,6 +35,12 @@ export class ProposalFieldEntity extends BaseEntity {
   @Column({ default: 'text' })
   inputType: string;
 
+  @Column({ nullable: true })
+  columnName?: string;
+
+  @Column({ nullable: true })
+  place: number;
+
   @Column({ default: false })
   isRequired: boolean;
 

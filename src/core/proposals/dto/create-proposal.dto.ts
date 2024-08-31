@@ -1,30 +1,30 @@
 import {
   IsBoolean,
   IsDateString,
+  IsNotEmpty,
   IsNumber,
   IsObject,
   IsOptional,
   IsString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Content } from '#src/core/proposals/types/content.type';
 
 export class CreateProposalDto {
   @IsString()
-  @ApiProperty()
+  @IsNotEmpty()
   readonly name: string;
 
   @IsNumber()
-  @ApiProperty()
+  @IsNotEmpty()
   readonly category: number;
 
   @IsString()
-  @ApiProperty()
-  readonly description: string;
+  @IsOptional()
+  readonly description?: string;
 
   @IsObject()
-  @ApiProperty()
-  content: Content;
+  @IsOptional()
+  content?: { [key: string]: any };
 
   @IsString()
   @IsOptional()

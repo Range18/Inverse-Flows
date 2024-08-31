@@ -13,6 +13,7 @@ export class ProposalFieldsController {
       await this.proposalFieldsService.find({
         where: { form: { id: formId } },
         relations: { form: true },
+        order: { place: 'ASC' },
       }),
     );
   }

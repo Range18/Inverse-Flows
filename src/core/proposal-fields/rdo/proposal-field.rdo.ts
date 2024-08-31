@@ -12,6 +12,12 @@ export class ProposalFieldRdo {
 
   type: string;
 
+  inputType: string;
+
+  columnName?: string;
+
+  place: number;
+
   isRequired: boolean;
 
   isDisabled: boolean;
