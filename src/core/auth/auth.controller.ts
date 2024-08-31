@@ -54,9 +54,11 @@ export class AuthController {
   async logout(
     @Res({ passthrough: true }) response: Response,
     @Cookie('refreshToken') refreshToken: string,
-  ): Promise<void> {
+  ): Promise<string> {
     await this.authService.logout(refreshToken);
 
     response.clearCookie('refreshToken');
+
+    return 'OK';
   }
 }
