@@ -16,7 +16,13 @@ export class ProposalFieldEntity extends BaseEntity {
   readonly id: number;
 
   @Column()
-  text: string;
+  label: string;
+
+  @Column()
+  name: string;
+
+  @Column({ nullable: true })
+  placeholder?: string;
 
   @Column()
   type: string;

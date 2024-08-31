@@ -15,11 +15,11 @@ export class ProposalFormEntity extends BaseEntity {
   @Column()
   title: string;
 
+  @Column({ nullable: true })
+  subTitle?: string;
+
   @Column({ type: 'longtext', nullable: true })
   description?: string;
-
-  @Column()
-  type: string;
 
   @OneToMany(() => ProposalFieldEntity, (field) => field.form, {
     nullable: true,

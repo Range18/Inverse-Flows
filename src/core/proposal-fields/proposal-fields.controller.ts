@@ -9,17 +9,21 @@ export class ProposalFieldsController {
 
   @Get()
   async findAll(@Param('formId') formId: number) {
-    return this.proposalFieldsService.find({
-      where: { form: { id: formId } },
-      relations: { form: true },
-    });
+    return this.proposalFieldsService.formatToDto(
+      await this.proposalFieldsService.find({
+        where: { form: { id: formId } },
+        relations: { form: true },
+      }),
+    );
   }
 
   @Get(':id')
   async findOne(@Param('formId') formId: number, @Param('id') id: number) {
-    return this.proposalFieldsService.findOne({
-      where: { id, form: { id: formId } },
-      relations: { form: true },
-    });
+    return this.proposalFieldsService.formatToDto(
+      await this.proposalFieldsService.findOne({
+        where: { id, form: { id: formId } },
+        relations: { form: true },
+      }),
+    );
   }
 }

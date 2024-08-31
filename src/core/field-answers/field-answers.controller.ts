@@ -9,17 +9,21 @@ export class FieldAnswersController {
 
   @Get()
   async findAll(@Param('fieldId') fieldId: number) {
-    return await this.fieldAnswersService.find({
-      where: { field: { id: fieldId } },
-      relations: { field: true },
-    });
+    return this.fieldAnswersService.formatToDto(
+      await this.fieldAnswersService.find({
+        where: { field: { id: fieldId } },
+        relations: { field: true },
+      }),
+    );
   }
 
   @Get(':id')
   async findOne(@Param('fieldId') fieldId: number, @Param('id') id: number) {
-    return await this.fieldAnswersService.findOne({
-      where: { id, field: { id: fieldId } },
-      relations: { field: true },
-    });
+    return this.fieldAnswersService.formatToDto(
+      await this.fieldAnswersService.findOne({
+        where: { id, field: { id: fieldId } },
+        relations: { field: true },
+      }),
+    );
   }
 }

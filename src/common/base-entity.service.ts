@@ -7,6 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 import deepEqual from 'deep-equal';
+import { plainToInstance } from 'class-transformer';
 
 type ExtractTypeOrNever<T, K> = T extends undefined ? never : K;
 
@@ -164,10 +165,6 @@ export abstract class BaseEntityService<
   formatToDto(entities: Entity[]): EntityDto[];
   formatToDto(entity: Entity): EntityDto;
   formatToDto(entity: Entity | Entity[]): EntityDto | EntityDto[] {
-    if (Array.isArray(entity)) {
-      return entity.map((entity) => new this.entityDto(entity));
-    } else {
-      return new this.entityDto(entity);
-    }
+    return plainToInstance(this.entityDto, entity);
   }
 }

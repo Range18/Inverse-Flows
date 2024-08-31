@@ -9,11 +9,15 @@ export class ProposalFormsController {
 
   @Get()
   async findAll() {
-    return await this.proposalFormsService.find({});
+    return this.proposalFormsService.formatToDto(
+      await this.proposalFormsService.find({}),
+    );
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    return await this.proposalFormsService.findOne({ where: { id } });
+    return this.proposalFormsService.formatToDto(
+      await this.proposalFormsService.findOne({ where: { id } }),
+    );
   }
 }
