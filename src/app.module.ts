@@ -21,6 +21,7 @@ import { CommentsModule } from '#src/core/comments/comments.module';
 import { CompaniesModule } from '#src/core/companies/companies.module';
 import { ProposalFormsModule } from '#src/core/proposal-forms/proposal-forms.module';
 import { ProposalFieldsModule } from '#src/core/proposal-fields/proposal-fields.module';
+import { FieldAnswersModule } from '#src/core/field-answers/field-answers.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ProposalFieldsModule } from '#src/core/proposal-fields/proposal-fields.
     CompaniesModule,
     ProposalFormsModule,
     ProposalFieldsModule,
+    FieldAnswersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
