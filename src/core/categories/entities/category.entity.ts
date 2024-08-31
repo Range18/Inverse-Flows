@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
 import { BaseEntity } from '#src/common/base.entity';
 

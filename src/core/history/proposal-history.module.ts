@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 
 @Module({

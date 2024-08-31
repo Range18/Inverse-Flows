@@ -1,4 +1,4 @@
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';

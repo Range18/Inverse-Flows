@@ -1,5 +1,5 @@
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
@@ -30,8 +30,10 @@ export class GetUserRdo {
   @ApiProperty({ type: () => RolesEntity })
   readonly role: RolesEntity;
 
-  //TODO EDIT
-  //JUST FOR TESTING
+  address?: string;
+
+  city?: string;
+
   @ApiProperty({ type: () => DepartmentEntity || String })
   readonly department: DepartmentEntity | string;
 
@@ -67,6 +69,8 @@ export class GetUserRdo {
     this.role = user.role;
     this.department = user.department;
     this.job = user.job;
+    this.address = user.address;
+    this.city = user.city;
     this.telegram = user.telegram;
     this.vk = user.vk;
     this.proposalCount = user.proposalsCount;

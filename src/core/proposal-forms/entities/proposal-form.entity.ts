@@ -21,6 +21,9 @@ export class ProposalFormEntity extends BaseEntity {
   @Column({ type: 'longtext', nullable: true })
   description?: string;
 
+  @Column({ nullable: true })
+  place: number;
+
   @OneToMany(() => ProposalFieldEntity, (field) => field.form, {
     nullable: true,
     eager: true,

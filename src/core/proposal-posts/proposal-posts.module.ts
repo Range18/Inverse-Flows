@@ -4,7 +4,7 @@ import { ProposalPostsController } from './proposal-posts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { UserModule } from '#src/core/users/user.module';
 import { SessionModule } from '#src/core/session/session.module';
 import { TokenModule } from '#src/core/token/token.module';

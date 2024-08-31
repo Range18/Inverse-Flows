@@ -3,7 +3,7 @@ import { DepartmentsService } from './departments.service';
 import { DepartmentsController } from './departments.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 
 @Module({

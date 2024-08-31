@@ -10,7 +10,9 @@ export class ProposalFormsController {
   @Get()
   async findAll() {
     return this.proposalFormsService.formatToDto(
-      await this.proposalFormsService.find({}),
+      await this.proposalFormsService.find({
+        order: { place: 'ASC', fields: { place: 'ASC' } },
+      }),
     );
   }
 

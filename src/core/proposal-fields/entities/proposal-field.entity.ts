@@ -38,7 +38,7 @@ export class ProposalFieldEntity extends BaseEntity {
   @Column({ nullable: true })
   columnName?: string;
 
-  @Column({ nullable: true })
+  @Column()
   place: number;
 
   @Column({ default: false })

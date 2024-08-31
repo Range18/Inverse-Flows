@@ -10,6 +10,8 @@ export class ProposalFormRdo {
 
   description?: string;
 
+  place: number;
+
   @Transform(({ value }) => plainToInstance(ProposalFieldRdo, value))
   fields?: ProposalFieldRdo[];
 }

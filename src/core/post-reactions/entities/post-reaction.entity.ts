@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 
 @Entity('reactions')
 export class PostReactionEntity extends BaseEntity {

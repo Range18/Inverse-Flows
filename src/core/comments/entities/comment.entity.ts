@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { BaseEntity } from '#src/common/base.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 

@@ -8,7 +8,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SessionEntity } from '../session/session.entity';
+import { SessionEntity } from '../../session/session.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
@@ -46,6 +46,12 @@ export class UserEntity extends BaseEntity {
 
   @Column({ nullable: false })
   birthday: Date;
+
+  @Column({ nullable: true })
+  address?: string;
+
+  @Column({ nullable: true })
+  city?: string;
 
   @Column({ nullable: true })
   vk?: string;
