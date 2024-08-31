@@ -15,6 +15,8 @@ import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
 import { Company } from '#src/core/companies/entities/company.entity';
 import { ProposalFormEntity } from '#src/core/proposal-forms/entities/proposal-form.entity';
+import { ProposalFieldEntity } from '#src/core/proposal-fields/entities/proposal-field.entity';
+import { FieldAnswerEntity } from '#src/core/field-answers/entities/field-answer.entity';
 
 export const adminOptions = {
   adminJsOptions: {
@@ -36,6 +38,8 @@ export const adminOptions = {
       AchievementEntity,
       Company,
       ProposalFormEntity,
+      ProposalFieldEntity,
+      FieldAnswerEntity,
     ],
   },
   auth: {
