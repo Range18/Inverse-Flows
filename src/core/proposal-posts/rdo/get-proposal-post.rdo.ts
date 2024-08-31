@@ -1,26 +1,20 @@
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
-import { ApiProperty } from '@nestjs/swagger';
 import { PostReactionRdo } from '#src/core/post-reactions/rdo/post-reaction.rdo';
 
 export class GetProposalPostRdo {
-  @ApiProperty()
   readonly id: number;
 
-  @ApiProperty()
   readonly views: number;
 
-  @ApiProperty()
   readonly likes: number = 0;
 
   readonly dislikes: number = 0;
 
-  @ApiProperty()
   readonly isLiked: boolean = false;
 
   readonly isDisliked: boolean = false;
 
-  @ApiProperty({ type: GetProposalRdo })
   readonly proposal: GetProposalRdo;
 
   readonly reactions: PostReactionRdo[];
