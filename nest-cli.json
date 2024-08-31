@@ -10,7 +10,7 @@
         "options": {
           "dtoFileNameSuffix": [
             ".dto.ts",
-            ",.entity.ts",
+            ".entity.ts",
             ".rdo.ts"
           ],
           "classValidatorShim": true,
