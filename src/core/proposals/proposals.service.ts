@@ -18,28 +18,12 @@ import { ProposalPostsService } from '#src/core/proposal-posts/proposal-posts.se
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
-import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import UserExceptions = AllExceptions.UserExceptions;
 import CategoryExceptions = AllExceptions.CategoryExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @Injectable()
 export class ProposalsService extends BaseEntityService<ProposalsEntity> {
-  private readonly loadRelations: FindOptionsRelations<ProposalsEntity> = {
-    author: {
-      job: true,
-      department: true,
-      role: true,
-    },
-    category: true,
-    status: true,
-    document: true,
-    history: {
-      user: true,
-      status: true,
-    },
-  };
-
   constructor(
     @InjectRepository(ProposalsEntity)
     private readonly proposalRepository: Repository<ProposalsEntity>,
@@ -192,10 +176,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
         userId,
       );
 
-      proposal.status = status;
-
-      await this.save(proposal);
-
       history.push(commentEvent);
 
       return {
@@ -285,18 +265,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       where: { id: userId },
       relations: { avatar: true },
     });
-    //TODO logic
-    // const post = await this.postService.findOne({
-    //   where: { proposal: { id: proposal.id } },
-    // });
-    //
-    // if (post) {
-    //   throw new ApiException(
-    //     HttpStatus.BAD_REQUEST,
-    //     'ProposalExceptions',
-    //     ProposalExceptions.ProposalInWork,
-    //   );
-    // }
 
     return await this.proposalHistoryService.save({
       user: user,

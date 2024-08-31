@@ -1,4 +1,4 @@
-import { ApiBody, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -52,7 +52,6 @@ export class ProposalsController {
 
   constructor(private readonly proposalService: ProposalsService) {}
 
-  @ApiOkResponse({ type: GetProposalRdo })
   @AuthGuard()
   @Post()
   async create(
@@ -67,10 +66,6 @@ export class ProposalsController {
     );
   }
 
-  @ApiOkResponse({ type: [GetProposalRdo] })
-  @ApiQuery({ name: 'limit', required: false })
-  @ApiQuery({ name: 'offset', required: false })
-  @ApiQuery({ name: 'status', required: false })
   @AuthGuard()
   @Get()
   async findAll(
@@ -117,7 +112,6 @@ export class ProposalsController {
     return proposals.map((proposal) => new GetProposalRdo(proposal, user.id));
   }
 
-  @ApiOkResponse({ type: GetProposalRdo })
   @AuthGuard()
   @Get('/byId/:id')
   async findOneById(
@@ -147,7 +141,6 @@ export class ProposalsController {
   }
 
   @ApiQuery({ name: 'status', required: false })
-  @ApiOkResponse({ type: [GetProposalRdo] })
   @AuthGuard()
   @Get('my')
   async findUserProposals(
@@ -176,8 +169,6 @@ export class ProposalsController {
   }
 
   @ApiQuery({ name: 'id', required: true })
-  @ApiBody({ type: UpdateProposalDto })
-  @ApiOkResponse({ type: GetProposalRdo })
   @RolesGuard('owner')
   @AuthGuard()
   @Patch()
@@ -208,8 +199,6 @@ export class ProposalsController {
   }
 
   @ApiQuery({ name: 'id', required: true })
-  @ApiBody({ type: UpdateProposalStatusDto })
-  @ApiOkResponse({ type: [GetProposalRdo] })
   @RolesGuard('member', 'moderator', 'admin')
   @AuthGuard()
   @Patch(':id/process')
@@ -228,8 +217,6 @@ export class ProposalsController {
     );
   }
 
-  @ApiBody({ type: SetDepartmentDto })
-  @ApiOkResponse({ type: [GetProposalRdo] })
   @RolesGuard('moderator', 'admin')
   @AuthGuard()
   @Post(':id/set-department')
