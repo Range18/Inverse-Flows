@@ -1,10 +1,4 @@
-import {
-  ApiBody,
-  ApiHeader,
-  ApiOkResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -58,11 +52,6 @@ export class ProposalsController {
 
   constructor(private readonly proposalService: ProposalsService) {}
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: GetProposalRdo })
   @AuthGuard()
   @Post()
@@ -157,11 +146,6 @@ export class ProposalsController {
     return new GetProposalRdo(proposal, user.id);
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiQuery({ name: 'status', required: false })
   @ApiOkResponse({ type: [GetProposalRdo] })
   @AuthGuard()
@@ -191,11 +175,6 @@ export class ProposalsController {
     }
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiQuery({ name: 'id', required: true })
   @ApiBody({ type: UpdateProposalDto })
   @ApiOkResponse({ type: GetProposalRdo })
@@ -228,11 +207,6 @@ export class ProposalsController {
     });
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiQuery({ name: 'id', required: true })
   @ApiBody({ type: UpdateProposalStatusDto })
   @ApiOkResponse({ type: [GetProposalRdo] })
@@ -271,11 +245,6 @@ export class ProposalsController {
     );
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @RolesGuard('moderator', 'admin', 'owner')
   @AuthGuard()
   @Delete(':id')
