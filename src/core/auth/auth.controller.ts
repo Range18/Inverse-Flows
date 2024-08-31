@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { type Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoggedUserRdo } from '../users/rdo/logged-user.rdo';
-import { backendServer } from '#src/common/configs/config';
 import { LoginUserDto } from '#src/core/users/dto/login-user.dto';
 import { Cookie } from '#src/common/decorators/cookie.decorator';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
@@ -23,7 +22,7 @@ export class AuthController {
 
     response.cookie('refreshToken', userRdo.refreshToken, {
       expires: userRdo.sessionExpireAt,
-      secure: backendServer.secure,
+      secure: true,
       httpOnly: true,
     });
 
@@ -42,7 +41,7 @@ export class AuthController {
 
     response.cookie('refreshToken', userRdo.refreshToken, {
       expires: userRdo.sessionExpireAt,
-      secure: backendServer.secure,
+      secure: true,
       httpOnly: true,
     });
 

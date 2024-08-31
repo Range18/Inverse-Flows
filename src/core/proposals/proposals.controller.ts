@@ -24,7 +24,7 @@ import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { type FindOptionsOrderValue, FindOptionsWhere, In } from 'typeorm';
+import { FindOptionsWhere, In } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
@@ -32,7 +32,7 @@ import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator'
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import { SetDepartmentDto } from '#src/core/proposals/dto/set-department.dto';
-import Queries = AllExceptions.Queries;
+import { ProposalQueryDto } from '#src/core/proposals/dto/proposal-query.dto';
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @ApiTags('Proposals')
@@ -86,22 +86,20 @@ export class ProposalsController {
   @Get()
   async findAll(
     @User() user: UserRequest,
-    @Query('limit') limit?: number,
-    @Query('offset') offset?: number,
-    @Query('status') status?: string,
-    @Query('order') order?: FindOptionsOrderValue,
+    @Query() query: ProposalQueryDto,
   ): Promise<GetProposalRdo[]> {
     let proposals: ProposalsEntity[];
 
-    const statusTypes = status ? status.split(',') : [];
+    const statusTypes = query.status ? query.status.split(',') : [];
 
-    if (!limit && !offset) {
+    if (!query.limit && !query.offset) {
       proposals = await this.proposalService.find(
         {
           where: {
-            status: status ? { statusType: In(statusTypes) } : undefined,
+            status: query.status ? { statusType: In(statusTypes) } : undefined,
+            responsibleDepartment: { id: query.responsibleDepartmentId },
           } as FindOptionsWhere<ProposalsEntity>,
-          order: { createdAt: order },
+          order: { createdAt: query.order },
           relations: {
             ...this.loadRelations,
             post: { reactions: { user: true } },
@@ -110,21 +108,14 @@ export class ProposalsController {
         true,
       );
     } else {
-      if (limit * offset - offset < 0) {
-        throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          'Queries',
-          Queries.InvalidLimitOffset,
-        );
-      }
-
       proposals = await this.proposalService.find(
         {
           where: {
-            status: status ? { statusType: In(statusTypes) } : undefined,
+            status: query.status ? { statusType: In(statusTypes) } : undefined,
+            responsibleDepartment: { id: query.responsibleDepartmentId },
           } as FindOptionsWhere<ProposalsEntity>,
-          order: { createdAt: order },
-          skip: limit * offset - offset,
+          order: { createdAt: query.order },
+          skip: query.limit * query.offset - query.offset,
           relations: {
             ...this.loadRelations,
             post: { reactions: { user: true } },
@@ -233,6 +224,7 @@ export class ProposalsController {
       category: { id: updateProposalDto.category },
       description: updateProposalDto.description,
       documentLink: updateProposalDto.documentLink,
+      dueDate: updateProposalDto.dueDate,
     });
   }
 
@@ -273,7 +265,7 @@ export class ProposalsController {
   ) {
     return new GetProposalRdo(
       await this.proposalService.updateOne(
-        { where: { id } },
+        { where: { id }, relations: this.loadRelations },
         { responsibleDepartment: { id: setDepartmentDto.departmentId } },
       ),
     );

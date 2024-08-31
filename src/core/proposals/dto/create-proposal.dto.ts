@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsDateString,
   IsNumber,
   IsObject,
   IsOptional,
@@ -37,6 +38,10 @@ export class CreateProposalDto {
   @IsBoolean()
   @ApiProperty()
   isCommercial: boolean;
+
+  @IsDateString()
+  @IsOptional()
+  dueDate?: Date;
 }
 
 export type CreateProposal = CreateProposalDto & { author: number };

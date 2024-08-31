@@ -49,6 +49,8 @@ export class GetProposalRdo {
 
   responsibleDepartment?: GetDepartmentRdo;
 
+  dueDate?: Date;
+
   @ApiProperty()
   readonly createdAt: Date;
 
@@ -63,6 +65,7 @@ export class GetProposalRdo {
     this.category = proposal.category;
     this.content = JSON.parse(proposal.content);
     this.description = proposal.description;
+    this.dueDate = proposal.dueDate;
 
     this.responsibleDepartment = proposal.responsibleDepartment
       ? new GetDepartmentRdo(proposal.responsibleDepartment)

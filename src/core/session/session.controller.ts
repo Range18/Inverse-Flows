@@ -2,7 +2,6 @@ import { Controller, Post, Res } from '@nestjs/common';
 import { type Response } from 'express';
 import { LoggedUserRdo } from '#src/core/users/rdo/logged-user.rdo';
 import { SessionService } from '#src/core/session/session.service';
-import { backendServer } from '#src/common/configs/config';
 import { Cookie } from '#src/common/decorators/cookie.decorator';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
@@ -21,7 +20,7 @@ export class SessionController {
 
     response.cookie('refreshToken', newSession.refreshToken, {
       expires: newSession.sessionExpireAt,
-      secure: backendServer.secure,
+      secure: true,
       httpOnly: true,
     });
 

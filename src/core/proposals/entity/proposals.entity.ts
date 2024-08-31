@@ -76,4 +76,7 @@ export class ProposalsEntity extends BaseEntity {
 
   @Column({ nullable: false, default: true })
   isCommercial: boolean;
+
+  @Column({ nullable: true })
+  dueDate?: Date;
 }
