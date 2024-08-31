@@ -3,14 +3,13 @@ import { type Response } from 'express';
 import { LoggedUserRdo } from '#src/core/users/rdo/logged-user.rdo';
 import { SessionService } from '#src/core/session/session.service';
 import { Cookie } from '#src/common/decorators/cookie.decorator';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('session')
 @Controller('sessions')
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
-  @ApiCreatedResponse({ type: LoggedUserRdo })
   @Post('refresh')
   async refresh(
     @Res({ passthrough: true }) response: Response,
@@ -22,6 +21,7 @@ export class SessionController {
       expires: newSession.sessionExpireAt,
       secure: true,
       httpOnly: true,
+      sameSite: 'none',
     });
 
     return new LoggedUserRdo(

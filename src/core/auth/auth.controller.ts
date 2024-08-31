@@ -24,6 +24,7 @@ export class AuthController {
       expires: userRdo.sessionExpireAt,
       secure: true,
       httpOnly: true,
+      sameSite: 'none',
     });
 
     return userRdo;
@@ -43,6 +44,7 @@ export class AuthController {
       expires: userRdo.sessionExpireAt,
       secure: true,
       httpOnly: true,
+      sameSite: 'none',
     });
 
     return userRdo;
