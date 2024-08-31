@@ -18,8 +18,8 @@ import { ProposalPostsService } from '#src/core/proposal-posts/proposal-posts.se
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { DocumentEntity } from '#src/core/documents/entities/document.entity';
+import { ProposalAssetsService } from '#src/core/proposal-assets/proposal-assets.service';
 import UserExceptions = AllExceptions.UserExceptions;
-import CategoryExceptions = AllExceptions.CategoryExceptions;
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @Injectable()
@@ -33,6 +33,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     private readonly statusService: ProposalStatusService,
     private readonly postService: ProposalPostsService,
     private readonly proposalHistoryService: ProposalHistoryService,
+    private readonly assetsService: ProposalAssetsService,
   ) {
     super(proposalRepository);
   }
@@ -50,25 +51,12 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       );
     }
 
-    const category = await this.categoryService.findOne({
-      where: { id: createProposalDto.category },
-    });
-
-    if (!category) {
-      throw new ApiException(
-        HttpStatus.NOT_FOUND,
-        'CategoryExceptions',
-        CategoryExceptions.CategoryNotFound,
-      );
-    }
-
     const inApproveStatus = await this.statusService.findOne({
       where: { name: StatusType.proposalInApprove },
     });
 
     const proposal = await this.save({
       author: user,
-      category: category,
       description: createProposalDto.description,
       name: createProposalDto.name,
       content: JSON.stringify(createProposalDto.content),
@@ -90,6 +78,13 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     proposal.documentLink = document
       ? `${backendServer.urlValue}/api/proposals/documents/file/${document.name}`
       : createProposalDto.document;
+
+    if (createProposalDto.files) {
+      await this.assetsService.uploadFiles(
+        createProposalDto.files,
+        proposal.id,
+      );
+    }
 
     const createdEvent = await this.proposalHistoryService.save({
       proposal: proposal,

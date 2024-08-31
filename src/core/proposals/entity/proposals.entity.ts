@@ -15,6 +15,7 @@ import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-stat
 import { ProposalHistoryEntity } from '#src/core/history/entities/proposal-history.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
+import { ProposalAssetEntity } from '#src/core/proposal-assets/entities/proposal-asset.entity';
 
 @Entity('proposals')
 export class ProposalsEntity extends BaseEntity {
@@ -41,10 +42,10 @@ export class ProposalsEntity extends BaseEntity {
   description?: string;
 
   @ManyToOne(() => CategoryEntity, (category) => category.proposal, {
-    nullable: false,
+    nullable: true,
   })
   @JoinColumn({ name: 'category' })
-  category: CategoryEntity;
+  category?: CategoryEntity;
 
   @Column({ type: 'longtext', nullable: true })
   content: string;
@@ -76,4 +77,10 @@ export class ProposalsEntity extends BaseEntity {
 
   @Column({ nullable: true })
   dueDate?: Date;
+
+  @OneToMany(() => ProposalAssetEntity, (asset) => asset.proposal, {
+    nullable: true,
+    eager: true,
+  })
+  assets?: ProposalAssetEntity[];
 }

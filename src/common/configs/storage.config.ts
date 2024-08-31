@@ -5,6 +5,7 @@ export const storageConfig = {
   innerDocuments: 'documents',
   innerAvatars: 'avatars',
   innerStatic: 'static',
+  proposalAssetsDir: 'proposal-assets',
   nameLength: 12,
   defaultAvatar: get('DEFAULT_AVATAR').required().asString(),
   defaultMimetype: 'image/png',

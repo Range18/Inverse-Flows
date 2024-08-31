@@ -6,6 +6,9 @@ import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
 import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
 import { GetDepartmentRdo } from '#src/core/departments/rdo/get-department.rdo';
+import { ProposalAssetRdo } from '#src/core/proposal-assets/rdo/proposal-asset.rdo';
+import { plainToInstance } from 'class-transformer';
+import { backendServer } from '#src/common/configs/config';
 
 export class GetProposalRdo {
   readonly id: number;
@@ -33,6 +36,8 @@ export class GetProposalRdo {
   responsibleDepartment?: GetDepartmentRdo;
 
   dueDate?: Date;
+
+  assets?: ProposalAssetRdo[];
 
   readonly createdAt: Date;
 
@@ -66,6 +71,14 @@ export class GetProposalRdo {
     this.post = proposal.post
       ? new GetProposalPostRdo(proposal.post, userId)
       : undefined;
+
+    this.assets = proposal.assets.map((asset) => {
+      const rdo = plainToInstance(ProposalAssetRdo, asset);
+
+      rdo.link = `${backendServer.urlValue}/api/proposals/${proposal.id}/assets/${asset.originalname}/source`;
+
+      return rdo;
+    });
 
     this.createdAt = proposal.createdAt;
     this.updatedAt = proposal.updatedAt;

@@ -1,22 +1,16 @@
 import {
-  IsBoolean,
+  IsBooleanString,
   IsDateString,
   IsNotEmpty,
   IsNotEmptyObject,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProposalDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  readonly category: number;
 
   @IsString()
   @IsOptional()
@@ -24,15 +18,13 @@ export class CreateProposalDto {
 
   @IsNotEmptyObject()
   @IsOptional()
-  content?: { [key: string]: any };
+  content?: object;
 
   @IsString()
   @IsOptional()
-  @ApiProperty({ required: false, nullable: true })
   document?: string;
 
-  @IsBoolean()
-  @ApiProperty()
+  @IsBooleanString()
   isDocumentGenerated: boolean;
 
   @IsDateString()
@@ -40,4 +32,7 @@ export class CreateProposalDto {
   dueDate?: Date;
 }
 
-export type CreateProposal = CreateProposalDto & { author: number };
+export type CreateProposal = CreateProposalDto & {
+  author: number;
+  files: Express.Multer.File[];
+};

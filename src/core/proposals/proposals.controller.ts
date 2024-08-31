@@ -1,4 +1,4 @@
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -10,6 +10,8 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProposalsService } from '#src/core/proposals/proposals.service';
 import { CreateProposalDto } from '#src/core/proposals/dto/create-proposal.dto';
@@ -27,6 +29,7 @@ import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal
 import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import { SetDepartmentDto } from '#src/core/proposals/dto/set-department.dto';
 import { ProposalQueryDto } from '#src/core/proposals/dto/proposal-query.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @ApiTags('Proposals')
@@ -52,16 +55,20 @@ export class ProposalsController {
 
   constructor(private readonly proposalService: ProposalsService) {}
 
+  @UseInterceptors(FilesInterceptor('files'))
+  @ApiConsumes('multipart/form-data')
   @AuthGuard()
   @Post()
   async create(
     @Body() createProposalDto: CreateProposalDto,
     @User() user: UserRequest,
+    @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<GetProposalRdo> {
     return new GetProposalRdo(
       await this.proposalService.create({
         ...createProposalDto,
         author: user.id,
+        files,
       }),
     );
   }
@@ -236,12 +243,14 @@ export class ProposalsController {
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.proposalService.removeOne(
+    await this.proposalService.removeOne(
       {
         where: { id },
         relations: { author: true },
       },
       true,
     );
+
+    return 'OK';
   }
 }

@@ -44,6 +44,7 @@ export namespace AllExceptions {
   }
 
   export enum StorageExceptions {
+    NotFound = 'Файл не найден',
     ExtNotAllowed = 'Этот тип файла не доступен для загрузки',
   }
 }
