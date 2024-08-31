@@ -9,6 +9,9 @@ import {
 } from 'typeorm';
 import { ProposalFormEntity } from '#src/core/proposal-forms/entities/proposal-form.entity';
 import { FieldAnswerEntity } from '#src/core/field-answers/entities/field-answer.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { FieldTypes } from '#src/core/proposal-fields/types/field.type';
+import { FieldInputTypes } from '#src/core/proposal-fields/types/field-input.type';
 
 @Entity('proposal_fields')
 export class ProposalFieldEntity extends BaseEntity {
@@ -24,8 +27,13 @@ export class ProposalFieldEntity extends BaseEntity {
   @Column({ nullable: true })
   placeholder?: string;
 
+  @ApiProperty({ examples: FieldTypes })
   @Column()
   type: string;
+
+  @ApiProperty({ examples: FieldInputTypes, default: 'text' })
+  @Column({ default: 'text' })
+  inputType: string;
 
   @Column({ default: false })
   isRequired: boolean;

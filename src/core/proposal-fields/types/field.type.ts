@@ -1,6 +1,8 @@
-export type FieldTypes =
-  | 'input'
-  | 'textarea'
-  | 'checkbox'
-  | 'material'
-  | 'radio';
+export const FieldTypes = [
+  'input',
+  'textarea',
+  'checkbox',
+  'material',
+  'radio',
+  'select',
+];

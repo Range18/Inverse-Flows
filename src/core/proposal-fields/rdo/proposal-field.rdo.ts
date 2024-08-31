@@ -16,7 +16,8 @@ export class ProposalFieldRdo {
 
   isDisabled: boolean;
 
-  userAutoCompleteProperty?: string;
+  @Transform(({ value }: { value: string }) => String(value).split(','))
+  userAutoCompleteProperty?: string[];
 
   @Transform(({ value }) => plainToInstance(FieldAnswerRdo, value))
   answers?: FieldAnswerRdo[];
