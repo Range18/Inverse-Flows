@@ -1,54 +1,49 @@
 export namespace AllExceptions {
   export enum AuthExceptions {
-    AccountIsNotVerified = 'Account is not verified. Please verify your email.',
-    WrongPassword = 'Wrong password',
-    ExpiredToken = 'Access token expired',
-    InvalidAccessToken = 'Invalid access token',
+    AccountIsNotVerified = 'Почта не подтверждена. Подтвердите пожалуйста свою почту',
+    WrongPassword = 'Неверный пароль',
+    ExpiredToken = 'Токен истёк',
+    InvalidAccessToken = 'Неверный токен',
   }
 
   export enum SessionExceptions {
-    SessionNotFound = 'Session is not found',
-    SessionExpired = 'Session expired',
+    SessionNotFound = 'Сессия не найдена ',
+    SessionExpired = 'Сессия истекла',
   }
 
   export enum UserExceptions {
-    UserNotFound = 'User is not found',
-    UserAlreadyExists = 'User already exists',
+    UserNotFound = 'Пользователь не найден',
+    UserAlreadyExists = 'Такой пользователь уже существует. Попробуйте другую почту или номер телефона',
   }
 
   export enum CategoryExceptions {
-    CategoryNotFound = 'Category is not found',
-    UserAlreadyExists = 'Category already exists',
+    CategoryNotFound = 'Категория не найдена',
   }
 
   export enum DocumentExceptions {
-    DocumentNotFound = 'Document is not found',
+    DocumentNotFound = 'Документ не найден',
   }
 
   export enum ProposalExceptions {
-    ProposalNotFound = 'Proposal is not found',
-    ProposalInWork = 'Proposal rejection (revision) is impossible because it`s already in work or done',
-    ProposalIsRejected = 'Proposal is rejected',
+    ProposalNotFound = 'Заявка не найдена',
+    ProposalInWork = 'Отклонение заявки невозможно, т.к. она уже в работе или выполнена',
+    ProposalIsRejected = 'Заявка отклонена',
   }
 
   export enum PostExceptions {
-    PostNotFound = 'Post is not found',
+    PostNotFound = 'Заявка не найдена',
   }
 
   export enum PermissionExceptions {
-    NotTheSameUser = 'Action is forbidden because user is not owner',
-    NoRequiredRole = 'You are not allowed to do that action, because of your role',
+    NotTheSameUser = 'Недостаточно прав',
+    NoRequiredRole = 'Недостаточно прав',
   }
 
   export enum DepartmentExceptions {
-    DepartmentNotFound = 'Department is not found',
+    DepartmentNotFound = 'Отдел не найден',
   }
 
   export enum StorageExceptions {
-    ExtNotAllowed = 'File extension is not allowed',
-  }
-
-  export enum Queries {
-    InvalidLimitOffset = 'limit * offset - offset can`t be < 0',
+    ExtNotAllowed = 'Этот тип файла не доступен для загрузки',
   }
 }
