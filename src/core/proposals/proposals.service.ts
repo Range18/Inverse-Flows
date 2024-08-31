@@ -73,7 +73,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       name: createProposalDto.name,
       content: JSON.stringify(createProposalDto.content),
       status: inApproveStatus,
-      isCommercial: createProposalDto.isCommercial,
     });
 
     user.proposalsCount++;
@@ -261,13 +260,8 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     status: ProposalStatus,
     userId: number,
   ) {
-    const user = await this.userService.findOne({
-      where: { id: userId },
-      relations: { avatar: true },
-    });
-
     return await this.proposalHistoryService.save({
-      user: user,
+      user: { id: userId },
       proposal: proposal,
       comment: text,
       status: status,

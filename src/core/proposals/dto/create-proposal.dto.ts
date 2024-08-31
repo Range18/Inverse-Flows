@@ -35,10 +35,6 @@ export class CreateProposalDto {
   @ApiProperty()
   isDocumentGenerated: boolean;
 
-  @IsBoolean()
-  @ApiProperty()
-  isCommercial: boolean;
-
   @IsDateString()
   @IsOptional()
   dueDate?: Date;
