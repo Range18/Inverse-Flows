@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { ProposalFieldEntity } from '#src/core/proposal-fields/entities/proposal-field.entity';
 
 @Entity('proposal_forms')
 export class ProposalFormEntity extends BaseEntity {
@@ -7,4 +14,10 @@ export class ProposalFormEntity extends BaseEntity {
 
   @Column()
   type: string;
+
+  @OneToMany(() => ProposalFieldEntity, (field) => field.form, {
+    nullable: true,
+    eager: true,
+  })
+  fields?: ProposalFieldEntity[];
 }
