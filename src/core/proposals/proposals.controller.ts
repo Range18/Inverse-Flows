@@ -36,7 +36,7 @@ import { ProposalQueryDto } from '#src/core/proposals/dto/proposal-query.dto';
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @ApiTags('Proposals')
-@Controller('api/proposals')
+@Controller('proposals')
 export class ProposalsController {
   private readonly loadRelations: FindOptionsRelations<ProposalsEntity> = {
     author: {

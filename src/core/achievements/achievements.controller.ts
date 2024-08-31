@@ -15,7 +15,7 @@ import { GetUserAchievementsRdo } from '#src/core/achievements/rdo/get-user-achi
 import { type Response } from 'express';
 
 @ApiTags('User Achievements')
-@Controller('api/users/achievements')
+@Controller('users/achievements')
 export class AchievementsController {
   constructor(private readonly achievementsService: AchievementsService) {}
 

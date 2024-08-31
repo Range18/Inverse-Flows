@@ -21,7 +21,7 @@ import { PostReactionsService } from '#src/core/post-reactions/post-reactions.se
 import { GiveReactionDto } from '#src/core/proposal-posts/dto/give-reaction.dto';
 
 @ApiTags('Proposal Posts')
-@Controller('api/proposals/posts')
+@Controller('proposals/posts')
 export class ProposalPostsController {
   private readonly loadRelations: FindOptionsRelations<ProposalPost> = {
     reactions: { user: true },

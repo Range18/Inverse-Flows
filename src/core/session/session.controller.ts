@@ -6,7 +6,7 @@ import { Cookie } from '#src/common/decorators/cookie.decorator';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('session')
-@Controller('api/session')
+@Controller('session')
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 

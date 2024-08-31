@@ -19,6 +19,7 @@ import { AssetsModule } from '#src/core/assets/assets.module';
 import { AchievementsModule } from '#src/core/achievements/achievements.module';
 import { CommentsModule } from '#src/core/comments/comments.module';
 import { CompaniesModule } from '#src/core/companies/companies.module';
+import { ProposalFormsModule } from '#src/core/proposal-forms/proposal-forms.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CompaniesModule } from '#src/core/companies/companies.module';
     AchievementsModule,
     CommentsModule,
     CompaniesModule,
+    ProposalFormsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

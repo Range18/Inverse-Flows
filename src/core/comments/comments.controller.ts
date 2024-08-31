@@ -25,7 +25,7 @@ import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 
 @ApiTags('Post Comments')
-@Controller('api/proposals/posts/comments')
+@Controller('proposals/posts/comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 

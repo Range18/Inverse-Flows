@@ -13,7 +13,7 @@ import { CreateDepartmentDto } from '#src/core/departments/dto/create-department
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Departments')
-@Controller('api/departments')
+@Controller('departments')
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}
 

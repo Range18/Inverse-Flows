@@ -17,7 +17,7 @@ import { type Response } from 'express';
 import { CreateDocumentDto } from '#src/core/documents/dto/create-document.dto';
 
 @ApiTags('Documents')
-@Controller('api/proposals/documents')
+@Controller('proposals/documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 

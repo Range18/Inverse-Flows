@@ -21,14 +21,17 @@ async function bootstrap() {
 
   app.enableShutdownHooks();
 
+  const globalPrefix = 'api';
+  app.setGlobalPrefix(globalPrefix);
+
   const config = new DocumentBuilder()
     .setTitle('Inverse Flows')
-    .setDescription('Inverse proposals')
-    .setVersion('0.0.1')
+    .setDescription('Inverse Flows by Inverse Studio')
+    .setVersion('0.9.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   await app.listen(backendServer.port);
 }

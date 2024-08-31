@@ -11,7 +11,7 @@ import { DepartmentsService } from '#src/core/departments/departments.service';
 import { JobsService } from '#src/core/jobs/jobs.service';
 
 @ApiTags('users')
-@Controller('api/users')
+@Controller('users')
 export class UserController {
   constructor(
     private readonly userService: UserService,

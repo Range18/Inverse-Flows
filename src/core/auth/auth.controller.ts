@@ -8,7 +8,7 @@ import { Cookie } from '#src/common/decorators/cookie.decorator';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

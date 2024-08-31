@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 
 @ApiTags('User Avatars')
-@Controller('api/users/assets/avatars')
+@Controller('users/assets/avatars')
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
