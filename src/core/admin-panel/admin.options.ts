@@ -14,6 +14,7 @@ import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
 import { Company } from '#src/core/companies/entities/company.entity';
+import { ProposalFormEntity } from '#src/core/proposal-forms/entities/proposal-form.entity';
 
 export const adminOptions = {
   adminJsOptions: {
@@ -34,6 +35,7 @@ export const adminOptions = {
       CommentEntity,
       AchievementEntity,
       Company,
+      ProposalFormEntity,
     ],
   },
   auth: {
