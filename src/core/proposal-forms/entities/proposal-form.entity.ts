@@ -13,6 +13,12 @@ export class ProposalFormEntity extends BaseEntity {
   readonly id: number;
 
   @Column()
+  title: string;
+
+  @Column({ type: 'longtext', nullable: true })
+  description?: string;
+
+  @Column()
   type: string;
 
   @OneToMany(() => ProposalFieldEntity, (field) => field.form, {
