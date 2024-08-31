@@ -11,7 +11,8 @@
           "dtoFileNameSuffix": [
             ".dto.ts",
             ".entity.ts",
-            ".rdo.ts"
+            ".rdo.ts",
+            ".query.ts"
           ],
           "classValidatorShim": true,
           "introspectComments": true
