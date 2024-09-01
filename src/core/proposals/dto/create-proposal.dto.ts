@@ -2,7 +2,6 @@ import {
   IsBooleanString,
   IsDateString,
   IsNotEmpty,
-  IsNotEmptyObject,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -16,9 +15,9 @@ export class CreateProposalDto {
   @IsOptional()
   readonly description?: string;
 
-  @IsNotEmptyObject()
+  @IsString()
   @IsOptional()
-  content?: object;
+  content?: string;
 
   @IsString()
   @IsOptional()

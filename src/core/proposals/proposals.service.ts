@@ -59,7 +59,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       author: user,
       description: createProposalDto.description,
       name: createProposalDto.name,
-      content: JSON.stringify(createProposalDto.content),
+      content: createProposalDto.content,
       status: inApproveStatus,
     });
 
@@ -255,11 +255,16 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     status: ProposalStatus,
     userId: number,
   ) {
-    return await this.proposalHistoryService.save({
+    const { id } = await this.proposalHistoryService.save({
       user: { id: userId },
       proposal: proposal,
       comment: text,
       status: status,
+    });
+
+    return await this.proposalHistoryService.findOne({
+      where: { id },
+      relations: { user: { avatar: true } },
     });
   }
 }
