@@ -3,7 +3,7 @@ import { ProposalStatusService } from './proposal-status.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Proposal Statuses')
-@Controller('api/proposals/statuses')
+@Controller('proposals/statuses')
 export class ProposalStatusController {
   constructor(private readonly proposalStatusService: ProposalStatusService) {}
 

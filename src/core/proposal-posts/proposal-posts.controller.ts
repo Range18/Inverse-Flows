@@ -4,29 +4,26 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ProposalPostsService } from './proposal-posts.service';
-import { UpdateProposalPostDto } from './dto/update-proposal-post.dto';
 import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
-import {
-  ApiBody,
-  ApiHeader,
-  ApiOkResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
+import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
+import { PostReactionsService } from '#src/core/post-reactions/post-reactions.service';
+import { GiveReactionDto } from '#src/core/proposal-posts/dto/give-reaction.dto';
+import { ProposalPostQuery } from '#src/core/proposal-posts/dto/proposal-post.query';
 
 @ApiTags('Proposal Posts')
-@Controller('api/proposals/posts')
+@Controller('proposals/posts')
 export class ProposalPostsController {
-  private readonly loadRelations = {
-    likeEntities: { user: true },
+  private readonly loadRelations: FindOptionsRelations<ProposalPost> = {
+    reactions: { user: true },
     proposal: {
       author: {
         job: true,
@@ -44,19 +41,16 @@ export class ProposalPostsController {
     },
   };
 
-  constructor(private readonly proposalPostsService: ProposalPostsService) {}
+  constructor(
+    private readonly proposalPostsService: ProposalPostsService,
+    private readonly postReactionsService: PostReactionsService,
+  ) {}
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
-  @ApiBody({ schema: { format: 'type: number' } })
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
   @Post('like/:id')
-  async likePost(
-    @Body('type') type: number,
+  async like(
+    @Body() { type }: GiveReactionDto,
     @Param('id') id: number,
     @User() user: UserRequest,
   ) {
@@ -66,32 +60,14 @@ export class ProposalPostsController {
     );
   }
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
-  @ApiOkResponse({ type: [GetProposalPostRdo] })
-  @ApiQuery({
-    name: 'by',
-    type: String,
-    description: 'Ключ, по которому будем сортировать',
-  })
-  @ApiQuery({
-    name: 'order',
-    type: String,
-    description: 'Как сортировать: ASC - по возврастанию, DESC - по убыванию',
-  })
   @AuthGuard()
   @Get()
-  async findAll(
-    @User() user: UserRequest,
-    @Query('order') order?: string,
-    @Query('by') property?: string,
-  ) {
+  async findAll(@User() user: UserRequest, @Query() query: ProposalPostQuery) {
     const posts = await this.proposalPostsService.find(
       {
-        order: property && order ? { [property]: order } : undefined,
+        where: { proposal: { author: { id: query.userId } } },
+        order:
+          query.by && query.order ? { [query.by]: query.order } : undefined,
         relations: this.loadRelations,
       },
       true,
@@ -100,11 +76,6 @@ export class ProposalPostsController {
     return posts.map((post) => new GetProposalPostRdo(post, user.id));
   }
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
   @Get('/byId/:id')
@@ -122,11 +93,6 @@ export class ProposalPostsController {
     return new GetProposalPostRdo(post, user.id);
   }
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: [GetProposalPostRdo] })
   @ApiQuery({
     name: 'by',
@@ -157,34 +123,6 @@ export class ProposalPostsController {
     return posts.map((post) => new GetProposalPostRdo(post, user.id));
   }
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
-  @ApiOkResponse({ type: GetProposalPostRdo })
-  @AuthGuard()
-  @Patch(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() updateProposalPostDto: UpdateProposalPostDto,
-    @User() user: UserRequest,
-  ) {
-    return new GetProposalPostRdo(
-      await this.proposalPostsService.updateOne(
-        { where: { id }, relations: this.loadRelations },
-        updateProposalPostDto,
-        true,
-      ),
-      user.id,
-    );
-  }
-
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number) {

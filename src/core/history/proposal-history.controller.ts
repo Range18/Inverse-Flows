@@ -3,7 +3,7 @@ import { ProposalHistoryService } from '#src/core/history/proposal-history.servi
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Proposal History')
-@Controller('api/proposals/history')
+@Controller('proposals/history')
 export class ProposalHistoryController {
   constructor(private readonly proposalEventService: ProposalHistoryService) {}
 

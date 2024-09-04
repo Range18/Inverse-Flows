@@ -12,7 +12,6 @@ import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import {
   ApiCreatedResponse,
-  ApiHeader,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
@@ -25,15 +24,10 @@ import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 
 @ApiTags('Post Comments')
-@Controller('api/proposals/posts/comments')
+@Controller('proposals/posts/comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiCreatedResponse({ type: GetPostCommentRdo })
   @RolesGuard('moderator', 'admin', 'owner')
   @AuthGuard()
@@ -45,11 +39,6 @@ export class CommentsController {
     return await this.commentsService.create(createCommentDto, user.id);
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: [GetPostCommentRdo] })
   @AuthGuard()
   @Get()
@@ -62,11 +51,6 @@ export class CommentsController {
     );
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: [GetPostCommentRdo] })
   @ApiQuery({ name: 'postId', type: Number })
   @AuthGuard()
@@ -83,11 +67,6 @@ export class CommentsController {
     return comments.map((comment) => new GetPostCommentRdo(comment));
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: GetPostCommentRdo })
   @AuthGuard()
   @Get(':id')
@@ -101,11 +80,6 @@ export class CommentsController {
     );
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiOkResponse({ type: GetPostCommentRdo })
   @AuthGuard()
   @Patch(':id')
@@ -124,11 +98,6 @@ export class CommentsController {
     );
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number, @User() user: UserRequest) {

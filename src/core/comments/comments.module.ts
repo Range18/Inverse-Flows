@@ -4,7 +4,7 @@ import { CommentsController } from './comments.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { UserModule } from '#src/core/users/user.module';
 import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.module';
 import { TokenModule } from '#src/core/token/token.module';

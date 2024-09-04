@@ -1,59 +1,44 @@
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
-import { UserEntity } from '#src/core/users/user.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { backendServer } from '#src/common/configs/config';
 
 export class GetUserRdo {
-  @ApiProperty()
   readonly id: number;
 
-  @ApiProperty()
   readonly firstname: string;
 
-  @ApiProperty()
   readonly surname: string;
 
-  @ApiProperty()
   readonly lastname: string;
 
-  @ApiProperty()
   readonly email: string;
 
-  @ApiProperty()
   readonly phone: string;
 
-  @ApiProperty()
   readonly birthday: Date;
 
-  @ApiProperty({ type: () => RolesEntity })
   readonly role: RolesEntity;
 
-  //TODO EDIT
-  //JUST FOR TESTING
-  @ApiProperty({ type: () => DepartmentEntity || String })
+  address?: string;
+
+  city?: string;
+
   readonly department: DepartmentEntity | string;
 
-  @ApiProperty({ type: () => JobEntity })
   readonly job: JobEntity;
 
-  @ApiProperty()
   readonly proposalCount: number;
 
-  @ApiProperty()
   readonly telegram?: string;
 
-  @ApiProperty()
   readonly vk?: string;
 
-  @ApiProperty()
   readonly avatar?: string;
 
-  @ApiProperty()
   readonly updatedAt: Date;
 
-  @ApiProperty()
   readonly createdAt: Date;
 
   constructor(user: UserEntity) {
@@ -67,6 +52,8 @@ export class GetUserRdo {
     this.role = user.role;
     this.department = user.department;
     this.job = user.job;
+    this.address = user.address;
+    this.city = user.city;
     this.telegram = user.telegram;
     this.vk = user.vk;
     this.proposalCount = user.proposalsCount;

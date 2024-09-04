@@ -19,6 +19,10 @@ import { AssetsModule } from '#src/core/assets/assets.module';
 import { AchievementsModule } from '#src/core/achievements/achievements.module';
 import { CommentsModule } from '#src/core/comments/comments.module';
 import { CompaniesModule } from '#src/core/companies/companies.module';
+import { ProposalFormsModule } from '#src/core/proposal-forms/proposal-forms.module';
+import { ProposalFieldsModule } from '#src/core/proposal-fields/proposal-fields.module';
+import { FieldAnswersModule } from '#src/core/field-answers/field-answers.module';
+import { ProposalAssetsModule } from '#src/core/proposal-assets/proposal-assets.module';
 
 @Module({
   imports: [
@@ -43,6 +47,10 @@ import { CompaniesModule } from '#src/core/companies/companies.module';
     AchievementsModule,
     CommentsModule,
     CompaniesModule,
+    ProposalFormsModule,
+    ProposalFieldsModule,
+    FieldAnswersModule,
+    ProposalAssetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

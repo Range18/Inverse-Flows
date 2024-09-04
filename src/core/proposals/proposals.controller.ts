@@ -1,10 +1,4 @@
-import {
-  ApiBody,
-  ApiHeader,
-  ApiOkResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -16,6 +10,8 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProposalsService } from '#src/core/proposals/proposals.service';
 import { CreateProposalDto } from '#src/core/proposals/dto/create-proposal.dto';
@@ -23,21 +19,23 @@ import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
-import { FindProposalDto } from '#src/core/proposals/dto/find-proposal.dto';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsWhere, In } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
 import { RolesGuard } from '#src/common/decorators/guards/roles-guard.decorator';
 import { UpdateProposalStatusDto } from '#src/core/proposals/dto/update-proposal-status.dto';
-import Queries = AllExceptions.Queries;
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
+import { SetDepartmentDto } from '#src/core/proposals/dto/set-department.dto';
+import { ProposalQueryDto } from '#src/core/proposals/dto/proposal-query.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import ProposalExceptions = AllExceptions.ProposalExceptions;
 
 @ApiTags('Proposals')
-@Controller('api/proposals')
+@Controller('proposals')
 export class ProposalsController {
-  private readonly loadRelations = {
+  private readonly loadRelations: FindOptionsRelations<ProposalsEntity> = {
     author: {
       avatar: true,
       job: true,
@@ -57,104 +55,83 @@ export class ProposalsController {
 
   constructor(private readonly proposalService: ProposalsService) {}
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
-  @ApiOkResponse({ type: GetProposalRdo })
+  @UseInterceptors(FilesInterceptor('files'))
+  @ApiConsumes('multipart/form-data')
   @AuthGuard()
   @Post()
   async create(
     @Body() createProposalDto: CreateProposalDto,
     @User() user: UserRequest,
+    @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<GetProposalRdo> {
     return new GetProposalRdo(
       await this.proposalService.create({
         ...createProposalDto,
         author: user.id,
+        files,
       }),
     );
   }
 
-  @ApiOkResponse({ type: [GetProposalRdo] })
-  @ApiQuery({ name: 'limit', required: false })
-  @ApiQuery({ name: 'offset', required: false })
-  @ApiQuery({ name: 'status', required: false })
+  @AuthGuard()
   @Get()
   async findAll(
-    @Query('limit') limit?: number,
-    @Query('offset') offset?: number,
-    @Query('status') status?: number,
-    //TODO
-    @Body() findOptions?: FindProposalDto,
-    //
+    @User() user: UserRequest,
+    @Query() query: ProposalQueryDto,
   ): Promise<GetProposalRdo[]> {
     let proposals: ProposalsEntity[];
 
-    if (!limit && !offset) {
-      proposals = findOptions
-        ? await this.proposalService.find(
-            {
-              where: {
-                ...findOptions,
-                status: status ? { id: status } : undefined,
-              } as FindOptionsWhere<ProposalsEntity>,
-              order: findOptions.order,
-              relations: this.loadRelations,
-            },
-            true,
-          )
-        : await this.proposalService.find(
-            {
-              order: findOptions.order,
-              relations: this.loadRelations,
-            },
-            true,
-          );
-    } else {
-      if (limit * offset - offset < 0) {
-        throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          'Queries',
-          Queries.InvalidLimitOffset,
-        );
-      }
+    const statusTypes = query.status ? query.status.split(',') : [];
 
-      proposals = findOptions
-        ? await this.proposalService.find(
-            {
-              where: {
-                ...findOptions,
-                status: status ? { id: status } : undefined,
-              } as FindOptionsWhere<ProposalsEntity>,
-              order: findOptions.order,
-              skip: limit * offset - offset,
-              relations: this.loadRelations,
-            },
-            true,
-          )
-        : await this.proposalService.find(
-            {
-              order: findOptions.order,
-              skip: limit * offset - offset,
-              relations: this.loadRelations,
-            },
-            true,
-          );
+    if (!query.limit && !query.offset) {
+      proposals = await this.proposalService.find(
+        {
+          where: {
+            status: query.status ? { statusType: In(statusTypes) } : undefined,
+            responsibleDepartment: { id: query.responsibleDepartmentId },
+          } as FindOptionsWhere<ProposalsEntity>,
+          order: { createdAt: query.order },
+          relations: {
+            ...this.loadRelations,
+            post: { reactions: { user: true } },
+          },
+        },
+        true,
+      );
+    } else {
+      proposals = await this.proposalService.find(
+        {
+          where: {
+            status: query.status ? { statusType: In(statusTypes) } : undefined,
+            responsibleDepartment: { id: query.responsibleDepartmentId },
+          } as FindOptionsWhere<ProposalsEntity>,
+          order: { createdAt: query.order },
+          skip: query.limit * query.offset - query.offset,
+          relations: {
+            ...this.loadRelations,
+            post: { reactions: { user: true } },
+          },
+        },
+        true,
+      );
     }
 
-    console.log(proposals);
-    return proposals.map((proposal) => new GetProposalRdo(proposal));
+    return proposals.map((proposal) => new GetProposalRdo(proposal, user.id));
   }
 
-  @ApiOkResponse({ type: GetProposalRdo })
+  @AuthGuard()
   @Get('/byId/:id')
-  async findOneById(@Param('id') id: number): Promise<GetProposalRdo> {
+  async findOneById(
+    @Param('id') id: number,
+    @User() user: UserRequest,
+  ): Promise<GetProposalRdo> {
     const proposal = await this.proposalService.findOne(
       {
         where: { id },
-        relations: this.loadRelations,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: { user: true } },
+        },
       },
       true,
     );
@@ -167,16 +144,10 @@ export class ProposalsController {
       );
     }
 
-    return new GetProposalRdo(proposal);
+    return new GetProposalRdo(proposal, user.id);
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiQuery({ name: 'status', required: false })
-  @ApiOkResponse({ type: [GetProposalRdo] })
   @AuthGuard()
   @Get('my')
   async findUserProposals(
@@ -189,26 +160,22 @@ export class ProposalsController {
           author: { id: user.id },
           status: statusId ? { id: statusId } : undefined,
         },
-        relations: this.loadRelations,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: { user: true } },
+        },
       },
       true,
     );
 
     try {
-      return proposals.map((proposal) => new GetProposalRdo(proposal));
+      return proposals.map((proposal) => new GetProposalRdo(proposal, user.id));
     } catch (err) {
       throw new HttpException(err, 500);
     }
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiQuery({ name: 'id', required: true })
-  @ApiBody({ type: UpdateProposalDto })
-  @ApiOkResponse({ type: GetProposalRdo })
   @RolesGuard('owner')
   @AuthGuard()
   @Patch()
@@ -220,7 +187,10 @@ export class ProposalsController {
     const proposal = await this.proposalService.findOne(
       {
         where: { id },
-        relations: this.loadRelations,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: { user: true } },
+        },
       },
       true,
     );
@@ -231,17 +201,11 @@ export class ProposalsController {
       category: { id: updateProposalDto.category },
       description: updateProposalDto.description,
       documentLink: updateProposalDto.documentLink,
+      dueDate: updateProposalDto.dueDate,
     });
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @ApiQuery({ name: 'id', required: true })
-  @ApiBody({ type: UpdateProposalStatusDto })
-  @ApiOkResponse({ type: [GetProposalRdo] })
   @RolesGuard('member', 'moderator', 'admin')
   @AuthGuard()
   @Patch(':id/process')
@@ -256,24 +220,37 @@ export class ProposalsController {
         updateProposalStatusDto,
         user.id,
       ),
+      user.id,
     );
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
+  @RolesGuard('moderator', 'admin')
+  @AuthGuard()
+  @Post(':id/set-department')
+  async setResponsibleDepartment(
+    @Param('id') id: number,
+    @Body() setDepartmentDto: SetDepartmentDto,
+  ) {
+    return new GetProposalRdo(
+      await this.proposalService.updateOne(
+        { where: { id }, relations: this.loadRelations },
+        { responsibleDepartment: { id: setDepartmentDto.departmentId } },
+      ),
+    );
+  }
+
   @RolesGuard('moderator', 'admin', 'owner')
   @AuthGuard()
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    return await this.proposalService.removeOne(
+    await this.proposalService.removeOne(
       {
         where: { id },
         relations: { author: true },
       },
       true,
     );
+
+    return 'OK';
   }
 }

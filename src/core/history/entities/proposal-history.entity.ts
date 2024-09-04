@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { ProposalStatus } from '#src/core/proposal-status/entities/proposal-status.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 

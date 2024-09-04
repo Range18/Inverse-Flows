@@ -1,42 +1,38 @@
 import {
-  IsBoolean,
-  IsNumber,
-  IsObject,
+  IsBooleanString,
+  IsDateString,
+  IsNotEmpty,
+  IsNotEmptyObject,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { Content } from '#src/core/proposals/types/content.type';
 
 export class CreateProposalDto {
   @IsString()
-  @ApiProperty()
+  @IsNotEmpty()
   readonly name: string;
-
-  @IsNumber()
-  @ApiProperty()
-  readonly category: number;
-
-  @IsString()
-  @ApiProperty()
-  readonly description: string;
-
-  @IsObject()
-  @ApiProperty()
-  content: Content;
 
   @IsString()
   @IsOptional()
-  @ApiProperty({ required: false, nullable: true })
+  readonly description?: string;
+
+  @IsNotEmptyObject()
+  @IsOptional()
+  content?: object;
+
+  @IsString()
+  @IsOptional()
   document?: string;
 
-  @IsBoolean()
-  @ApiProperty()
+  @IsBooleanString()
   isDocumentGenerated: boolean;
 
-  @IsBoolean()
-  @ApiProperty()
-  isCommercial: boolean;
+  @IsDateString()
+  @IsOptional()
+  dueDate?: Date;
 }
 
-export type CreateProposal = CreateProposalDto & { author: number };
+export type CreateProposal = CreateProposalDto & {
+  author: number;
+  files: Express.Multer.File[];
+};

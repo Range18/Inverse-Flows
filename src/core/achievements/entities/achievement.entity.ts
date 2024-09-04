@@ -6,7 +6,7 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 
 @Entity('achievements')
 export class AchievementEntity extends BaseEntity {

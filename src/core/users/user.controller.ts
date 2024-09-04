@@ -1,24 +1,16 @@
 import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { UserService } from '#src/core/users/user.service';
-import { ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 import { UpdateUserDto } from '#src/core/users/dto/update-user.dto';
-import { RolesService } from '#src/core/roles/roles.service';
-import { DepartmentsService } from '#src/core/departments/departments.service';
-import { JobsService } from '#src/core/jobs/jobs.service';
 
 @ApiTags('users')
-@Controller('api/users')
+@Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly roleService: RolesService,
-    private readonly departmentsService: DepartmentsService,
-    private readonly jobService: JobsService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse({ type: [GetUserRdo] })
   @Get()
@@ -60,11 +52,6 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: GetUserRdo })
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @AuthGuard()
   @Get('me')
   async getUserMe(@User() user: UserRequest) {
@@ -86,11 +73,6 @@ export class UserController {
   }
 
   @ApiOkResponse({ type: GetUserRdo })
-  @ApiHeader({
-    name: 'Authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @AuthGuard()
   @Patch()
   async update(

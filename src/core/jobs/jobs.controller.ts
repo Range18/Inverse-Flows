@@ -19,7 +19,7 @@ import {
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 
 @ApiTags('Jobs')
-@Controller('api/jobs')
+@Controller('jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 

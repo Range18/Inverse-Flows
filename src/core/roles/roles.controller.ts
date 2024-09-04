@@ -5,7 +5,7 @@ import { UpdateRoleDto } from '#src/core/roles/dto/update-role.dto';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 
 @ApiTags('Roles')
-@Controller('api/roles')
+@Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 

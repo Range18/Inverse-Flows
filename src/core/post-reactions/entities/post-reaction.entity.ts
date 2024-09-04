@@ -7,14 +7,14 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '#src/common/base.entity';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 
-@Entity('likes')
-export class LikeEntity extends BaseEntity {
+@Entity('reactions')
+export class PostReactionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   readonly id: number;
 
-  @ManyToOne(() => ProposalPost, (post) => post.likeEntities, {
+  @ManyToOne(() => ProposalPost, (post) => post.reactions, {
     nullable: false,
     onDelete: 'CASCADE',
   })
@@ -28,6 +28,6 @@ export class LikeEntity extends BaseEntity {
   @JoinColumn({ name: 'user' })
   user: UserEntity;
 
-  @Column({ nullable: false, default: 5 })
+  @Column({ nullable: false, default: 1 })
   type: number;
 }

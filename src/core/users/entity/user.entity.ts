@@ -8,7 +8,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SessionEntity } from '../session/session.entity';
+import { SessionEntity } from '../../session/session.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
@@ -19,7 +19,7 @@ import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
 import { BaseEntity } from '#src/common/base.entity';
 import { Company } from '#src/core/companies/entities/company.entity';
-import { LikeEntity } from '#src/core/proposal-posts/entities/like.entity';
+import { PostReactionEntity } from '#src/core/post-reactions/entities/post-reaction.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -46,6 +46,12 @@ export class UserEntity extends BaseEntity {
 
   @Column({ nullable: false })
   birthday: Date;
+
+  @Column({ nullable: true })
+  address?: string;
+
+  @Column({ nullable: true })
+  city?: string;
 
   @Column({ nullable: true })
   vk?: string;
@@ -84,10 +90,10 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
 
-  @ManyToMany(() => LikeEntity, (like) => like.user, {
+  @ManyToMany(() => PostReactionEntity, (like) => like.user, {
     nullable: true,
   })
-  likes?: LikeEntity[];
+  likes?: PostReactionEntity[];
 
   @OneToOne(() => AssetEntity, (avatar) => avatar.user, {
     nullable: true,

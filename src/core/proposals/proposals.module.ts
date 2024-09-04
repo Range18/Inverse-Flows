@@ -16,6 +16,9 @@ import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.en
 import { DepartmentEntity } from '#src/core/departments/entities/department.entity';
 import { DepartmentsModule } from '#src/core/departments/departments.module';
 import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { MulterConfigService } from '#src/core/proposals/multer-config.service';
+import { ProposalAssetsModule } from '#src/core/proposal-assets/proposal-assets.module';
 
 @Module({
   imports: [
@@ -35,6 +38,8 @@ import { ProposalPostsModule } from '#src/core/proposal-posts/proposal-posts.mod
     ProposalHistoryModule,
     DepartmentsModule,
     ProposalPostsModule,
+    MulterModule.registerAsync({ useClass: MulterConfigService }),
+    ProposalAssetsModule,
   ],
   providers: [ProposalsService],
   controllers: [ProposalsController],

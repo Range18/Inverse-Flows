@@ -10,22 +10,17 @@ import {
 } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 
 @ApiTags('User Avatars')
-@Controller('api/users/assets/avatars')
+@Controller('users/assets/avatars')
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @UseInterceptors(FileInterceptor('file'))
   @AuthGuard()
   @Post()
@@ -62,11 +57,6 @@ export class AssetsController {
     return streamableFile;
   }
 
-  @ApiHeader({
-    name: 'authorization',
-    required: true,
-    schema: { format: 'Bearer ${AccessToken}' },
-  })
   @AuthGuard()
   @Delete()
   async remove(@User() user: UserRequest) {

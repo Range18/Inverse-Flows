@@ -3,13 +3,12 @@ import { AuthService } from './auth.service';
 import { type Response } from 'express';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoggedUserRdo } from '../users/rdo/logged-user.rdo';
-import { backendServer } from '#src/common/configs/config';
 import { LoginUserDto } from '#src/core/users/dto/login-user.dto';
 import { Cookie } from '#src/common/decorators/cookie.decorator';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -23,8 +22,9 @@ export class AuthController {
 
     response.cookie('refreshToken', userRdo.refreshToken, {
       expires: userRdo.sessionExpireAt,
-      secure: backendServer.secure,
+      secure: true,
       httpOnly: true,
+      sameSite: 'none',
     });
 
     return userRdo;
@@ -42,8 +42,9 @@ export class AuthController {
 
     response.cookie('refreshToken', userRdo.refreshToken, {
       expires: userRdo.sessionExpireAt,
-      secure: backendServer.secure,
+      secure: true,
       httpOnly: true,
+      sameSite: 'none',
     });
 
     return userRdo;
@@ -53,9 +54,11 @@ export class AuthController {
   async logout(
     @Res({ passthrough: true }) response: Response,
     @Cookie('refreshToken') refreshToken: string,
-  ): Promise<void> {
+  ): Promise<string> {
     await this.authService.logout(refreshToken);
 
     response.clearCookie('refreshToken');
+
+    return 'OK';
   }
 }

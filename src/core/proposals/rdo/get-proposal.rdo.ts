@@ -1,56 +1,49 @@
 import { CategoryEntity } from '#src/core/categories/entities/category.entity';
 import { GetUserRdo } from '#src/core/users/rdo/get-user.rdo';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { ApiProperty } from '@nestjs/swagger';
 import { GetDocumentRdo } from '#src/core/documents/rdo/get-document.rdo';
-import { Content } from '#src/core/proposals/types/content.type';
 import { GetHistoryRdo } from '#src/core/history/rdo/get-history.rdo';
 import { GetStatusRdo } from '#src/core/proposal-status/rdo/get-status.rdo';
-import { UserEntity } from '#src/core/users/user.entity';
-import { IsBoolean } from 'class-validator';
+import { GetProposalPostRdo } from '#src/core/proposal-posts/rdo/get-proposal-post.rdo';
+import { GetDepartmentRdo } from '#src/core/departments/rdo/get-department.rdo';
+import { ProposalAssetRdo } from '#src/core/proposal-assets/rdo/proposal-asset.rdo';
+import { plainToInstance } from 'class-transformer';
+import { backendServer } from '#src/common/configs/config';
 
 export class GetProposalRdo {
-  @ApiProperty()
   readonly id: number;
 
-  @ApiProperty()
   readonly name: string;
 
-  @ApiProperty()
   readonly description: string;
 
-  @ApiProperty()
   readonly author: GetUserRdo;
 
-  @ApiProperty({ type: () => CategoryEntity })
   readonly category: CategoryEntity;
 
-  @ApiProperty({ type: Content })
-  readonly content: Content;
+  readonly content: { [key: string]: any };
 
-  @ApiProperty({ type: GetStatusRdo })
   readonly status: GetStatusRdo;
 
-  @ApiProperty({ type: GetDocumentRdo, nullable: true })
   readonly document?: GetDocumentRdo;
 
-  @ApiProperty({ type: [GetHistoryRdo] })
   readonly history: GetHistoryRdo[];
 
-  @ApiProperty()
   readonly documentLink: string;
 
-  @IsBoolean()
-  @ApiProperty()
-  readonly isCommercial: boolean;
+  readonly post: GetProposalPostRdo;
 
-  @ApiProperty()
+  responsibleDepartment?: GetDepartmentRdo;
+
+  dueDate?: Date;
+
+  assets?: ProposalAssetRdo[];
+
   readonly createdAt: Date;
 
-  @ApiProperty()
   readonly updatedAt: Date;
 
-  constructor(proposal: ProposalsEntity) {
+  constructor(proposal: ProposalsEntity, userId?: number) {
     this.id = proposal.id;
     this.name = proposal.name;
     this.author = new GetUserRdo(proposal.author);
@@ -58,6 +51,11 @@ export class GetProposalRdo {
     this.category = proposal.category;
     this.content = JSON.parse(proposal.content);
     this.description = proposal.description;
+    this.dueDate = proposal.dueDate;
+
+    this.responsibleDepartment = proposal.responsibleDepartment
+      ? new GetDepartmentRdo(proposal.responsibleDepartment)
+      : undefined;
 
     this.document = proposal.document
       ? new GetDocumentRdo(proposal.document)
@@ -70,7 +68,18 @@ export class GetProposalRdo {
       );
     }
 
-    this.isCommercial = proposal.isCommercial;
+    this.post = proposal.post
+      ? new GetProposalPostRdo(proposal.post, userId)
+      : undefined;
+
+    this.assets = proposal.assets.map((asset) => {
+      const rdo = plainToInstance(ProposalAssetRdo, asset);
+
+      rdo.link = `${backendServer.urlValue}/api/proposals/${proposal.id}/assets/${asset.originalname}/source`;
+
+      return rdo;
+    });
+
     this.createdAt = proposal.createdAt;
     this.updatedAt = proposal.updatedAt;
   }

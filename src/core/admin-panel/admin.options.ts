@@ -1,4 +1,4 @@
-import { UserEntity } from '#src/core/users/user.entity';
+import { UserEntity } from '#src/core/users/entity/user.entity';
 import { JobEntity } from '#src/core/jobs/entities/job.entity';
 import { RolesEntity } from '#src/core/roles/entity/roles.entity';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
@@ -14,6 +14,9 @@ import { AssetEntity } from '#src/core/assets/entities/asset.entity';
 import { CommentEntity } from '#src/core/comments/entities/comment.entity';
 import { AchievementEntity } from '#src/core/achievements/entities/achievement.entity';
 import { Company } from '#src/core/companies/entities/company.entity';
+import { ProposalFormEntity } from '#src/core/proposal-forms/entities/proposal-form.entity';
+import { ProposalFieldEntity } from '#src/core/proposal-fields/entities/proposal-field.entity';
+import { FieldAnswerEntity } from '#src/core/field-answers/entities/field-answer.entity';
 
 export const adminOptions = {
   adminJsOptions: {
@@ -34,6 +37,9 @@ export const adminOptions = {
       CommentEntity,
       AchievementEntity,
       Company,
+      ProposalFormEntity,
+      ProposalFieldEntity,
+      FieldAnswerEntity,
     ],
   },
   auth: {
