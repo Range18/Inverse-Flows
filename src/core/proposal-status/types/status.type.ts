@@ -1,17 +1,17 @@
 export enum StatusType {
   proposalCreated = 'Заявка создана',
 
-  proposalDone = 'Выполнено',
+  proposalDone = 'Выполнена',
 
-  proposalNeedRevision = 'Требуется уточнение у автора',
+  proposalNeedRevision = 'Оставил комментарий',
 
-  proposalRejected = 'Отклонено',
+  proposalRejected = 'Отклонена',
 
-  proposalApproved = 'Заявка согласована',
+  proposalApproved = 'Согласована',
 
   proposalInWork = 'В работе',
 
-  proposalInApprove = 'На согласовании',
+  proposalInApprove = 'Процесс согласования',
 
-  proposalInBacklog = 'Бэклог',
+  proposalInBacklog = 'В архиве',
 }

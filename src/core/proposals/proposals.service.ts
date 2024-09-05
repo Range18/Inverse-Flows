@@ -59,7 +59,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       author: user,
       description: createProposalDto.description,
       name: createProposalDto.name,
-      content: JSON.stringify(createProposalDto.content),
+      content: createProposalDto.content,
       status: inApproveStatus,
     });
 
@@ -67,7 +67,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     await this.userService.save(user);
 
     const document: DocumentEntity | undefined =
-      createProposalDto.isDocumentGenerated ?? true
+      createProposalDto.isDocumentGenerated == 'true'
         ? await this.documentService.create(
             proposal,
             createProposalDto.document,

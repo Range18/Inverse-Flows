@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateProposalDto {
   @IsString()
@@ -16,16 +17,14 @@ export class CreateProposalDto {
   @IsOptional()
   readonly description?: string;
 
-  @IsNotEmptyObject()
   @IsOptional()
-  content?: object;
+  content?: string;
 
   @IsString()
   @IsOptional()
   document?: string;
 
-  @IsBooleanString()
-  isDocumentGenerated: boolean;
+  isDocumentGenerated: string;
 
   @IsDateString()
   @IsOptional()

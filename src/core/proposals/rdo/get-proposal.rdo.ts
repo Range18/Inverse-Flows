@@ -49,7 +49,7 @@ export class GetProposalRdo {
     this.author = new GetUserRdo(proposal.author);
     this.status = new GetStatusRdo(proposal.status);
     this.category = proposal.category;
-    this.content = JSON.parse(proposal.content);
+    this.content = proposal.content ? JSON.parse(proposal.content) : undefined;
     this.description = proposal.description;
     this.dueDate = proposal.dueDate;
 
@@ -72,13 +72,15 @@ export class GetProposalRdo {
       ? new GetProposalPostRdo(proposal.post, userId)
       : undefined;
 
-    this.assets = proposal.assets.map((asset) => {
-      const rdo = plainToInstance(ProposalAssetRdo, asset);
+    this.assets = proposal.assets
+      ? proposal.assets.map((asset) => {
+          const rdo = plainToInstance(ProposalAssetRdo, asset);
 
-      rdo.link = `${backendServer.urlValue}/api/proposals/${proposal.id}/assets/${asset.originalname}/source`;
+          rdo.link = `${backendServer.urlValue}/api/proposals/${proposal.id}/assets/${asset.originalname}/source`;
 
-      return rdo;
-    });
+          return rdo;
+        })
+      : undefined;
 
     this.createdAt = proposal.createdAt;
     this.updatedAt = proposal.updatedAt;
