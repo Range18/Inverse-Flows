@@ -34,11 +34,6 @@ export class CreateUserDto {
   @ApiProperty()
   readonly phone?: string;
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({ required: false, nullable: true })
-  readonly password?: string;
-
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty()
