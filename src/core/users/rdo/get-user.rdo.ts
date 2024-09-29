@@ -13,10 +13,6 @@ export class GetUserRdo {
 
   readonly lastname: string;
 
-  readonly email: string;
-
-  readonly phone: string;
-
   readonly birthday: Date;
 
   readonly role: RolesEntity;
@@ -46,8 +42,6 @@ export class GetUserRdo {
     this.firstname = user.firstname;
     this.surname = user.surname;
     this.lastname = user.lastname;
-    this.email = user.email;
-    this.phone = user.phone;
     this.birthday = user.birthday;
     this.role = user.role;
     this.department = user.department;
