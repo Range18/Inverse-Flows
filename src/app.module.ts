@@ -23,6 +23,7 @@ import { ProposalFormsModule } from '#src/core/proposal-forms/proposal-forms.mod
 import { ProposalFieldsModule } from '#src/core/proposal-fields/proposal-fields.module';
 import { FieldAnswersModule } from '#src/core/field-answers/field-answers.module';
 import { ProposalAssetsModule } from '#src/core/proposal-assets/proposal-assets.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -36,6 +37,12 @@ import { ProposalAssetsModule } from '#src/core/proposal-assets/proposal-assets.
         return adminOptions;
       },
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     UserModule,
     AssetsModule,
     AuthModule,

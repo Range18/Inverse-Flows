@@ -23,6 +23,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^7.3.0",
+    "@nestjs/throttler": "^6.2.1",
     "@nestjs/typeorm": "^10.0.1",
     "@tiptap/core": "^2.2.2",
     "@tiptap/pm": "^2.2.2",
