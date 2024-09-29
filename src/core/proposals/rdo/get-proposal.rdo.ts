@@ -76,7 +76,7 @@ export class GetProposalRdo {
       ? proposal.assets.map((asset) => {
           const rdo = plainToInstance(ProposalAssetRdo, asset);
 
-          rdo.link = `${backendServer.urlValue}/api/proposals/${proposal.id}/assets/${asset.originalname}/source`;
+          rdo.link = `${backendServer.urlValue}/api/proposals/${proposal.id}/assets/${asset.filename}/source`;
 
           return rdo;
         })

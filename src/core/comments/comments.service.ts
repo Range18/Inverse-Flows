@@ -39,10 +39,12 @@ export class CommentsService extends BaseEntityService<CommentEntity> {
       relations: { avatar: true },
     });
 
-    return await this.save({
+    const comment = await this.save({
       post: post,
       text: createCommentDto.text,
       user: user,
     });
+
+    return await this.findOne({ where: { id: comment.id } });
   }
 }

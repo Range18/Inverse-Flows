@@ -130,6 +130,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
         status: true,
         document: true,
         post: { reactions: true },
+        history: { user: true },
       },
     });
 
