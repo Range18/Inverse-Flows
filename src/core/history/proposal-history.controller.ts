@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ProposalHistoryService } from '#src/core/history/proposal-history.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -15,15 +15,5 @@ export class ProposalHistoryController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return await this.proposalEventService.findOne({ where: { id } }, true);
-  }
-
-  // @Patch(':id')
-  // async update(@Param('id') id: string, @Body() updateHistoryDto: UpdateEventDto) {
-  //   return  await this.historyService.update(+id, updateHistoryDto);
-  // }
-
-  @Delete(':id')
-  async remove(@Param('id') id: number) {
-    return await this.proposalEventService.removeOne({ where: { id } }, true);
   }
 }

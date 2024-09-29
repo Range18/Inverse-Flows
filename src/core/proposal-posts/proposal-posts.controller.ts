@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ProposalPostsService } from './proposal-posts.service';
 import { User } from '#src/common/decorators/User.decorator';
 import { type UserRequest } from '#src/common/types/user-request.type';
@@ -15,7 +7,6 @@ import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '#src/common/decorators/guards/authGuard.decorator';
 import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 import { ProposalPost } from '#src/core/proposal-posts/entities/proposal-post.entity';
-import { PostReactionsService } from '#src/core/post-reactions/post-reactions.service';
 import { GiveReactionDto } from '#src/core/proposal-posts/dto/give-reaction.dto';
 import { ProposalPostQuery } from '#src/core/proposal-posts/dto/proposal-post.query';
 
@@ -41,10 +32,7 @@ export class ProposalPostsController {
     },
   };
 
-  constructor(
-    private readonly proposalPostsService: ProposalPostsService,
-    private readonly postReactionsService: PostReactionsService,
-  ) {}
+  constructor(private readonly proposalPostsService: ProposalPostsService) {}
 
   @ApiOkResponse({ type: GetProposalPostRdo })
   @AuthGuard()
@@ -121,11 +109,5 @@ export class ProposalPostsController {
     );
 
     return posts.map((post) => new GetProposalPostRdo(post, user.id));
-  }
-
-  @AuthGuard()
-  @Delete(':id')
-  async remove(@Param('id') id: number) {
-    return await this.proposalPostsService.removeOne({ where: { id } }, true);
   }
 }

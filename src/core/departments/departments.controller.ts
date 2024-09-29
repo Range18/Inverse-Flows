@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -15,10 +15,5 @@ export class DepartmentsController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return await this.departmentsService.findOne({ where: { id } }, true);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: number) {
-    return await this.departmentsService.remove({ where: { id } }, true);
   }
 }
