@@ -12,26 +12,7 @@ import { UpdateUserDto } from '#src/core/users/dto/update-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOkResponse({ type: [GetUserRdo] })
-  @Get()
-  async getAllUsers() {
-    const users = await this.userService.find(
-      {
-        relations: {
-          department: true,
-          job: true,
-          role: true,
-          avatar: true,
-          company: true,
-        },
-      },
-      true,
-    );
-
-    return users.map((user) => new GetUserRdo(user));
-  }
-
-  @ApiOkResponse({ type: GetUserRdo })
+  @AuthGuard()
   @Get('/byId/:id')
   async getUser(@Param('id') id: number) {
     return new GetUserRdo(
