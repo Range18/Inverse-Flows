@@ -24,6 +24,7 @@ export class ProposalsEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.proposals, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'author' })
   author: UserEntity;
