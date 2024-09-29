@@ -67,7 +67,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
     await this.userService.save(user);
 
     const document: DocumentEntity | undefined =
-      createProposalDto.isDocumentGenerated ?? true
+      createProposalDto.isDocumentGenerated == 'true'
         ? await this.documentService.create(
             proposal,
             createProposalDto.document,
@@ -130,6 +130,7 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
         status: true,
         document: true,
         post: { reactions: true },
+        history: { user: true },
       },
     });
 

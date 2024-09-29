@@ -3,14 +3,14 @@ import { AppModule } from './app.module';
 import { backendServer } from './common/configs/config';
 import { HttpExceptionFilter } from '#src/common/exception-handler/exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://postideas.ru'],
+    origin: ['http://localhost:3154', 'https://postideas.ru'],
     credentials: true,
   });
 

@@ -63,7 +63,7 @@ export class ProposalsController {
     @Body() createProposalDto: CreateProposalDto,
     @User() user: UserRequest,
     @UploadedFiles() files?: Express.Multer.File[],
-  ): Promise<GetProposalRdo> {
+  ) {
     return new GetProposalRdo(
       await this.proposalService.create({
         ...createProposalDto,

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Column } from 'typeorm';
 
 export class UpdateUserDto {
   @ApiProperty()
@@ -36,4 +37,8 @@ export class UpdateUserDto {
 
   @ApiProperty()
   vk: string;
+
+  address?: string;
+
+  city?: string;
 }

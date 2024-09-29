@@ -1,26 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
-import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { CreateDepartmentDto } from '#src/core/departments/dto/create-department.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Departments')
 @Controller('departments')
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}
-
-  @Post()
-  async create(@Body() createDepartmentDto: CreateDepartmentDto) {
-    return await this.departmentsService.save(createDepartmentDto);
-  }
 
   @Get()
   async findAll() {
@@ -30,19 +15,6 @@ export class DepartmentsController {
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return await this.departmentsService.findOne({ where: { id } }, true);
-  }
-
-  //TODO
-  @Patch(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() updateDepartmentDto: UpdateDepartmentDto,
-  ) {
-    return await this.departmentsService.updateOne(
-      { where: { id } },
-      updateDepartmentDto,
-      true,
-    );
   }
 
   @Delete(':id')
