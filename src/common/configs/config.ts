@@ -10,6 +10,7 @@ export const backendServer = {
 
 export const frontendServer = {
   url: get('FRONTEND_URL').asString(),
+  devPort: get('DEV_PORT').required().asPortNumber(),
 };
 
 export const jwtConfig = {

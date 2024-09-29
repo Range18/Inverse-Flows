@@ -24,7 +24,7 @@ export class CreateProposalDto {
   document?: string;
 
   @IsBooleanString()
-  isDocumentGenerated: boolean;
+  isDocumentGenerated: string;
 
   @IsDateString()
   @IsOptional()

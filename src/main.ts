@@ -1,16 +1,19 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { backendServer } from './common/configs/config';
+import { backendServer, frontendServer } from './common/configs/config';
 import { HttpExceptionFilter } from '#src/common/exception-handler/exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:3154', 'https://postideas.ru'],
+    origin: [
+      `http://localhost:${frontendServer.devPort}`,
+      `${frontendServer.url}`,
+    ],
     credentials: true,
   });
 
