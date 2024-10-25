@@ -79,42 +79,27 @@ export class ProposalsController {
     @User() user: UserRequest,
     @Query() query: ProposalQueryDto,
   ): Promise<GetProposalRdo[]> {
-    let proposals: ProposalsEntity[];
-
     const statusTypes = query.status ? query.status.split(',') : [];
 
-    if (!query.limit && !query.offset) {
-      proposals = await this.proposalService.find(
-        {
-          where: {
-            status: query.status ? { statusType: In(statusTypes) } : undefined,
-            responsibleDepartment: { id: query.responsibleDepartmentId },
-          } as FindOptionsWhere<ProposalsEntity>,
-          order: { createdAt: query.order },
-          relations: {
-            ...this.loadRelations,
-            post: { reactions: { user: true } },
-          },
+    const proposals = await this.proposalService.find(
+      {
+        where: {
+          status: query.status ? { statusType: In(statusTypes) } : undefined,
+          responsibleDepartment: { id: query.responsibleDepartmentId },
         },
-        true,
-      );
-    } else {
-      proposals = await this.proposalService.find(
-        {
-          where: {
-            status: query.status ? { statusType: In(statusTypes) } : undefined,
-            responsibleDepartment: { id: query.responsibleDepartmentId },
-          } as FindOptionsWhere<ProposalsEntity>,
-          order: { createdAt: query.order },
-          skip: query.limit * query.offset - query.offset,
-          relations: {
-            ...this.loadRelations,
-            post: { reactions: { user: true } },
-          },
+        order: { status: { priority: 'ASC' }, dueDate: 'ASC' },
+        take: query.limit,
+        skip:
+          query.limit && query.offset
+            ? query.limit * query.offset - query.offset
+            : undefined,
+        relations: {
+          ...this.loadRelations,
+          post: { reactions: { user: true } },
         },
-        true,
-      );
-    }
+      },
+      true,
+    );
 
     return proposals.map((proposal) => new GetProposalRdo(proposal, user.id));
   }

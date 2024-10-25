@@ -14,6 +14,12 @@ export class ProposalStatus extends BaseEntity {
   @Column({ nullable: false })
   statusType: string;
 
+  @Column({ nullable: true })
+  priority?: number;
+
+  @Column({ nullable: false, default: true })
+  isVisible: boolean;
+
   @OneToMany(() => ProposalsEntity, (proposal) => proposal.status, {
     nullable: true,
   })
