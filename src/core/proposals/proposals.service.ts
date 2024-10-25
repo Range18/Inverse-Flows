@@ -147,23 +147,23 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       relations: { status: true, user: { avatar: true } },
     });
 
+    const status = await this.statusService.findOne({
+      where: { statusType: updateProposalStatusDto.status },
+    });
+
     //If proposalNeedRevision or proposalRejected only (leaves th func)
     if (
-      updateProposalStatusDto.status === 'proposalNeedRevision' ||
+      proposal.status.statusType === 'proposalRejected' &&
       updateProposalStatusDto.status === 'proposalRejected'
     ) {
-      const status = await this.statusService.findOne({
-        where: { statusType: updateProposalStatusDto.status },
-      });
+      throw new ApiException(
+        HttpStatus.BAD_REQUEST,
+        'ProposalExceptions',
+        ProposalExceptions.ProposalIsRejected,
+      );
+    }
 
-      if (proposal.status.statusType === 'proposalRejected') {
-        throw new ApiException(
-          HttpStatus.BAD_REQUEST,
-          'ProposalExceptions',
-          ProposalExceptions.ProposalIsRejected,
-        );
-      }
-
+    if (updateProposalStatusDto.status === 'proposalNeedRevision') {
       const commentEvent = await this.addComment(
         proposal,
         updateProposalStatusDto.comment,
@@ -187,10 +187,6 @@ export class ProposalsService extends BaseEntityService<ProposalsEntity> {
       );
 
     if (!isInStatuses) {
-      const status = await this.statusService.findOne({
-        where: { statusType: updateProposalStatusDto.status },
-      });
-
       proposal.status = status;
       history.push(
         await this.proposalHistoryService.save({
