@@ -20,7 +20,7 @@ import { type UserRequest } from '#src/common/types/user-request.type';
 import { User } from '#src/common/decorators/User.decorator';
 import { GetProposalRdo } from '#src/core/proposals/rdo/get-proposal.rdo';
 import { ProposalsEntity } from '#src/core/proposals/entity/proposals.entity';
-import { FindOptionsWhere, In } from 'typeorm';
+import { In } from 'typeorm';
 import { ApiException } from '#src/common/exception-handler/api-exception';
 import { AllExceptions } from '#src/common/exception-handler/exeption-types/all-exceptions';
 import { UpdateProposalDto } from '#src/core/proposals/dto/update-proposal.dto';
@@ -161,7 +161,7 @@ export class ProposalsController {
   }
 
   @ApiQuery({ name: 'id', required: true })
-  @RolesGuard('owner')
+  @RolesGuard('owner', 'admin', 'moderator')
   @AuthGuard()
   @Patch()
   async patchProposal(
